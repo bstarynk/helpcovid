@@ -68,3 +68,24 @@ Edit the `Makefile` then run `make`
 We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)
 
 The phone number of Basile Starynkevitch there is `+33 6 8501 2359`
+
+
+## email forum `helpcovid@framalistes.org`
+
+See https://framalistes.org/sympa/info/helpcovid
+
+Please follow the following conventions
+
+* all emails are in English and public
+
+* an email related to medical questions (e.g. should we ask our users about their body temperature) should have a subject starting with `MEDICAL:`
+
+* an email about privacy issues (e.g. GDPR concerns) should start with `PRIVACY:`
+
+* an email about database  (e.g. what SQL request is best) should have a subject starting with `DATABASE:`
+
+* an email about software development (e.g.  how to compile libpqxx) should start with `DEVEL:`
+
+* an email about software deployment (e.g.  how to start the executable) should start with `DEPLOY:`
+
+* any other topic should start with a lowercase letter
