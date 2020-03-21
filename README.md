@@ -44,9 +44,11 @@ postgresql-client-11 postgresql-11 libpqxx-dev`, but both
 
 ## conventions
 
-The web root is `webroot/` or the `$HELPCOVID_WEBROOT` environment variable.
+The web root is `webroot/` or the `$HELPCOVID_WEBROOT` environment variable. e. g. `export HELPCOVID_WEBROOT=/home/helpcovid/webroot`
 
-The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variable
+The served URL is the `$HELPCOVID_URL` environment variable e.g. `export HELPCOVID_URL=https://b-star-y.tech/helpcovid`
+
+The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variable, e.g. `export HELPCOVID_POSTGRESQL=postgresql://www-data@localhost/helpcovid`
 
 ## building
 
