@@ -61,7 +61,7 @@ __timestamp.c:
 	$(MV) --backup $@-tmp $@
 
 clean:
-	$(RM) *~ *.orig *.o helpcovid *tmp
+	$(RM) *~ *% *.orig *.o helpcovid *tmp
 
 indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
