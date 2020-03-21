@@ -77,7 +77,6 @@
 // PostGresQL C++ http://pqxx.org/development/libpqxx
 #include <pqxx/pqxx>
 
-// libonion https://github.com/davidmoreno/onion
 
-// or cpp-httplib https://github.com/yhirose/cpp-httplib
+//  cpp-httplib https://github.com/yhirose/cpp-httplib
 #endif /*HELPCOVID_HEADER*/

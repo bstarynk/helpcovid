@@ -28,11 +28,13 @@ You take the responsability about personal data issues.
 
 ## dependencies
 
-* [libonion](https://www.coralbits.com/libonion) for the Web interface
-
 * [libpq](https://www.postgresql.org/docs/11/libpq.html) from PostGreSQL 11 for the database.
 
 * [libpqxx](http://pqxx.org/development/libpqxx) for C++ frontend to PostGreSQL.
+
+* [cpp-httplib](https://github.com/yhirose/cpp-httplib) for C++ [HTTPS](https://en.wikipedia.org/wiki/HTTPS) service
+
+* [Websocket++](https://github.com/zaphoyd/websocketpp) for [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s
 
 On Debian/Buster `sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev`, but `libonion` needs to be built from source
 
