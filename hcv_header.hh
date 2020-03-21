@@ -5,7 +5,7 @@
  *      Header file of https://github.com/bstarynk/helpcovid
  *
  * Author(s):
- *      © Copyright 2020 
+ *      © Copyright 2020
  *      Basile Starynkevitch <basile@starynkevitch.net>
  *      Abhishek Chakravarti <abhishek@taranjali.org>
  *
