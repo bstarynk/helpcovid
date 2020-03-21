@@ -115,14 +115,14 @@ which actually gives a JSON with all streets in Bourg La Reine
 http://download.geonames.org/export/zip/
 
 
-## intuition
+## intuition (in English)
 
-We suppose honest users. Given Covid 19 urgency (in France, [see the *Décret
+We suppose honest adult and responsible users. Given Covid 19 urgency (in France, [see the *Décret
 n° 2020-260 du 16 mars
-2020* by French prime minister)(https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id),
+	2020* by French prime minister](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id) for example)
 we are supposing
 [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
-compliance.... (which is relevant for *deployment* not for coding).
+compliance, even if this software collects personal data.... (which is relevant for *deployment* not for coding). We don't have time to check for that compliance.
 
 First, one would **volunteerly** register
 himself/herself, with *first name*, *last name*, *birth year*,
@@ -132,7 +132,7 @@ Number](https://en.wikipedia.org/wiki/National_identification_number)
 also known as [*numéro de Sécurité
 Sociale*](https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France)...).
 
-Then a user would add more information about himself/herself. We dream of providing an infrastructure where someone could on his free will declare:
+Then a user would -on his/her free will- add more information about himself/herself. We dream of providing an infrastructure where someone could on his free will declare:
 
 * I am health professional
 
@@ -146,3 +146,41 @@ Then a user would add more information about himself/herself. We dream of provid
 
 And we optimistically hope to provide a list of close neighbours
 (closer than 2km, so at a walking distance) willing to help.
+
+
+## intuition (en Français)
+
+*in French*
+
+Nous supposons des utilisateurs adultes, honnêtes et
+responsables. Compte tenu de l'urgence (en France, [voir le *Décret n°
+2020-260 du 16 mars 2020* du Premier
+ministre](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id)
+	etc...) nous supposons -sans en être sûr- être conforme à la
+[RGPD](https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es)
+même si bien sûr ce logiciel collecte des données personnelles (c'est
+pertinent au *déploiement*, pas au codage). Nous n'avons pas le temps de
+vérifier cette conformité.
+
+En premier lieu, un utilisateur s'enregistrerait **de son plein gré** avec ses *prénoms*, *nom de famille*, *année de naissance*, *lieu de résidence*, et peut-être même des informations liées à sa santé (notamment son  [*numéro de Sécurité
+Sociale*](https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France)...).
+
+Puis cet utilisateur ajouterait -de sa propre volonté- des informations supplémentaires. Nous rêvons de fournir une infrastructure permettant d'indiquer:
+
+* je suis un professionnel de santé
+
+* je suis fragile (car enceinte, malade, agé de plus de 65 ans, etc...)
+
+* je suis volontaire pour faire des courses pour de proches voisins
+
+* je cherche un voisin pour faire des courses (alimentaires) pour moi.
+
+* etc...
+
+Et nous espérons pouvoir fournir une liste de proches voisins (à moins de 2 km) désireux d'aider.
+
+	
+	
+## important notice
+
+We provide the software, not the data.
