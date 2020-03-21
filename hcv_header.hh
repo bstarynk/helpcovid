@@ -111,4 +111,28 @@ extern "C" std::recursive_mutex hcv_fatalmtx;
 #define HCV_FATALOUT(...) HCV_FATALOUT_AT(__FILE__,__LINE__,##__VA_ARGS__)
 
 
+
+// syslog facility
+
+extern "C" std::recursive_mutex hcv_syslogmtx;
+extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::string&str);
+#define HCV_SYSLOGOUT_AT_BIS(Fil,Lin,Prio,...) do {	\
+  int err##Lin = errno;					\
+  std::lock_guard<std::recursive_mutex>			\
+    gu##Lin(hcv_syslogmtx);				\
+  std::ostringstream outs##Lin;				\
+  outs##Lin << " !! "					\
+	 << (Fil) << ":" << (Lin) << ":: "		\
+	 << __VA_ARGS__ << std::endl;			\
+  if (err##Lin)						\
+    outs##Lin << "-: " << strerror(err##Lin);		\
+  hcv_syslog_at ((Fil),(Lin),(Prio),(outs##Lin.str()));	\
+  } while(0)
+
+#define HCV_SYSLOGOUT_AT(Fil,Lin,Prio,...) HCV_SYSLOGOUT_AT_BIS(Fil,Lin,(Prio),##__VA_ARGS__)
+
+// typical usage would be HCV_SYSLOGOUT(LOG_NOTICE,"x=" << x)
+#define HCV_SYSLOGOUT(Prio,...) HCV_SYSLOGOUT_AT(__FILE__,__LINE__,(Prio),##__VA_ARGS__)
+
+
 #endif /*HELPCOVID_HEADER*/

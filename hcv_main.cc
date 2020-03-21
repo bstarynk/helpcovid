@@ -29,6 +29,8 @@
 
 
 std::recursive_mutex hcv_fatalmtx;
+std::recursive_mutex hcv_syslogmtx;
+
 ////////////////////////////////////////////////////////////////
 /// https://www.gnu.org/software/libc/manual/html_node/Program-Arguments.html
 struct argp_option hcv_progoptions[] =
@@ -62,6 +64,9 @@ void hcv_fatal_stop_at (const char *fil, int lin, int err)
   std::clog << "**** FATAL ERROR " << fil << ":" << lin << std::endl;
   if (err>0)
     std::clog << " errno: " << strerror(err) << std::endl;
+  syslog(LOG_EMERG, "FATAL STOP %s:%d (%s)",
+         fil, lin, strerror(err));
+  closelog();
   abort();
 } // end hcv_fatal_stop_at
 
@@ -87,7 +92,7 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 
 
 void
-hcv_early_initialize(void)
+hcv_early_initialize(const char*progname)
 {
   if (gethostname(hcv_hostname, sizeof(hcv_hostname)))
     HCV_FATALOUT("gethostname failure");
@@ -102,28 +107,41 @@ hcv_early_initialize(void)
   hcv_proghandle = dlopen(nullptr, RTLD_NOW);
   if (!hcv_proghandle)
     HCV_FATALOUT("program dlopen failed: " << dlerror());
+  openlog(progname, LOG_PID|LOG_PERROR, LOG_LOCAL0);
 } // end hcv_early_initialize
 
 void
 hcv_parse_program_arguments(int &argc, char**argv)
 {
-  static struct argp argparser
-    = {hcv_progoptions, hcv_parse1opt, "*no-positional-arguments*",
-    "github.com/bstarynk/helpcovid - a GPLv3+ free software to help organizing against Covid19 - NO WARRANTY"
-  };
   struct argp_state argstate;
   memset (&argstate, 0, sizeof(argstate));
   hcv_progargs.hcv_progmagic = HCV_PROGARG_MAGIC;
+  static struct argp argparser;
+  argparser.options = hcv_progoptions;
+  argparser.parser = hcv_parse1opt;
+  argparser.args_doc = "*no-positional-arguments*";
+  argparser.doc = "github.com/bstarynk/helpcovid - a GPLv3+ free software to help organizing against Covid19 - NO WARRANTY";
+  argparser.children = nullptr;
+  argparser.help_filter = nullptr;
+  argparser.argp_domain = nullptr;
   if (argp_parse(&argparser, argc, argv, 0, nullptr, nullptr))
     HCV_FATALOUT("failed to parse program arguments to " << argv[0]);
 #warning TODO: complete hcv_parse_program_arguments
 } // end hcv_parse_program_arguments
 
-
+void
+hcv_syslog_at (const char *fil, int lin, int prio, const std::string&str)
+{
+  syslog(prio, "%s:%d - %s", fil, lin, str.c_str());
+}
 ////////////////////////////////////////////////////////////////
 int
 main(int argc, char**argv)
 {
-  hcv_early_initialize();
+  hcv_early_initialize(argv[0]);
   hcv_parse_program_arguments(argc, argv);
+  HCV_SYSLOGOUT(LOG_NOTICE, "start of " << argv[0] << std::endl
+                <<  " version:" << hcv_versionmsg);
+  HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
+  return 0;
 } // end of main
