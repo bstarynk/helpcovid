@@ -37,7 +37,9 @@ You take the responsability about personal data issues.
 
 * [Websocket++](https://github.com/zaphoyd/websocketpp) for [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s
 
-On Debian/Buster `sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev`, but `libonion` needs to be built from source
+On  [Debian](https://debian.org/)/Buster `sudo aptitude install postgresql-server-dev-11
+postgresql-client-11 postgresql-11 libpqxx-dev`, but both
+`cpp-httplib` and `Websocket++` need to be built from source
 
 
 ## conventions
