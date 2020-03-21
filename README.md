@@ -37,6 +37,16 @@ You take the responsability about personal data issues.
 
 * [Websocket++](https://github.com/zaphoyd/websocketpp) for [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s
 
+* [Twitter Bootstrap](https://github.com/twbs/bootstrap) for the responsive CSS
+  framework
+
+* [Start Bootstrap - Blog Home](https://github.com/BlackrockDigital/startbootstrap-blog-home)
+  for the Bootstrap theme
+
+* [Bootstrap Cookie Alert](https://github.com/Wruczek/Bootstrap-Cookie-Alert)
+  for the GDPR notice popup
+
+
 On  [Debian](https://debian.org/)/Buster `sudo aptitude install postgresql-server-dev-11
 postgresql-client-11 postgresql-11 libpqxx-dev`, but both
 `cpp-httplib` and `Websocket++` need to be built from source
