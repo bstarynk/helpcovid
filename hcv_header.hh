@@ -93,13 +93,16 @@ extern "C" const char hcv_makefile[];
 //////////////// fatal error - aborting
 extern "C" void hcv_fatal_stop_at (const char *, int, int) __attribute__((noreturn));
 
+extern "C" std::recursive_mutex hcv_fatalmtx;
 
 
-#define HCV_FATALOUT_AT_BIS(Fil,Lin,...) do {	\
-  int err##Lin = errno; \
-    std::clog << "** HELPCOVID FATAL! "		\
-	      << (Fil) << ":" << Lin << ":: "	\
-	      << __VA_ARGS__ << std::endl;	\
+#define HCV_FATALOUT_AT_BIS(Fil,Lin,...) do {		\
+  int err##Lin = errno;					\
+  std::lock_guard<std::recursive_mutex>			\
+    gu##Lin(hcv_fatalmtx);				\
+    std::clog << "** HELPCOVID FATAL! "			\
+	      << (Fil) << ":" << Lin << ":: "		\
+	      << __VA_ARGS__ << std::endl;		\
     hcv_fatal_stop_at (Fil,Lin, err##Lin); } while(0)
 
 #define HCV_FATALOUT_AT(Fil,Lin,...) HCV_FATALOUT_AT_BIS(Fil,Lin,##__VA_ARGS__)
