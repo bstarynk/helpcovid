@@ -113,3 +113,36 @@ which actually gives a JSON with all streets in Bourg La Reine
 ????
 
 http://download.geonames.org/export/zip/
+
+
+## intuition
+
+We suppose honest users. Given Covid 19 urgency (in France, [*Décret
+n° 2020-260 du 16 mars
+2020*)(https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id),
+we are supposing
+[GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
+compliance.... (which is relevant for *deployment* not for coding).
+
+First, one would **volunteerly** register
+himself/herself, with *first name*, *last name*, *birth year*,
+*email*, *phone*, *home-address* and optionally possibly more health
+related information (e.g. French [National Identification
+Number](https://en.wikipedia.org/wiki/National_identification_number)
+also known as [*numéro de Sécurité
+Sociale*](https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France)...).
+
+Then a user would add more information about himself/herself. We dream of providing an infrastructure where someone could on his free will declare:
+
+* I am health professional
+
+* I am a fragile person (pregnant, sick, aged above 65 years, etc...)
+
+* I am willing to do some shopping for close neighbour
+
+* I need some neighbour help to get me food
+
+* etc...
+
+And we optimistically hope to provide a list of close neighbours
+(closer than 2km, so at a walking distance) willing to help.
