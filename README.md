@@ -74,7 +74,7 @@ The phone number of Basile Starynkevitch there is `+33 6 8501 2359`
 
 See https://framalistes.org/sympa/info/helpcovid
 
-Please follow the following conventions
+Please follow the following conventions and stay civil and nice. The forum is overloaded, so don't work quickly.
 
 * all emails are in English and public
 
@@ -89,3 +89,20 @@ Please follow the following conventions
 * an email about software deployment (e.g.  how to start the executable) should start with `DEPLOY:`
 
 * any other topic should start with a lowercase letter
+
+
+## relevant hyperlinks
+
+#### For France:
+
+Some of the hyperlinks are in French, sorry.
+
+* https://help.openstreetmap.org/questions/73656/html5-javascript-code-to-show-a-map-and-get-a-gps-position/73666
+
+* https://nouvelle-techno.fr/actualites/2018/05/11/pas-a-pas-inserer-une-carte-openstreetmap-sur-votre-site
+
+* https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/
+
+#### For India:
+
+????
