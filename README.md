@@ -155,8 +155,8 @@ And we optimistically hope to provide a list of close neighbours
 Nous supposons des utilisateurs adultes, honnêtes et
 responsables. Compte tenu de l'urgence (en France, [voir le *Décret n°
 2020-260 du 16 mars 2020* du Premier
-ministre]((https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id)
-etc...) nous supposons être conforme à la
+ministre](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id)
+	etc...) nous supposons -sans en être sûr- être conforme à la
 [RGPD](https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es)
 même si bien sûr ce logiciel collecte des données personnelles (c'est
 pertinent au *déploiement*, pas au codage). Nous n'avons pas le temps de
