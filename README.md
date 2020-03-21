@@ -49,3 +49,9 @@ The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variabl
 ## building
 
 Edit the `Makefile` then run `make`
+
+## communication
+
+We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)
+
+The phone number of Basile Starynkevitch there is `+33 6 8501 2359`
