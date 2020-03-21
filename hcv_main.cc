@@ -53,7 +53,11 @@ struct hcv_progarguments
   std::string hcv_postgresuri;
 };
 
-static struct hcv_progarguments hcv_progargs;
+static struct hcv_progarguments hcv_progargs = {
+    .hcv_progmagic = HCV_PROGARG_MAGIC,
+    .hcv_weburl = "",
+    .hcv_postgresuri = ""
+};
 
 static char hcv_hostname[64];
 static char hcv_versionmsg[384];
@@ -77,6 +81,8 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 {
   /* Get the input argument from argp_parse, which we
      know is a pointer to our arguments structure. */
+    if (!state->input)
+        HCV_FATALOUT("state->input is NULL");
   struct hcv_progarguments *progargs
     = reinterpret_cast<hcv_progarguments *>(state->input);
   if (!progargs || progargs->hcv_progmagic != HCV_PROGARG_MAGIC)
@@ -115,8 +121,13 @@ hcv_parse_program_arguments(int &argc, char**argv)
 {
   struct argp_state argstate;
   memset (&argstate, 0, sizeof(argstate));
+
   argstate.input = &hcv_progargs;
+  if (!argstate.input)
+      HCV_FATALOUT("ARGSTATE INPUT IS NULL");
+
   hcv_progargs.hcv_progmagic = HCV_PROGARG_MAGIC;
+
   static struct argp argparser;
   argparser.options = hcv_progoptions;
   argparser.parser = hcv_parse1opt;
@@ -125,7 +136,8 @@ hcv_parse_program_arguments(int &argc, char**argv)
   argparser.children = nullptr;
   argparser.help_filter = nullptr;
   argparser.argp_domain = nullptr;
-  if (argp_parse(&argparser, argc, argv, 0, nullptr, nullptr))
+
+  if (argp_parse(&argparser, argc, argv, 0, nullptr, &hcv_progargs))
     HCV_FATALOUT("failed to parse program arguments to " << argv[0]);
 #warning TODO: complete hcv_parse_program_arguments
 } // end hcv_parse_program_arguments
