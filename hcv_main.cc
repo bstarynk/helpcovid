@@ -45,6 +45,32 @@ struct hcv_progarguments
 
 static struct hcv_progarguments hcv_progargs;
 
+static char hcv_hostname[64];
+static char hcv_versionmsg[256];
+static void* hcv_proghandle;
+void hcv_fatal_stop_at (const char *fil, int lin, int err)
+{
+  std::clog << "**** FATAL ERROR " << fil << ":" << lin << std::endl;
+  if (err>0)
+    std::clog << " errno: " << strerror(err) << std::endl;
+  abort();
+} // end hcv_fatal_stop_at
+
+void
+hcv_early_initialize(void)
+{
+  if (gethostname(hcv_hostname, sizeof(hcv_hostname)))
+    HCV_FATALOUT("gethostname failure");
+  snprintf(hcv_versionmsg, sizeof(hcv_versionmsg),
+           "github.com/bstarynk/helpcovid built %s gitcommit %s md5sum %s on %s",
+           hcv_timestamp, hcv_lastgitcommit,
+           hcv_md5sum,
+           hcv_hostname);
+  hcv_proghandle = dlopen(nullptr, RTLD_NOW);
+  if (!hcv_proghandle)
+    HCV_FATALOUT("program dlopen failed: " << dlerror());
+} // end hcv_early_initialize
+
 void
 hcv_parse_program_arguments(int &argc, char**argv)
 {
@@ -59,5 +85,6 @@ hcv_parse_program_arguments(int &argc, char**argv)
 int
 main(int argc, char**argv)
 {
+  hcv_early_initialize();
   hcv_parse_program_arguments(argc, argv);
 } // end of main

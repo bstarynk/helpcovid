@@ -89,4 +89,23 @@ extern "C" const char hcv_lastgitcommit[];
 extern "C" const char hcv_md5sum[];
 extern "C" const char*const hcv_files[];
 extern "C" const char hcv_makefile[];
+
+//////////////// fatal error - aborting
+extern "C" void hcv_fatal_stop_at (const char *, int, int) __attribute__((noreturn));
+
+
+
+#define HCV_FATALOUT_AT_BIS(Fil,Lin,...) do {	\
+  int err##Lin = errno; \
+    std::clog << "** HELPCOVID FATAL! "		\
+	      << (Fil) << ":" << Lin << ":: "	\
+	      << __VA_ARGS__ << std::endl;	\
+    hcv_fatal_stop_at (Fil,Lin, err##Lin); } while(0)
+
+#define HCV_FATALOUT_AT(Fil,Lin,...) HCV_FATALOUT_AT_BIS(Fil,Lin,##__VA_ARGS__)
+
+// typical usage would be HCV_FATALOUT("x=" << x)
+#define HCV_FATALOUT(...) HCV_FATALOUT_AT(__FILE__,__LINE__,##__VA_ARGS__)
+
+
 #endif /*HELPCOVID_HEADER*/
