@@ -79,4 +79,14 @@
 
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
+
+
+extern "C" const char hcv_timestamp[];
+extern "C" const char hcv_topdirectory[];
+extern "C" const char hcv_gitid[];
+extern "C" const char hcv_lastgittag[];
+extern "C" const char hcv_lastgitcommit[];
+extern "C" const char hcv_md5sum[];
+extern "C" const char*const hcv_files[];
+extern "C" const char hcv_makefile[];
 #endif /*HELPCOVID_HEADER*/

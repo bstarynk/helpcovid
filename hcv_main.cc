@@ -27,6 +27,14 @@
 
 #include "hcv_header.hh"
 
+
+/// https://www.gnu.org/software/libc/manual/html_node/Program-Arguments.html
+void
+hcv_parse_program_arguments(int &argc, char**argv)
+{
+} // end hcv_parse_program_arguments
+
 int main(int argc, char**argv)
 {
+  hcv_parse_program_arguments(argc, argv);
 } // end of main
