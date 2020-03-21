@@ -115,6 +115,7 @@ hcv_parse_program_arguments(int &argc, char**argv)
 {
   struct argp_state argstate;
   memset (&argstate, 0, sizeof(argstate));
+  argstate.input = &hcv_progargs;
   hcv_progargs.hcv_progmagic = HCV_PROGARG_MAGIC;
   static struct argp argparser;
   argparser.options = hcv_progoptions;
