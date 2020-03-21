@@ -25,6 +25,7 @@ You take the responsability about personal data issues.
 
 * [Abhishek Chakravarti](http://taranjali.org/aboutme), near [Kolkota](https://en.wikipedia.org/wiki/Kolkata), India. email `abhishek@taranjali.org` 
 
+* [Nimesh Neema](http://nimeshneema.com/) near [Indore](https://en.wikipedia.org/wiki/Indore), India.
 
 ## dependencies
 
@@ -47,4 +48,4 @@ The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variabl
 
 ## building
 
-Edit the ̀Makefile` then run `make`
+Edit the `Makefile` then run `make`
