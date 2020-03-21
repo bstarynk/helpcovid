@@ -65,3 +65,9 @@ clean:
 
 indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
+
+# The xdg-open call is temporary, meant for showing how the front-end web pages
+# currently look. It will be replaced by a call to the helpcovid application
+test:
+	xdg-open webroot/html/signin.html
+
