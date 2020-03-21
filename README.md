@@ -1,8 +1,8 @@
 # helpcovid
 
 A quick and dirty C++17 application (GPLv3+) to help neighbours making
-essential buying (food, medicine) during Covid epidemics. For Linux
-only. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
+essential buying (food, medicine) during the [2019–20 coronavirus pandemic](https://en.wikipedia.org/wiki/2019–20_coronavirus_pandemic).
+For Linux only. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
 
 Of course that application stores personal data in some
 [PostGreSQL](http://postgresql.org/) database, so is concerned by
@@ -23,9 +23,9 @@ You take the responsability about personal data issues.
 
 * [Basile Starynkevitch](http://starynkevitch.net/Basile/), near [Paris](https://en.wikipedia.org/wiki/Paris), France; email `basile-freelance@starynkevitch.net` 
 
-* [Abhishek Chakravarti](http://taranjali.org/aboutme), near [Kolkota](https://en.wikipedia.org/wiki/Kolkata), India. email `abhishek@taranjali.org` 
+* [Abhishek Chakravarti](http://taranjali.org/aboutme), near [Kolkota](https://en.wikipedia.org/wiki/Kolkata), India; email `abhishek@taranjali.org` 
 
-* [Nimesh Neema](http://nimeshneema.com/) near [Indore](https://en.wikipedia.org/wiki/Indore), India.
+* [Nimesh Neema](http://nimeshneema.com/) near [Indore](https://en.wikipedia.org/wiki/Indore), India; email `nimeshneema@gmail.com`
 
 ## dependencies
 
@@ -37,9 +37,13 @@ You take the responsability about personal data issues.
 
 * [Websocket++](https://github.com/zaphoyd/websocketpp) for [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s
 
-On  [Debian](https://debian.org/)/Buster `sudo aptitude install postgresql-server-dev-11
-postgresql-client-11 postgresql-11 libpqxx-dev`, but both
-`cpp-httplib` and `Websocket++` need to be built from source
+On  [Debian](https://debian.org/)/Buster run:
+
+`sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev`
+
+but both
+
+`cpp-httplib` and `Websocket++` need to be built from the source
 
 
 ## conventions
