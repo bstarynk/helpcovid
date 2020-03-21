@@ -103,6 +103,13 @@ Some of the hyperlinks are in French, sorry.
 
 * https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/
 
+
+For a few requests, https://geo.api.gouv.fr/adresse for example https://api-adresse.data.gouv.fr/search/?q=92340 
+
+which actually gives a JSON with all streets in Bourg La Reine
+
 #### For India:
 
 ????
+
+http://download.geonames.org/export/zip/
