@@ -119,10 +119,10 @@ http://download.geonames.org/export/zip/
 
 We suppose honest users. Given Covid 19 urgency (in France, [see the *Décret
 n° 2020-260 du 16 mars
-2020* by French prime minister](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id),
+	2020* by French prime minister](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000041728476&categorieLien=id) for example)
 we are supposing
 [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
-compliance.... (which is relevant for *deployment* not for coding).
+compliance.... (which is relevant for *deployment* not for coding). We don't have time to check for that compliance.
 
 First, one would **volunteerly** register
 himself/herself, with *first name*, *last name*, *birth year*,
