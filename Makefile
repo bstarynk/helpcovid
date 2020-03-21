@@ -25,7 +25,7 @@ HELPCOVID_BUILD_CC = gcc
 HELPCOVID_BUILD_CXX = g++
 HELPCOVID_BUILD_DIALECTFLAGS = -std=gnu++17
 HELPCOVID_BUILD_WARNFLAGS = -Wall -Wextra
-HELPCOVID_BUILD_OPTIMFLAGS = -O1 -g3
+HELPCOVID_BUILD_OPTIMFLAGS = -O0 -g3
 HELPCOVID_PKG_CONFIG = pkg-config
 HELPCOVID_PKG_NAMES =  jsoncpp libpqxx
 HELPCOVID_PKG_CFLAGS:= $(shell $(HELPCOVID_PKG_CONFIG) --cflags $(HELPCOVID_PKG_NAMES))
@@ -61,7 +61,7 @@ __timestamp.c:
 	$(MV) --backup $@-tmp $@
 
 clean:
-	$(RM) *~ *% *.orig *.o helpcovid *tmp
+	$(RM) *~ *% *.orig *.o helpcovid *tmp core*
 
 indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
