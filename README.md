@@ -161,7 +161,7 @@ we are supposing
 [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
 compliance, even if this software collects personal data.... (which is relevant for *deployment* not for coding). We don't have time to check for that compliance.
 
-First, one would **volunteerly** register
+First, one would **voluntarily** register
 himself/herself, with *first name*, *last name*, *birth year*,
 *email*, *phone*, *home-address* and optionally possibly more health
 related information (e.g. French [National Identification
