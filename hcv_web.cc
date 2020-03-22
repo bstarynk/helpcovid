@@ -80,7 +80,11 @@ void hcv_webserver_run(void)
   httplib::Server srv;
   srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
   {
-    resp.set_content("Hello, world!", "text/plain");
+    std::ifstream html("webroot/html/signin.html");
+    std::string bfr, line;
+    while (std::getline(html, line))
+      bfr += line;
+    resp.set_content(bfr, "text/html");
   });
 
   srv.listen("localhost", 8000);
@@ -90,8 +94,14 @@ void hcv_webserver_run(void)
         HCV_FATALOUT("Webserver is null!");
     }
 
-    hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
-      resp.set_content("Hello, world!", "text/plain");
+    hcv_webserver->Get("/", [](const httplib::Request&, 
+        httplib::Response& resp) {
+      std::ifstream html("webroot/html/signin.html");
+      std::string bfr, line;
+      while (std::getline(html, line))
+          bfr += line;
+
+      resp.set_content(bfr, "text/html");
     });
 
     hcv_webserver->listen(hcv_weburl.c_str(), 8000);
