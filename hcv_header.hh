@@ -83,6 +83,13 @@
 #define CPPHTTPLIB_OPENSSL_SUPPORT 1
 #include "httplib.h"
 
+// JsonCPP https://github.com/open-source-parsers/jsoncpp
+#include "json/json.h"
+
+// GNU libunistring https://www.gnu.org/software/libunistring/
+// we use UTF-8 strings
+#include "unistr.h"
+
 // in generated __timestamp.c
 extern "C" const char hcv_timestamp[];
 extern "C" const char hcv_topdirectory[];
@@ -163,6 +170,48 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot,
 void hcv_stop_web(void);
 
 extern "C" void hcv_webserver_run(void);
+
+
+//////////////// timing %functions
+// see http://man7.org/linux/man-pages/man2/clock_gettime.2.html
+static inline double
+hcv_wallclock_real_time(void)
+{
+  struct timespec ts =  {0,0};
+  if (clock_gettime(CLOCK_REALTIME, &ts))
+    return NAN;
+  return 1.0*ts.tv_sec + 1.0e-9*ts.tv_nsec;
+} // end hcv_wallclock_real_time
+
+static inline double
+hcv_monotonic_real_time(void)
+{
+  struct timespec ts =  {0,0};
+  if (clock_gettime(CLOCK_MONOTONIC, &ts))
+    return NAN;
+  return 1.0*ts.tv_sec + 1.0e-9*ts.tv_nsec;
+} // end hcv_monotonic_real_time
+
+
+static inline double
+hcv_process_cpu_time(void)
+{
+  struct timespec ts =  {0,0};
+  if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts))
+    return NAN;
+  return 1.0*ts.tv_sec + 1.0e-9*ts.tv_nsec;
+} // end hcv_process_cpu_time
+
+
+static inline double
+hcv_thread_cpu_time(void)
+{
+  struct timespec ts =  {0,0};
+  if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts))
+    return NAN;
+  return 1.0*ts.tv_sec + 1.0e-9*ts.tv_nsec;
+} // end hcv_thread_cpu_time
+
 
 
 #endif /*HELPCOVID_HEADER*/
