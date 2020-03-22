@@ -58,12 +58,14 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
       hcv_webserver.reset(new httplib::SSLServer(opensslcert.c_str(), opensslkey.c_str()));
       HCV_SYSLOGOUT(LOG_NOTICE, "starting HTTPS server with OpenSSL certificate " << opensslcert
                     << " and key " << opensslkey << std::endl
-                    << "... using weburl " << weburl << " and webroot "<< webroot);
+                    << "... using weburl " << weburl << " and webroot "<< webroot
+                    << " hcv_webserver@" << (void*)hcv_webserver.get());
     }
   else
     {
       hcv_webserver.reset(new httplib::Server);
-      HCV_SYSLOGOUT(LOG_NOTICE, "starting plain HTTP server using weburl " << weburl << " and webroot "<< webroot);
+      HCV_SYSLOGOUT(LOG_NOTICE, "starting plain HTTP server using weburl " << weburl << " and webroot "<< webroot
+                    << " hcv_webserver@" << (void*)hcv_webserver.get());
     }
   hcv_weburl = weburl;
   hcv_webroot = webroot;
@@ -72,16 +74,16 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
 
 void hcv_webserver_run(void)
 {
-    HCV_SYSLOGOUT(LOG_INFO, "Startimg HelpCovid web server...");
-    std::cout << "Starting HelpCovid web server..." << std::endl;
+  HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server...");
+  std::cout << "**Starting HelpCovid web server..." << std::endl;
 
-    httplib::Server srv;
-    srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
-    {
-      resp.set_content("Hello, world!", "text/plain");
-    });
+  httplib::Server srv;
+  srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
+  {
+    resp.set_content("Hello, world!", "text/plain");
+  });
 
-    srv.listen("localhost", 8000);
+  srv.listen("localhost", 8000);
 
 } // end hcv_webserver_run
 

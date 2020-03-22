@@ -336,6 +336,7 @@ hcv_parse_program_arguments(int &argc, char**argv)
       hcv_progargs.hcvprog_opensslkey = getenv("HELPCOVID_SSLKEY");
       HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_SSLKEY=" << hcv_progargs.hcvprog_opensslkey);
     }
+  HCV_SYSLOGOUT(LOG_NOTICE, "parsed " << argc << " program arguments");
 } // end hcv_parse_program_arguments
 
 
@@ -361,6 +362,7 @@ main(int argc, char**argv)
   if (!hcv_progargs.hcvprog_weburl.empty())
     hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot,
                        hcv_progargs.hcvprog_opensslcert, hcv_progargs.hcvprog_opensslkey);
+  errno = 0;
   /////==================================================
   //// CYBERSECURITY RISK: use seteuid(2).....
   //// complex topic, be sure to read at least https://en.wikipedia.org/wiki/Setuid
@@ -370,9 +372,15 @@ main(int argc, char**argv)
   if (!hcv_progargs.hcvprog_seteuid.empty())
     hcv_set_euid(hcv_progargs.hcvprog_seteuid);
   ////===================================================
+  errno = 0;
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
+  errno = 0;
   hcv_webserver_run();
 
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
   return 0;
 } // end of main
+
+
+
+////////////////////////// end of file hcv_main.cc
