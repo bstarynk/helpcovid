@@ -46,6 +46,9 @@ enum hcv_progoption_en
   HCVPROGOPT_SYSLOG='S',
   HCVPROGOPT_WEBROOT='R',
   HCVPROGOPT_SETEUID='U',
+
+  HCVPROGOPT_WEBSSLCERT=1000,
+  HCVPROGOPT_WEBSSLKEY=1001,
 };
 
 struct argp_option hcv_progoptions[] =
@@ -82,6 +85,22 @@ struct argp_option hcv_progoptions[] =
     /*doc:*/ "default webroot local file directory to serve static URLs without .. (defaults to $HELPCOVID_WEBROOT)", ///
     /*group:*/0 ///
   },
+  /* ======= set the web OpenSSL certificate ======= */
+  {/*name:*/ "websslcert", ///
+    /*key:*/ HCVPROGOPT_WEBSSLCERT, ///
+    /*arg:*/ "WEBSSLCERT", ///
+    /*flags:*/0, ///
+    /*doc:*/ "web OpenSSL certificate file, e.g. --websslcert=/etc/helpcovid/somecert.pem (defaults to $HELPCOVID_SSLCERT)", ///
+    /*group:*/0 ///
+  },
+  /* ======= set the web OpenSSL private key ======= */
+  {/*name:*/ "websslkey", ///
+    /*key:*/ HCVPROGOPT_WEBSSLKEY, ///
+    /*arg:*/ "WEBSSLKEY", ///
+    /*flags:*/0, ///
+    /*doc:*/ "web OpenSSL private key, e.g. --websslkey=/etc/helpcovid/somekey.pem (defaults to $HELPCOVID_SSLKEY)", ///
+    /*group:*/0 ///
+  },
   /* ======= set the effective user id ======= */
   {/*name:*/ "seteuid", ///
     /*key:*/ HCVPROGOPT_SETEUID, ///
@@ -109,6 +128,8 @@ struct hcv_progarguments
   std::string hcvprog_postgresuri;
   std::string hcvprog_webroot;
   std::string hcvprog_seteuid;
+  std::string hcvprog_opensslcert;
+  std::string hcvprog_opensslkey;
 };
 
 static struct hcv_progarguments hcv_progargs =
@@ -119,6 +140,8 @@ static struct hcv_progarguments hcv_progargs =
   .hcvprog_postgresuri = "",
   .hcvprog_webroot = "",
   .hcvprog_seteuid = "",
+  .hcvprog_opensslcert = "",
+  .hcvprog_opensslkey = "",
 };
 
 static char hcv_hostname[64];
@@ -175,6 +198,12 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
         HCV_FATALOUT("bad --syslog option " << arg);
     }
     return 0;
+    case HCVPROGOPT_WEBSSLCERT:
+      progargs->hcvprog_opensslcert = std::string(arg);
+      return 0;
+    case HCVPROGOPT_WEBSSLKEY:
+      progargs->hcvprog_opensslkey = std::string(arg);
+      return 0;
     default:
       return ARGP_ERR_UNKNOWN;
     }
@@ -297,6 +326,16 @@ hcv_parse_program_arguments(int &argc, char**argv)
       hcv_progargs.hcvprog_seteuid = getenv("HELPCOVID_SETEUID");
       HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_SETEUID=" << hcv_progargs.hcvprog_seteuid);
     }
+  if (hcv_progargs.hcvprog_opensslcert.empty() && getenv("HELPCOVID_SSLCERT"))
+    {
+      hcv_progargs.hcvprog_opensslcert = getenv("HELPCOVID_SSLCERT");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_SSLCERT=" << hcv_progargs.hcvprog_opensslcert);
+    }
+  if (hcv_progargs.hcvprog_opensslkey.empty() && getenv("HELPCOVID_SSLKEY"))
+    {
+      hcv_progargs.hcvprog_opensslkey = getenv("HELPCOVID_SSLKEY");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_SSLKEY=" << hcv_progargs.hcvprog_opensslkey);
+    }
 } // end hcv_parse_program_arguments
 
 
@@ -320,7 +359,8 @@ main(int argc, char**argv)
                 << " on " << hcv_hostname);
   /// the web interface should be initialized early, before seteuid(2)
   if (!hcv_progargs.hcvprog_weburl.empty())
-    hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot);
+    hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot,
+                       hcv_progargs.hcvprog_opensslcert, hcv_progargs.hcvprog_opensslkey);
   /////==================================================
   //// CYBERSECURITY RISK: use seteuid(2).....
   //// complex topic, be sure to read at least https://en.wikipedia.org/wiki/Setuid

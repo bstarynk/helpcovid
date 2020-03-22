@@ -80,6 +80,7 @@
 
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
+#define CPPHTTPLIB_OPENSSL_SUPPORT 1
 #include "httplib.h"
 
 // in generated __timestamp.c
@@ -158,7 +159,8 @@ extern "C" void hcv_initialize_database(const std::string&uri);
 
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port.
-void hcv_initialize_web(const std::string&weburl, const std::string&webroot);
+void hcv_initialize_web(const std::string&weburl, const std::string&webroot,
+                        const std::string&sslcert, const std::string&sslkey);
 
 
 #endif /*HELPCOVID_HEADER*/

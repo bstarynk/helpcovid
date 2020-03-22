@@ -59,6 +59,13 @@ The served URL is the `$HELPCOVID_URL` environment variable e.g. `export HELPCOV
 
 The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variable, e.g. `export HELPCOVID_POSTGRESQL=postgresql://www-data@localhost/helpcovid_db`
 
+The [OpenSSL](https://www.openssl.org/) encryption for
+[HTTPS](https://en.wikipedia.org/wiki/HTTPS) may use the OpenSSL
+certificate provided by `$HELPCOVID_SSLCERT` and the OpenSSL key
+provided by `$HELPCOVID_SSLKEY`. See also the `--websslcert` and
+`--websslkey` program options. These files should not be
+world-readable.
+
 ## building
 
 Edit the `Makefile` then run `make`

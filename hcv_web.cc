@@ -31,12 +31,18 @@
 extern "C" const char hcv_web_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_web_date[] = __DATE__;
 
+/// the web server
+std::unique_ptr<httplib::Server> hcv_webserver;
+
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port. So be specially careful here!
-void hcv_initialize_web(const std::string&weburl, const std::string&webroot)
+void hcv_initialize_web(const std::string&weburl, const std::string&webroot, const std::string&opensslcert, const std::string&opensslkey)
 {
   HCV_SYSLOGOUT(LOG_WARNING, "hcv_initialize_web incomplete weburl="
-                << weburl << " webroot=" << webroot);
+                << weburl << " webroot=" << webroot
+                << " opensslcert='" << opensslcert
+                << "', opensslkey='" << opensslkey
+                << "';");
 #warning hcv_initialize_web incomplate
 } // end hcv_initialize_web
 
