@@ -192,7 +192,7 @@ hcv_webserver_run(void)
     jsob["reqcnt"] = reqcnt;
     auto str = Json::writeString(builder, jsob);
     resp.set_content(str.c_str(), "application/json");
-  }
+  });
   hcv_webserver->listen(webhost, webport);
   HCV_SYSLOGOUT(LOG_INFO, "end hcv_webserver_run webhost=" << webhost << " webport=" << webport);
 } // end hcv_webserver_run
