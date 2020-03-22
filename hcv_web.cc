@@ -33,17 +33,40 @@ extern "C" const char hcv_web_date[] = __DATE__;
 
 /// the web server
 std::unique_ptr<httplib::Server> hcv_webserver;
+std::string hcv_weburl;
+std::string hcv_webroot;
 
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port. So be specially careful here!
 void hcv_initialize_web(const std::string&weburl, const std::string&webroot, const std::string&opensslcert, const std::string&opensslkey)
 {
-  HCV_SYSLOGOUT(LOG_WARNING, "hcv_initialize_web incomplete weburl="
-                << weburl << " webroot=" << webroot
-                << " opensslcert='" << opensslcert
-                << "', opensslkey='" << opensslkey
-                << "';");
-#warning hcv_initialize_web incomplate
+  if (!opensslcert.empty() && !opensslkey.empty())
+    {
+      struct stat certstat, keystat;
+      memset (&certstat, 0, sizeof(certstat));
+      memset (&keystat, 0, sizeof(keystat));
+      if (stat(opensslcert.c_str(), &certstat))
+        HCV_FATALOUT("stat of OpenSSL certificate " << opensslcert << " failed.");
+      if (stat(opensslkey.c_str(), &keystat))
+        HCV_FATALOUT("stat of OpenSSL key " << opensslkey << " failed.");
+      if (!S_ISREG(certstat.st_mode))
+        HCV_FATALOUT("OpenSSL certificate " << opensslcert << " is not a regular file.");
+      if (!S_ISREG(keystat.st_mode))
+        HCV_FATALOUT("OpenSSL key " << opensslkey << " is not a regular file.");
+      if (keystat.st_mode & S_IRWXO)
+        HCV_FATALOUT("OpenSSL key " << opensslkey << " is world readable or writable but should not be.");
+      hcv_webserver.reset(new httplib::SSLServer(opensslcert.c_str(), opensslkey.c_str()));
+      HCV_SYSLOGOUT(LOG_NOTICE, "starting HTTPS server with OpenSSL certificate " << opensslcert
+                    << " and key " << opensslkey << std::endl
+                    << "... using weburl " << weburl << " and webroot "<< webroot);
+    }
+  else
+    {
+      hcv_webserver.reset(new httplib::Server);
+      HCV_SYSLOGOUT(LOG_NOTICE, "starting plain HTTP server using weburl " << weburl << " and webroot "<< webroot);
+    }
+  hcv_weburl = weburl;
+  hcv_webroot = webroot;
 } // end hcv_initialize_web
 
 
