@@ -27,6 +27,8 @@
 
 #include "hcv_header.hh"
 
+extern "C" const char hcv_main_gitid[] = HELPCOVID_GITID;
+extern "C" const char hcv_main_date[] = __DATE__;
 
 std::recursive_mutex hcv_fatalmtx;
 std::recursive_mutex hcv_syslogmtx;
@@ -53,10 +55,11 @@ struct hcv_progarguments
   std::string hcv_postgresuri;
 };
 
-static struct hcv_progarguments hcv_progargs = {
-    .hcv_progmagic = HCV_PROGARG_MAGIC,
-    .hcv_weburl = "",
-    .hcv_postgresuri = ""
+static struct hcv_progarguments hcv_progargs =
+{
+  .hcv_progmagic = HCV_PROGARG_MAGIC,
+  .hcv_weburl = "",
+  .hcv_postgresuri = ""
 };
 
 static char hcv_hostname[64];
@@ -81,8 +84,8 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 {
   /* Get the input argument from argp_parse, which we
      know is a pointer to our arguments structure. */
-    if (!state->input)
-        HCV_FATALOUT("state->input is NULL");
+  if (!state->input)
+    HCV_FATALOUT("state->input is NULL");
   struct hcv_progarguments *progargs
     = reinterpret_cast<hcv_progarguments *>(state->input);
   if (!progargs || progargs->hcv_progmagic != HCV_PROGARG_MAGIC)
@@ -124,7 +127,7 @@ hcv_parse_program_arguments(int &argc, char**argv)
 
   argstate.input = &hcv_progargs;
   if (!argstate.input)
-      HCV_FATALOUT("ARGSTATE INPUT IS NULL");
+    HCV_FATALOUT("ARGSTATE INPUT IS NULL");
 
   hcv_progargs.hcv_progmagic = HCV_PROGARG_MAGIC;
 
@@ -132,7 +135,9 @@ hcv_parse_program_arguments(int &argc, char**argv)
   argparser.options = hcv_progoptions;
   argparser.parser = hcv_parse1opt;
   argparser.args_doc = "*no-positional-arguments*";
-  argparser.doc = "github.com/bstarynk/helpcovid - a GPLv3+ free software to help organizing against Covid19 - NO WARRANTY";
+  argparser.doc = "github.com/bstarynk/helpcovid\n"
+                  " - a GPLv3+ free software C++ Web application for Linux/x86-64\n"
+                  "... to help organizing against Covid19 - NO WARRANTY";
   argparser.children = nullptr;
   argparser.help_filter = nullptr;
   argparser.argp_domain = nullptr;

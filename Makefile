@@ -19,6 +19,7 @@
 HELPCOVID_SOURCES := $(wildcard hcv*.cc)
 HELPCOVID_OBJECTS := $(patsubst %.cc, %.o, $(HELPCOVID_SOURCES))
 HELPCOVID_HEADERS := $(wildcard hcv*.hh)
+HELPCOVID_GIT_ID := $(shell ./generate-gitid.sh)
 
 HELPCOVID_BUILD_CCACHE = ccache
 HELPCOVID_BUILD_CC = gcc

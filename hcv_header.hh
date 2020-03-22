@@ -79,7 +79,7 @@
 
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
-
+#include "httplib.h"
 
 extern "C" const char hcv_timestamp[];
 extern "C" const char hcv_topdirectory[];
