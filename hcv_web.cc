@@ -94,8 +94,7 @@ void hcv_webserver_run(void)
       resp.set_content("Hello, world!", "text/plain");
     });
 
-#warning FIXME: use the hcv_weburl
-    hcv_webserver->listen("localhost", 8000);
+    hcv_webserver->listen(hcv_weburl.c_str(), 8000);
 } // end hcv_webserver_run
 
 
