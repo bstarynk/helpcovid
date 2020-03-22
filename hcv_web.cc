@@ -85,9 +85,18 @@ void hcv_webserver_run(void)
 
   srv.listen("localhost", 8000);
 
+    // This check seems to indicate that hcv_webserver is out of scope here
+    if (!hcv_webserver) {
+        HCV_FATALOUT("Webserver is null!");
+    }
+
+    hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
+      resp.set_content("Hello, world!", "text/plain");
+    });
+
+#warning FIXME: use the hcv_weburl
+    hcv_webserver->listen("localhost", 8000);
 } // end hcv_webserver_run
-
-
 
 
 
