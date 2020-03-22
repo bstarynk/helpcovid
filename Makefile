@@ -73,7 +73,9 @@ indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
 
 localtest0: helpcovid
-	./helpcovid --web-url=http://localhost:8081/ --webroot=$$(realpath ./webroot/)
+	./helpcovid --web-url=http://localhost:8081/ \
+	            --webroot=$$(realpath ./webroot/) \
+	            --postgresql-database=postgresql://localhost/helpcovid_db
 #-The xdg-open call is temporary, meant for showing how the front-end web pages
 #-currently look. It will be replaced by a call to the helpcovid application
 #-st:
