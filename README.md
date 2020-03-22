@@ -88,9 +88,9 @@ follows:
 $ sudo -u postgres psql
 postgres =# CREATE DATABASE helpcovid_db;
 postgres =# CREATE USER helpcovid_usr WITH PASSWORD 'password';
-postgres =# ALTER ROLE helpcovid_usr SET client_ encoding TO 'utf8';
+postgres =# ALTER ROLE helpcovid_usr SET client_encoding TO 'utf8';
 postgres =# ALTER ROLE helpcovid_usr SET default_transaction_isolation TO  'read committed';
-postgres =# ALTER ROLE helpcovid_usr SET timezone TO 'UTC ';
+postgres =# ALTER ROLE helpcovid_usr SET timezone TO 'UTC';
 postgres =# GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;
 postgres =# \q 
 ```
