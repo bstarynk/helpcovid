@@ -75,17 +75,18 @@ void hcv_webserver_run(void)
     HCV_SYSLOGOUT(LOG_INFO, "Startimg HelpCovid web server...");
     std::cout << "Starting HelpCovid web server..." << std::endl;
 
-    httplib::Server srv;
-    srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
-    {
+    // This check seems to indicate that hcv_webserver is out of scope here
+    if (!hcv_webserver) {
+        HCV_FATALOUT("Webserver is null!");
+        exit(1);
+    }
+
+    hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
       resp.set_content("Hello, world!", "text/plain");
     });
 
-    srv.listen("localhost", 8000);
-
+    hcv_webserver->listen("localhost", 8000);
 } // end hcv_webserver_run
-
-
 
 
 
