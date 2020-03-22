@@ -214,6 +214,7 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 void
 hcv_early_initialize(const char*progname)
 {
+  errno = 0;
   if (gethostname(hcv_hostname, sizeof(hcv_hostname)))
     HCV_FATALOUT("gethostname failure");
   snprintf(hcv_versionmsg, sizeof(hcv_versionmsg),
@@ -282,6 +283,7 @@ hcv_set_euid(const std::string& euidstr)
 void
 hcv_parse_program_arguments(int &argc, char**argv)
 {
+  errno = 0;
   struct argp_state argstate;
   memset (&argstate, 0, sizeof(argstate));
 
