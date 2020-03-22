@@ -371,7 +371,8 @@ main(int argc, char**argv)
     hcv_set_euid(hcv_progargs.hcvprog_seteuid);
   ////===================================================
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
-#warning should serve HTTP requests here....
+  hcv_webserver_run();
+
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
   return 0;
 } // end of main

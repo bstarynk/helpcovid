@@ -70,6 +70,21 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
 } // end hcv_initialize_web
 
 
+void hcv_webserver_run(void)
+{
+    HCV_SYSLOGOUT(LOG_INFO, "Startimg HelpCovid web server...");
+    std::cout << "Starting HelpCovid web server..." << std::endl;
+
+    httplib::Server srv;
+    srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
+    {
+      resp.set_content("Hello, world!", "text/plain");
+    });
+
+    srv.listen("localhost", 8000);
+
+} // end hcv_webserver_run
+
 
 
 

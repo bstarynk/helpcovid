@@ -163,4 +163,7 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot,
                         const std::string&sslcert, const std::string&sslkey);
 
 
+extern "C" void hcv_webserver_run(void);
+
+
 #endif /*HELPCOVID_HEADER*/
