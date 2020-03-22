@@ -106,10 +106,18 @@ hcv_webserver_run(void)
 	       {
 		 resp.set_content("Hello, world!", "text/plain");
 	       });
+  {
+    std::ifstream html("webroot/html/signin.html");
+    std::string bfr, line;
+    while (std::getline(html, line))
+      bfr += line;
+    resp.set_content(bfr, "text/html");
+  });
 
   srv.listen("localhost", 8000);
 #endif
 
+#warning TODO: we need to parse the hcv_weburl 
   hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
 			    resp.set_content("Hello, world!", "text/plain");
 			  });
