@@ -74,6 +74,20 @@ with `sudo -s`). Then, according to
 [this PostGreSQL tutorial](https://www.tutorialspoint.com/postgresql/postgresql_environment.htm) you need to run (as Linux root) the `su - postgres` command (which gives you access to the "PostGreSQL superuser") 
 and run under that PostGreSQL user the `createdb helpcovid_db` command.
 
+Concretely, the steps needed to setup the helpcovid database from psql are as
+follows:
+
+```
+$ sudo -u postgres psql
+postgres =# CREATE DATABASE helpcovid_db;
+postgres =# CREATE USER helpcovid_usr WITH PASSWORD 'password';
+postgres =# ALTER ROLE helpcovid_usr SET client_ encoding TO 'utf8';
+postgres =# ALTER ROLE helpcovid_usr SET default_transaction_isolation TO  'read committed';
+postgres =# ALTER ROLE helpcovid_usr SET timezone TO 'UTC ';
+postgres =# GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;
+postgres =# \q 
+```
+
 ## communication
 
 We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)
