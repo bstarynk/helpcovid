@@ -31,7 +31,11 @@
 extern "C" const char hcv_database_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_database_date[] = __DATE__;
 
+/// the database connection
 std::unique_ptr<pqxx::connection> hcv_dbconn;
+
+/// the recursive mutex to serialize access to that database
+std::recursive_mutex hcv_dbmtx;
 
 void
 hcv_initialize_database(const std::string&uri)
