@@ -41,10 +41,10 @@ std::string hcv_webroot;
 void hcv_initialize_web(const std::string&weburl, const std::string&webroot, const std::string&opensslcert, const std::string&opensslkey)
 {
   HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_web: weburl='" << weburl
-		<< "', webroot='" << webroot
-		<< "', opensslcert='" << opensslcert
-		<< "', opensslkey='" << opensslkey
-		<< "'");
+                << "', webroot='" << webroot
+                << "', opensslcert='" << opensslcert
+                << "', opensslkey='" << opensslkey
+                << "'");
   if (weburl.empty())
     HCV_FATALOUT("hcv_initialize_web: missing weburl");
   if (webroot.empty())
@@ -96,36 +96,67 @@ hcv_stop_web()
 void
 hcv_webserver_run(void)
 {
+  unsigned webport;
+  if (getuid() == 0) webport = 80;
+  else webport = 8080;
   HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server hcv_webserver@" << (void*)hcv_webserver
-		<< " with hcv_weburl=" << hcv_weburl);
+                << " with hcv_weburl=" << hcv_weburl);
   if (!hcv_webserver)
     HCV_FATALOUT("no hcv_webserver");
-
-#if 0
-  srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
-	       {
-		 resp.set_content("Hello, world!", "text/plain");
-	       });
+  //
+  if (hcv_weburl.empty())
+    HCV_FATALOUT("no hcv_weburl");
+  // parse hcv_weburl
+  char webhost[64];
   {
-    std::ifstream html("webroot/html/signin.html");
-    std::string bfr, line;
-    while (std::getline(html, line))
+    int endpos= -1;
+    memset(webhost,0,sizeof(webhost));
+    if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2 && endpos>0 && webport>0)
       {
-        bfr += line;
-        bfr.push_back('\n');
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " webport=" << webport);
       }
-    resp.set_content(bfr, "text/html");
+    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2 && endpos>0 && webport>0)
+      {
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " webport=" << webport);
+      }
+    else if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1 && endpos>0)
+      {
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " default webport=" << webport);
+      }
+    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1 && endpos>0)
+      {
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " default webport=" << webport);
+      }
+    else
+      HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
+  }
+  hcv_webserver->Get("/hello",
+                     [](const httplib::Request&req, httplib::Response& resp)
+  {
+    std::ostringstream outs;
+    outs << "Hello, World!" << std::endl
+         << " hcv_lastgitcommit: " << hcv_lastgitcommit << std::endl
+         << " hcv_md5sum: " << hcv_md5sum << std::endl
+         << " hcv_timestamp: " << hcv_timestamp << std::endl;
+    time_t nowt = 0;
+    time(&nowt);
+    struct tm nowtm;
+    memset (&nowtm, 0, sizeof(nowtm));
+    char nowbuf[80];
+    memset (nowbuf, 0, sizeof(nowbuf));
+    localtime_r (&nowt, &nowtm);
+    strftime(nowbuf, sizeof(nowbuf), "%c %Z", &nowtm);
+    char hostbuf[64];
+    memset(hostbuf, 0, sizeof(hostbuf));
+    gethostname(hostbuf, sizeof(hostbuf));
+    outs << " on " << nowbuf
+         << " host " <<  hostbuf
+         << " pid " << (int)(getpid())
+         << std::endl;
+    resp.set_content(outs.str().c_str(), "text/plain");
   });
-
-  srv.listen("localhost", 8000);
-#endif
-
-#warning TODO: we need to parse the hcv_weburl 
-  hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
-			    resp.set_content("Hello, world!", "text/plain");
-			  });
-
-  hcv_webserver->listen(hcv_weburl.c_str(), 8000);
+  hcv_webserver->listen(webhost, webport);
+  HCV_SYSLOGOUT(LOG_INFO, "end hcv_webserver_run webhost=" << webhost << " webport=" << webport);
 } // end hcv_webserver_run
 
 

@@ -154,7 +154,7 @@ void hcv_fatal_stop_at (const char *fil, int lin, int err)
   if (err>0)
     std::clog << " errno: " << strerror(err) << std::endl;
   syslog(LOG_EMERG, "FATAL STOP %s:%d (%s)\n"
-	 "* version %s",
+         "* version %s",
          fil, lin, strerror(err), hcv_versionmsg);
   closelog();
   abort();
@@ -253,7 +253,7 @@ hcv_early_initialize(const char*progname)
 /*************
  * Seteuid techniques. Beware, if used properly, this can increase the
  * security of the system. But if it is badly used, this can open
- * huge cybersecruity holes....
+ * huge cybersecurity holes....
  *
  * This is a very complex topic, be sure to read at least
  * https://en.wikipedia.org/wiki/Setuid then
@@ -290,6 +290,8 @@ hcv_set_euid(const std::string& euidstr)
     HCV_FATALOUT("hcv_set_euid failed to seteuid to " << (int)neweuid);
   HCV_SYSLOGOUT(LOG_NOTICE, "hcv_set_euid did seteuid to " << neweuid);
 } // end hcv_set_euid
+
+
 
 void
 hcv_parse_program_arguments(int &argc, char**argv)
