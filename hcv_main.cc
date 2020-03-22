@@ -153,8 +153,9 @@ void hcv_fatal_stop_at (const char *fil, int lin, int err)
   std::clog << "**** FATAL ERROR " << fil << ":" << lin << std::endl;
   if (err>0)
     std::clog << " errno: " << strerror(err) << std::endl;
-  syslog(LOG_EMERG, "FATAL STOP %s:%d (%s)",
-         fil, lin, strerror(err));
+  syslog(LOG_EMERG, "FATAL STOP %s:%d (%s)\n"
+	 "* version %s on %s",
+         fil, lin, strerror(err), hcv_versionmsg);
   closelog();
   abort();
 } // end hcv_fatal_stop_at
