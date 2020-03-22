@@ -138,4 +138,12 @@ extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::str
 #define HCV_SYSLOGOUT(Prio,...) HCV_SYSLOGOUT_AT(__FILE__,__LINE__,(Prio),##__VA_ARGS__)
 
 
+
+
+
+////////////////////////////////////////////////////////////////
+
+//// PostGreSQL database
+extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
+extern "C" void hcv_initialize_database(const std::string&uri);
 #endif /*HELPCOVID_HEADER*/

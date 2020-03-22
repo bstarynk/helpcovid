@@ -8,10 +8,11 @@
  *      © Copyright 2020
  *      Basile Starynkevitch <basile@starynkevitch.net>
  *      Abhishek Chakravarti <abhishek@taranjali.org>
+ *      Nimesh Neema <nimeshneema@gmail.com>
  *
  *
  * License:
- *    This program is free software: you can redistribute it and/or modify
+ *    This HELPCOVID program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
@@ -257,6 +258,7 @@ main(int argc, char**argv)
                 <<  " version:" << hcv_versionmsg << std::endl
                 << " at " << hcv_startimbuf
                 << " on " << hcv_hostname);
+  hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
   return 0;
 } // end of main
