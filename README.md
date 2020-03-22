@@ -57,11 +57,22 @@ The web root is `webroot/` or the `$HELPCOVID_WEBROOT` environment variable. e. 
 
 The served URL is the `$HELPCOVID_URL` environment variable e.g. `export HELPCOVID_URL=https://b-star-y.tech/helpcovid`
 
-The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variable, e.g. `export HELPCOVID_POSTGRESQL=postgresql://www-data@localhost/helpcovid`
+The PostGreSQL connection URI is the `$HELPCOVID_POSTGRESQL` environment variable, e.g. `export HELPCOVID_POSTGRESQL=postgresql://www-data@localhost/helpcovid_db`
 
 ## building
 
 Edit the `Makefile` then run `make`
+
+## PostGreSQL database
+
+We use [PostGreSQL](https://www.postgresql.org/) and we require 
+a [PostGreSQL 12](https://www.postgresql.org/docs/12/index.html) server.
+
+
+To create the database on Debian, first get Linux root permission (e.g. 
+with `sudo -s`). Then, according to
+[this PostGreSQL tutorial](https://www.tutorialspoint.com/postgresql/postgresql_environment.htm) you need to run (as Linux root) the `su - postgres` command (which gives you access to the "PostGreSQL superuser") 
+and run under that PostGreSQL user the `createdb helpcovid_db` command.
 
 ## communication
 
