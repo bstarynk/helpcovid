@@ -174,14 +174,17 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
   if (!progargs || progargs->hcvprog_magic != HCV_PROGARG_MAGIC)
     // this should never happen
     HCV_FATALOUT("corrupted program arguments");
+
   switch (key)
     {
     case HCVPROGOPT_WEBURL:
       progargs->hcvprog_weburl = std::string(arg);
       return 0;
+
     case HCVPROGOPT_POSTGRESURI:
       progargs->hcvprog_postgresuri = std::string(arg);
       return 0;
+
     case HCVPROGOPT_SYSLOG:
     {
       int lev = -1;
@@ -199,12 +202,19 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
         HCV_FATALOUT("bad --syslog option " << arg);
     }
     return 0;
+
+    case HCVPROGOPT_WEBROOT:
+      progargs->hcvprog_webroot = std::string(arg);
+      return 0;
+
     case HCVPROGOPT_WEBSSLCERT:
       progargs->hcvprog_opensslcert = std::string(arg);
       return 0;
+
     case HCVPROGOPT_WEBSSLKEY:
       progargs->hcvprog_opensslkey = std::string(arg);
       return 0;
+
     default:
       return ARGP_ERR_UNKNOWN;
     }
