@@ -160,7 +160,7 @@ extern "C" void hcv_initialize_database(const std::string&uri);
 /// HTTP TCP port.
 void hcv_initialize_web(const std::string&weburl, const std::string&webroot,
                         const std::string&sslcert, const std::string&sslkey);
-
+void hcv_stop_web(void);
 
 extern "C" void hcv_webserver_run(void);
 

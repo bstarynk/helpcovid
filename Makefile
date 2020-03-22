@@ -14,7 +14,7 @@
 ##    You should have received a copy of the GNU General Public License
 ##    along with this program.  If not, see <http://www.gnu.org/licences>
 
-.PHONY: all clean indent deploy
+.PHONY: all clean indent deploy localtest0
 
 HELPCOVID_SOURCES := $(wildcard hcv*.cc)
 HELPCOVID_OBJECTS := $(patsubst %.cc, %.o, $(HELPCOVID_SOURCES))
@@ -72,8 +72,10 @@ clean:
 indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
 
-# The xdg-open call is temporary, meant for showing how the front-end web pages
-# currently look. It will be replaced by a call to the helpcovid application
-test:
-	xdg-open webroot/html/signin.html
+localtest0: helpcovid
+	./helpcovid --web-url=http://localhost:8081/ --webroot=$$(realpath ./webroot/)
+#-The xdg-open call is temporary, meant for showing how the front-end web pages
+#-currently look. It will be replaced by a call to the helpcovid application
+#-st:
+#-      xdg-open webroot/html/signin.html
 

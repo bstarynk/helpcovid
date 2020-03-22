@@ -32,7 +32,7 @@ extern "C" const char hcv_web_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_web_date[] = __DATE__;
 
 /// the web server
-std::unique_ptr<httplib::Server> hcv_webserver;
+httplib::Server* hcv_webserver;
 std::string hcv_weburl;
 std::string hcv_webroot;
 
@@ -40,6 +40,15 @@ std::string hcv_webroot;
 /// HTTP TCP port. So be specially careful here!
 void hcv_initialize_web(const std::string&weburl, const std::string&webroot, const std::string&opensslcert, const std::string&opensslkey)
 {
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_web: weburl='" << weburl
+		<< "', webroot='" << webroot
+		<< "', opensslcert='" << opensslcert
+		<< "', opensslkey='" << opensslkey
+		<< "'");
+  if (weburl.empty())
+    HCV_FATALOUT("hcv_initialize_web: missing weburl");
+  if (webroot.empty())
+    HCV_FATALOUT("hcv_initialize_web: missing webroot");
   if (!opensslcert.empty() && !opensslkey.empty())
     {
       struct stat certstat, keystat;
@@ -55,46 +64,57 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
         HCV_FATALOUT("OpenSSL key " << opensslkey << " is not a regular file.");
       if (keystat.st_mode & S_IRWXO)
         HCV_FATALOUT("OpenSSL key " << opensslkey << " is world readable or writable but should not be.");
-      hcv_webserver.reset(new httplib::SSLServer(opensslcert.c_str(), opensslkey.c_str()));
+      hcv_webserver = new httplib::SSLServer(opensslcert.c_str(), opensslkey.c_str());
       HCV_SYSLOGOUT(LOG_NOTICE, "starting HTTPS server with OpenSSL certificate " << opensslcert
                     << " and key " << opensslkey << std::endl
                     << "... using weburl " << weburl << " and webroot "<< webroot
-                    << " hcv_webserver@" << (void*)hcv_webserver.get());
+                    << " hcv_webserver@" << (void*)hcv_webserver);
     }
   else
     {
-      hcv_webserver.reset(new httplib::Server);
+      hcv_webserver = new httplib::Server();
       HCV_SYSLOGOUT(LOG_NOTICE, "starting plain HTTP server using weburl " << weburl << " and webroot "<< webroot
-                    << " hcv_webserver@" << (void*)hcv_webserver.get());
+                    << " hcv_webserver@" << (void*)hcv_webserver);
     }
   hcv_weburl = weburl;
   hcv_webroot = webroot;
 } // end hcv_initialize_web
 
 
-void hcv_webserver_run(void)
+void
+hcv_stop_web()
 {
-  HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server...");
-  std::cout << "**Starting HelpCovid web server..." << std::endl;
+  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_stop_web with hcv_webserver@" << (void*)hcv_webserver);
+  delete hcv_webserver;
+  hcv_webserver = nullptr;
+#warning TODO: implement hcv_stop_web
+} // end hcv_stop_web
 
-  httplib::Server srv;
+
+
+
+void
+hcv_webserver_run(void)
+{
+  HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server hcv_webserver@" << (void*)hcv_webserver
+		<< " with hcv_weburl=" << hcv_weburl);
+  if (!hcv_webserver)
+    HCV_FATALOUT("no hcv_webserver");
+
+#if 0
   srv.Get("/", [](const httplib::Request&, httplib::Response& resp)
-  {
-    resp.set_content("Hello, world!", "text/plain");
-  });
+	       {
+		 resp.set_content("Hello, world!", "text/plain");
+	       });
 
   srv.listen("localhost", 8000);
+#endif
 
-    // This check seems to indicate that hcv_webserver is out of scope here
-    if (!hcv_webserver) {
-        HCV_FATALOUT("Webserver is null!");
-    }
+  hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
+			    resp.set_content("Hello, world!", "text/plain");
+			  });
 
-    hcv_webserver->Get("/", [](const httplib::Request&, httplib::Response& resp) {
-      resp.set_content("Hello, world!", "text/plain");
-    });
-
-    hcv_webserver->listen(hcv_weburl.c_str(), 8000);
+  hcv_webserver->listen(hcv_weburl.c_str(), 8000);
 } // end hcv_webserver_run
 
 
