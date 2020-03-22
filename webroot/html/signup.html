@@ -16,6 +16,10 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="../css/style.css">
 
+    <!-- Select2 widget -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" 
+          rel="stylesheet" />
+
     <title>HelpCovid | Sign Up</title>
 
   </head>
@@ -114,12 +118,23 @@
                   <label for="inputLastName">Last Name</label>
                 </div>
 
+                <div class="form-label-group">
+                  <select class="form-control" name="gender">
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                    <option value="T">Transgender</option>
+                  </select> 
+                </div>
+
                 <div class="checkbox mb-3">
                   <label>
-                    <input type="checkbox" value="remember-me"> Remember me
+                    <input type="checkbox" value="agree-terms"> 
+                      I agree to share my personally identifiable data
                   </label>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">
+                  Sign up
+                </button>
               </form>
             </div>
           </div>
@@ -218,6 +233,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <!-- Include cookiealert script -->
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+    <!-- Select2 widget -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <script type="javascript">
+      $(document).ready(function () {
+        $('select').select2();
+      });
+    </script>
 
   </body>
 
