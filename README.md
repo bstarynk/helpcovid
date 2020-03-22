@@ -95,6 +95,10 @@ postgres =# GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;
 postgres =# \q 
 ```
 
+When running `helpcovid`, the database password may sit in [your
+`$HOME/.pgpass`
+file](https://www.postgresql.org/docs/current/libpq-pgpass.html).
+
 ## communication
 
 We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)
