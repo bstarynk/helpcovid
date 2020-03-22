@@ -72,6 +72,7 @@
 #include <dlfcn.h>
 #include <dirent.h>
 #include <pthread.h>
+#include <pwd.h>
 
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
@@ -147,4 +148,17 @@ extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::str
 extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
 extern "C" std::recursive_mutex hcv_dbmtx;
 extern "C" void hcv_initialize_database(const std::string&uri);
+
+
+
+
+////////////////////////////////////////////////////////////////
+
+//// Web service
+
+/// this could be run with root privilege if we need to serve the :80
+/// HTTP TCP port.
+void hcv_initialize_web(const std::string&weburl, const std::string&webroot);
+
+
 #endif /*HELPCOVID_HEADER*/

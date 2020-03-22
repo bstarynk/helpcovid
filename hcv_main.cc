@@ -45,6 +45,7 @@ enum hcv_progoption_en
   HCVPROGOPT_POSTGRESURI='P',
   HCVPROGOPT_SYSLOG='S',
   HCVPROGOPT_WEBROOT='R',
+  HCVPROGOPT_SETEUID='U',
 };
 
 struct argp_option hcv_progoptions[] =
@@ -73,12 +74,20 @@ struct argp_option hcv_progoptions[] =
     /*doc:*/ "sets the syslog level to SYSLOGLEVEL for openlog(3) (defaults to 0 for LOG_LOCAL0), between 0 and 7, e.g. --syslog-level=1", ///
     /*group:*/0 ///
   },
-  /* ======= set the syslog level ======= */
+  /* ======= set the web document root ======= */
   {/*name:*/ "webroot", ///
     /*key:*/ HCVPROGOPT_WEBROOT, ///
     /*arg:*/ "WEBROOT", ///
     /*flags:*/0, ///
     /*doc:*/ "default webroot local file directory to serve static URLs without .. (defaults to $HELPCOVID_WEBROOT)", ///
+    /*group:*/0 ///
+  },
+  /* ======= set the effective user id ======= */
+  {/*name:*/ "seteuid", ///
+    /*key:*/ HCVPROGOPT_SETEUID, ///
+    /*arg:*/ "EFFECTIVEUSER", ///
+    /*flags:*/0, ///
+    /*doc:*/ "call seteuid(2) on given user name or numerical id (defaults to $HELPCOVID_SETEUID), cybersecurity risk if badly used...", ///
     /*group:*/0 ///
   },
   /* ======= terminating empty option ======= */
@@ -99,6 +108,7 @@ struct hcv_progarguments
   std::string hcvprog_weburl;
   std::string hcvprog_postgresuri;
   std::string hcvprog_webroot;
+  std::string hcvprog_seteuid;
 };
 
 static struct hcv_progarguments hcv_progargs =
@@ -108,6 +118,7 @@ static struct hcv_progarguments hcv_progargs =
   .hcvprog_weburl = "",
   .hcvprog_postgresuri = "",
   .hcvprog_webroot = "",
+  .hcvprog_seteuid = "",
 };
 
 static char hcv_hostname[64];
@@ -197,6 +208,48 @@ hcv_early_initialize(const char*progname)
   openlog(progname, LOG_PID|LOG_PERROR, LOG_LOCAL0);
 } // end hcv_early_initialize
 
+
+/*************
+ * Seteuid techniques. Beware, if used properly, this can increase the
+ * security of the system. But if it is badly used, this can open
+ * huge cybersecruity holes....
+ *
+ * This is a very complex topic, be sure to read at least
+ * https://en.wikipedia.org/wiki/Setuid then
+ * http://man7.org/linux/man-pages/man2/execve.2.html then
+ * http://man7.org/linux/man-pages/man2/seteuid.2.html then
+ * http://man7.org/linux/man-pages/man7/credentials.7.html
+ *
+ ************/
+void
+hcv_set_euid(const std::string& euidstr)
+{
+  uid_t neweuid= -1;
+  if (euidstr.empty() || euidstr=="-")
+    {
+      HCV_SYSLOGOUT(LOG_WARNING, "hcv_set_euid empty '" << euidstr << "'");
+      return;
+    };
+  if (std::isdigit(euidstr[0]))
+    {
+      neweuid = (uid_t)atol(euidstr.c_str());
+    }
+  else if (std::isalpha(euidstr[0]))
+    {
+      struct passwd* pw = getpwnam(euidstr.c_str());
+      if (!pw)
+        HCV_FATALOUT("hcv_set_euid with invalid user nanme '" << euidstr << "'");
+      neweuid = pw->pw_uid;
+    }
+  else
+    HCV_FATALOUT("hcv_set_euid invalid euidstr '" << euidstr << "'");
+  if (neweuid== (uid_t)-1)
+    HCV_FATALOUT("hcv_set_euid no user");
+  if (seteuid(neweuid))
+    HCV_FATALOUT("hcv_set_euid failed to seteuid to " << (int)neweuid);
+  HCV_SYSLOGOUT(LOG_NOTICE, "hcv_set_euid did seteuid to " << neweuid);
+} // end hcv_set_euid
+
 void
 hcv_parse_program_arguments(int &argc, char**argv)
 {
@@ -239,15 +292,22 @@ hcv_parse_program_arguments(int &argc, char**argv)
       hcv_progargs.hcvprog_webroot = getenv("HELPCOVID_WEBROOT");
       HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_WEBROOT=" << hcv_progargs.hcvprog_webroot);
     }
+  if (hcv_progargs.hcvprog_seteuid.empty() && getenv("HELPCOVID_SETEUID"))
+    {
+      hcv_progargs.hcvprog_seteuid = getenv("HELPCOVID_SETEUID");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_SETEUID=" << hcv_progargs.hcvprog_seteuid);
+    }
 } // end hcv_parse_program_arguments
 
 
 
+/// this hcv_syslog_at function is used by the HCV_SYSLOGOUT macro
 void
 hcv_syslog_at (const char *fil, int lin, int prio, const std::string&str)
 {
   syslog(prio, "%s:%d - %s", fil, lin, str.c_str());
-}
+} // end hcv_syslog_at....
+
 ////////////////////////////////////////////////////////////////
 int
 main(int argc, char**argv)
@@ -258,7 +318,20 @@ main(int argc, char**argv)
                 <<  " version:" << hcv_versionmsg << std::endl
                 << " at " << hcv_startimbuf
                 << " on " << hcv_hostname);
+  /// the web interface should be initialized early, before seteuid(2)
+  if (!hcv_progargs.hcvprog_weburl.empty())
+    hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot);
+  /////==================================================
+  //// CYBERSECURITY RISK: use seteuid(2).....
+  //// complex topic, be sure to read at least https://en.wikipedia.org/wiki/Setuid
+  //// then http://man7.org/linux/man-pages/man2/execve.2.html
+  //// then http://man7.org/linux/man-pages/man2/seteuid.2.html
+  //// then http://man7.org/linux/man-pages/man7/credentials.7.html
+  if (!hcv_progargs.hcvprog_seteuid.empty())
+    hcv_set_euid(hcv_progargs.hcvprog_seteuid);
+  ////===================================================
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
+#warning should serve HTTP requests here....
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
   return 0;
 } // end of main
