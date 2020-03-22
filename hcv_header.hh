@@ -81,6 +81,7 @@
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
 #include "httplib.h"
 
+// in generated __timestamp.c
 extern "C" const char hcv_timestamp[];
 extern "C" const char hcv_topdirectory[];
 extern "C" const char hcv_gitid[];
@@ -90,6 +91,8 @@ extern "C" const char hcv_md5sum[];
 extern "C" const char*const hcv_files[];
 extern "C" const char hcv_makefile[];
 
+// start time.
+extern "C" char hcv_startimbuf[];
 //////////////// fatal error - aborting
 extern "C" void hcv_fatal_stop_at (const char *, int, int) __attribute__((noreturn));
 
