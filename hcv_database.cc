@@ -45,6 +45,8 @@ hcv_initialize_database(const std::string&uri)
       HCV_SYSLOGOUT(LOG_WARNING, "no PostGreSQL database initialization: " << uri);
       return;
     }
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database uri=" << uri);
+  ///
   hcv_dbconn.reset(new pqxx::connection(uri));
   {
     pqxx::work transact(*hcv_dbconn);
