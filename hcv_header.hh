@@ -79,8 +79,9 @@
 
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
+#include "httplib.h"
 
-
+// in generated __timestamp.c
 extern "C" const char hcv_timestamp[];
 extern "C" const char hcv_topdirectory[];
 extern "C" const char hcv_gitid[];
@@ -90,6 +91,8 @@ extern "C" const char hcv_md5sum[];
 extern "C" const char*const hcv_files[];
 extern "C" const char hcv_makefile[];
 
+// start time.
+extern "C" char hcv_startimbuf[];
 //////////////// fatal error - aborting
 extern "C" void hcv_fatal_stop_at (const char *, int, int) __attribute__((noreturn));
 
@@ -135,4 +138,12 @@ extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::str
 #define HCV_SYSLOGOUT(Prio,...) HCV_SYSLOGOUT_AT(__FILE__,__LINE__,(Prio),##__VA_ARGS__)
 
 
+
+
+
+////////////////////////////////////////////////////////////////
+
+//// PostGreSQL database
+extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
+extern "C" void hcv_initialize_database(const std::string&uri);
 #endif /*HELPCOVID_HEADER*/
