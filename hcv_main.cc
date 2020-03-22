@@ -43,6 +43,7 @@ enum hcv_progoption_en
   HCVPROGOPT_WEBURL='W',
   HCVPROGOPT_POSTGRESURI='P',
   HCVPROGOPT_SYSLOG='S',
+  HCVPROGOPT_WEBROOT='R',
 };
 
 struct argp_option hcv_progoptions[] =
@@ -71,6 +72,14 @@ struct argp_option hcv_progoptions[] =
     /*doc:*/ "sets the syslog level to SYSLOGLEVEL for openlog(3) (defaults to 0 for LOG_LOCAL0), between 0 and 7, e.g. --syslog-level=1", ///
     /*group:*/0 ///
   },
+  /* ======= set the syslog level ======= */
+  {/*name:*/ "webroot", ///
+    /*key:*/ HCVPROGOPT_WEBROOT, ///
+    /*arg:*/ "WEBROOT", ///
+    /*flags:*/0, ///
+    /*doc:*/ "default webroot local file directory to serve static URLs without .. (defaults to $HELPCOVID_WEBROOT)", ///
+    /*group:*/0 ///
+  },
   /* ======= terminating empty option ======= */
   {/*name:*/(const char*)0, ///
     /*key:*/0, ///
@@ -88,6 +97,7 @@ struct hcv_progarguments
   std::string hcvprog_progname;
   std::string hcvprog_weburl;
   std::string hcvprog_postgresuri;
+  std::string hcvprog_webroot;
 };
 
 static struct hcv_progarguments hcv_progargs =
@@ -95,7 +105,8 @@ static struct hcv_progarguments hcv_progargs =
   .hcvprog_magic = HCV_PROGARG_MAGIC,
   .hcvprog_progname = "",
   .hcvprog_weburl = "",
-  .hcvprog_postgresuri = ""
+  .hcvprog_postgresuri = "",
+  .hcvprog_webroot = "",
 };
 
 static char hcv_hostname[64];
@@ -208,11 +219,28 @@ hcv_parse_program_arguments(int &argc, char**argv)
   argparser.children = nullptr;
   argparser.help_filter = nullptr;
   argparser.argp_domain = nullptr;
-
   if (argp_parse(&argparser, argc, argv, 0, nullptr, &hcv_progargs))
     HCV_FATALOUT("failed to parse program arguments to " << argv[0]);
-#warning TODO: complete hcv_parse_program_arguments
+  ///////////////////////////////////////////
+  /// set suitable defaults
+  if (hcv_progargs.hcvprog_weburl.empty() && getenv("HELPCOVID_URL"))
+    {
+      hcv_progargs.hcvprog_weburl = getenv("HELPCOVID_URL");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_URL=" << hcv_progargs.hcvprog_weburl);
+    };
+  if (hcv_progargs.hcvprog_postgresuri.empty() && getenv("HELPCOVID_POSTGRESQL"))
+    {
+      hcv_progargs.hcvprog_postgresuri = getenv("HELPCOVID_POSTGRESQL");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_POSTGRESQL=" << hcv_progargs.hcvprog_postgresuri);
+    }
+  if (hcv_progargs.hcvprog_webroot.empty() && getenv("HELPCOVID_WEBROOT"))
+    {
+      hcv_progargs.hcvprog_webroot = getenv("HELPCOVID_WEBROOT");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_WEBROOT=" << hcv_progargs.hcvprog_webroot);
+    }
 } // end hcv_parse_program_arguments
+
+
 
 void
 hcv_syslog_at (const char *fil, int lin, int prio, const std::string&str)
