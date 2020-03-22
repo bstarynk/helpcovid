@@ -105,6 +105,19 @@ The `$HOME/.pgpass` file would contain a single line similar to the following:
 localhost:5432:helpcovid_db:helpcovid_usr:PASSWORD
 ```
 
+However, there is a possible caveat to consider -- that the `$HOME/.pgpass` file
+might be applicable to the `psql` program, and not to the `libpqxx` library. In
+such a case, we could still benefit from having a password file (other than
+`$HOME/.pgpass`) that contains the following connection string:
+```
+dbname = helpcovid_db user = helpcovid_usr password =  PASS \
+hostaddr = localhost port = 5432
+```
+
+This connection string (excluding the backslash) would be read by the 
+`hcv_initialize_database()` function and used in the constructor for 
+`pqxx::Connection`.
+
 ## communication
 
 We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)
