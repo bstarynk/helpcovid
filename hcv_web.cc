@@ -110,7 +110,10 @@ hcv_webserver_run(void)
     std::ifstream html("webroot/html/signin.html");
     std::string bfr, line;
     while (std::getline(html, line))
-      bfr += line;
+      {
+        bfr += line;
+        bfr.push_back('\n');
+      }
     resp.set_content(bfr, "text/html");
   });
 
