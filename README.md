@@ -97,7 +97,13 @@ postgres =# \q
 
 When running `helpcovid`, the database password may sit in [your
 `$HOME/.pgpass`
-file](https://www.postgresql.org/docs/current/libpq-pgpass.html).
+file](https://www.postgresql.org/docs/current/libpq-pgpass.html). This file may
+need to be set to have `0600` permissions.
+
+The `$HOME/.pgpass` file would contain a single line similar to the following:
+```
+localhost:5432:helpcovid_db:helpcovid_usr:PASSWORD
+```
 
 ## communication
 
