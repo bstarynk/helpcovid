@@ -127,7 +127,6 @@ extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::str
     gu##Lin(hcv_syslogmtx);				\
   std::ostringstream outs##Lin;				\
   outs##Lin << " !! "					\
-	 << (Fil) << ":" << (Lin) << ":: "		\
 	 << __VA_ARGS__ << std::endl;			\
   if (err##Lin)						\
     outs##Lin << "-: " << strerror(err##Lin);		\
