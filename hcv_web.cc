@@ -32,9 +32,15 @@ extern "C" const char hcv_web_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_web_date[] = __DATE__;
 
 /// the web server
+extern "C" httplib::Server* hcv_webserver;
+extern "C" std::string hcv_weburl;
+extern "C" std::string hcv_webroot;
+extern "C" std::atomic<long> hcv_web_request_counter;
 httplib::Server* hcv_webserver;
 std::string hcv_weburl;
 std::string hcv_webroot;
+std::atomic<long> hcv_web_request_counter;
+Json::StreamWriterBuilder hcv_json_builder;
 
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port. So be specially careful here!
@@ -78,6 +84,8 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
     }
   hcv_weburl = weburl;
   hcv_webroot = webroot;
+  hcv_json_builder["commentStyle"] = "None";
+  hcv_json_builder["indentation"] = " ";
 } // end hcv_initialize_web
 
 
@@ -96,7 +104,6 @@ hcv_stop_web()
 void
 hcv_webserver_run(void)
 {
-  static std::atomic<long> nbreq;
   static double startcputime = hcv_process_cpu_time();
   static double startmonotonictime = hcv_monotonic_real_time();
   unsigned webport;
@@ -136,7 +143,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/hello",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
-    std::atomic_fetch_add(&nbreq, 1);
+    std::atomic_fetch_add(&hcv_web_request_counter, 1);
     std::ostringstream outs;
     outs << "Hello, World, from HelpCovid - github.com/bstarynk/helpcovid - a GPLv3+ software." << std::endl
          << " hcv_lastgitcommit: " << hcv_lastgitcommit << std::endl
@@ -159,21 +166,22 @@ hcv_webserver_run(void)
          << std::endl;
     resp.set_content(outs.str().c_str(), "text/plain");
   });
-  hcv_webserver->Get("/status.js",
+  hcv_webserver->Get("/status.json",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
-    long reqcnt = std::atomic_fetch_add(&nbreq, 1);
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    if (reqcnt<=0)
+      reqcnt=1;
     Json::Value jsob(Json::objectValue);
-    Json::StreamWriterBuilder builder;
-    builder["commentStyle"] = "None";
-    builder["indentation"] = " ";
     jsob["helpcovid"] = "github.com/bstarynk/helpcovid";
     jsob["license"] = "GPLv3+";
     jsob["lastgitcommit"] = hcv_lastgitcommit;
     jsob["md5sum"] = hcv_md5sum;
     jsob["gitid"] = hcv_gitid;
-    jsob["cputime"] = hcv_process_cpu_time() - startcputime;
-    jsob["elapsedtime"] = hcv_monotonic_real_time() - startmonotonictime;
+    jsob["total_cpu_time"] = hcv_process_cpu_time() - startcputime;
+    jsob["total_elapsed_time"] = hcv_monotonic_real_time() - startmonotonictime;
+    jsob["cpu_time_per_request"] = (hcv_process_cpu_time() - startcputime) / reqcnt;
+    jsob["elapsed_time_per_request"] = (hcv_monotonic_real_time() - startmonotonictime) / reqcnt;
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
@@ -189,8 +197,8 @@ hcv_webserver_run(void)
     jsob["hostname"] = hostbuf;
     jsob["nowtime"] = (long) nowt;
     jsob["pid"] = (int)getpid();
-    jsob["reqcnt"] = reqcnt;
-    auto str = Json::writeString(builder, jsob);
+    jsob["web_request_count"] = reqcnt;
+    auto str = Json::writeString(hcv_json_builder, jsob);
     resp.set_content(str.c_str(), "application/json");
   });
   hcv_webserver->listen(webhost, webport);

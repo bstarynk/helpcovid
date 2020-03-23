@@ -31,6 +31,7 @@
 import readline
 import os
 
+<<<<<<< HEAD
 
 
 # https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
@@ -44,6 +45,7 @@ def make_completer(vocabulary):
 
 def main():
     print('Starting HelpCovid configuration generator...')
+    print('See https://github.com/bstarynk/helpcovid and its README.md\n')
 
     # Define tab completion vocabulary
     vocabulary = {
@@ -77,13 +79,14 @@ def main():
         print('[sslkey = {0}]'.format(ssl_key))
         rc_file.write('sslkey=%s\n\n' % ssl_key)
 
-        conn_str = input('Connection String: ').strip()
-        print('[connection = {0}]'.format(conn_str))
+        db_conn = input('PostgreSQL Connection String: ').strip()
+        print('[connection = {0}]'.format(db_conn))
         rc_file.write('[postgresql]\n\n')
-        rc_file.write('connection=%s\n' % conn_str)
+        rc_file.write('connection=%s\n' % db_conn)
        
         # Wrap up
         print('\nConfiguration file saved to {0}]'.format(rc_path))
+        rc_file.write('# end of generated file ~/.helpcovidrc\n');
         rc_file.close()
 
     # Handle interrupt
