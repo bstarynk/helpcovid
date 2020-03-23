@@ -192,6 +192,15 @@ extern "C" void hcv_webserver_run(void);
 
 extern "C" std::string hcv_expand_template_file(const std::string& filepath);
 
+typedef std::function<void(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset)> hcv_template_expanding_closure_t;
+// the name should be like a C identifier
+extern "C" void hcv_register_template_expander_closure(const std::string&name, const hcv_template_expanding_closure_t&expfun);
+
+extern "C" void hcv_forget_template_expander(const std::string&name);
+
+extern "C" void
+hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset);
+
 ////////////////////////////////////////////////////////////////
 //////////////// timing functions
 // see http://man7.org/linux/man-pages/man2/clock_gettime.2.html
