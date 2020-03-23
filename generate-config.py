@@ -37,6 +37,7 @@ url = input('web URL: ')
 root = input('web document root: ')
 ssl_cert = input('SSL Certificate: ')
 ssl_key = input('SSL Key: ')
+conn_str = input('Connection String: ')
 
 db_conn = input('PostGreSQL connection: ')
 # Create $HOME/.helpcovidrc file
@@ -49,7 +50,11 @@ rc_file.write('\n[web]\n')
 rc_file.write('url=%s\n' % url)
 rc_file.write('root=%s\n' % root)
 rc_file.write('sslcert=%s\n' % ssl_cert)
-rc_file.write('sslkey=%s\n', ssl_key)
+rc_file.write('sslkey=%s\n\n' % ssl_key)
+
+# Write keys for postgresql group
+rc_file.write('[postgresql]\n\n')
+rc_file.write('connection=%s\n' % conn_str)
 
 # Write keys for PostGreSQL group
 rc_file.write('\n[postgresql]\n');
