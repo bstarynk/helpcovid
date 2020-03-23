@@ -144,6 +144,22 @@ C++ function and can be accessed by C++ functions
 
 ### configuration groups
 
+#### `helpcovid` group
+
+It provides "global" settings
+
+* `log_message`, a string giving some log message.
+
+* `seteuid`, to use dangerous
+  [seteuid](https://en.wikipedia.org/wiki/Setuid) facilities. **Never
+  use them without first reviewing our `hcv_main.cc` source file,
+  because there could be a huge cybersecurity risk**.
+
+* `startup_popen_command`, a dangerous string passed to
+  [`popen(3)`](http://man7.org/linux/man-pages/man3/popen.3.html)
+  which is run once at startup. Use with great caution. The output of
+  that pipe goes to the system log. It is run after `seteuid` facilities.
+
 #### `web` group
 
 It can provide the following keys (for [cpp-httplib](https://github.com/yhirose/cpp-httplib) ...):
