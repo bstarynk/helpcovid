@@ -29,24 +29,32 @@
 import os
 
 print('Starting HelpCovid configuration generator...')
+print('See https://github.com/bstarynk/helpcovid and its README.md')
+print("\n")
 
 # Ask for keys
-url = input('URL: ')
-root = input('Root: ')
+url = input('web URL: ')
+root = input('web document root: ')
 ssl_cert = input('SSL Certificate: ')
 ssl_key = input('SSL Key: ')
 
+db_conn = input('PostGreSQL connection: ')
 # Create $HOME/.helpcovidrc file
 rc_path = os.path.expanduser('~') + '/.helpcovidrc'
 rc_file = open(rc_path, 'a')
-
+rc.file.write('# file ~/.helpcovidrc generated');
+## please emit the generation date
 # Write keys for web group
-rc_file.write('[web]\n\n')
+rc_file.write('\n[web]\n')
 rc_file.write('url=%s\n' % url)
 rc_file.write('root=%s\n' % root)
 rc_file.write('sslcert=%s\n' % ssl_cert)
 rc_file.write('sslkey=%s\n', ssl_key)
 
+# Write keys for PostGreSQL group
+rc_file.write('\n[postgresql]\n');
+rc_file.write('connection=%s\n', db_conn);
+rc.file.write('# end of generated file ~/.helpcovidrc\n');
 # Wrap up
 rc_file.close()
 
