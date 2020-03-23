@@ -34,7 +34,7 @@ HELPCOVID_PKG_LIBS:= $(shell $(HELPCOVID_PKG_CONFIG) --libs $(HELPCOVID_PKG_NAME
 
 
 ## it is not reasonable to link libraries statically
-LIBES=  $(HELPCOVID_PKG_LIBS) -lunistring   -Bdynamic -rdynamic -ldl
+LIBES=  $(HELPCOVID_PKG_LIBS) -rdynamic -ldl
 RM= rm -f
 MV= mv
 CC = $(HELPCOVID_BUILD_CCACHE) $(HELPCOVID_BUILD_CC)
