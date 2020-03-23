@@ -95,6 +95,8 @@ postgres =# GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;
 postgres =# \q 
 ```
 
+Notice that to destroy entirely the database, we would use `DROP DATABASE helpcovid_db;`.
+
 When running `helpcovid`, the database password may sit in [your
 `$HOME/.pgpass`
 file](https://www.postgresql.org/docs/current/libpq-pgpass.html). This file may
@@ -117,6 +119,8 @@ hostaddr = localhost port = 5432
 This connection string (excluding the backslash) would be read by the 
 `hcv_initialize_database()` function and used in the constructor for 
 `pqxx::Connection`.
+
+To change passwords in PostGreSQL see [this](https://www.postgresqltutorial.com/postgresql-change-password/).
 
 ## communication
 
