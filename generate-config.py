@@ -53,7 +53,7 @@ rc_file.write('sslcert=%s\n' % ssl_cert)
 rc_file.write('sslkey=%s\n\n' % ssl_key)
 
 # Write keys for postgresql group
-rc_file.write('[postgresql]\n\n')
+rc_file.write('\n[postgresql]\n')
 rc_file.write('connection=%s\n' % conn_str)
 
 # Write keys for PostGreSQL group
