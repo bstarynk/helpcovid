@@ -86,9 +86,9 @@
 // JsonCPP https://github.com/open-source-parsers/jsoncpp
 #include "json/json.h"
 
-// GNU libunistring https://www.gnu.org/software/libunistring/
-// we use UTF-8 strings
-#include "unistr.h"
+// Glibmm https://developer.gnome.org/glibmm/stable/
+#include "glibmm.h"
+#include "giomm.h"
 
 // in generated __timestamp.c
 extern "C" const char hcv_timestamp[];

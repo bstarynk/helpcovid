@@ -45,7 +45,7 @@ You take the responsability about personal data issues.
 
 On  [Debian](https://debian.org/) (Buster) run:
 
-`sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev`
+`sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev libconfig++-dev libglibmm-2.4-dev`
 
 but both
 

@@ -28,14 +28,13 @@ HELPCOVID_BUILD_DIALECTFLAGS = -std=gnu++17
 HELPCOVID_BUILD_WARNFLAGS = -Wall -Wextra
 HELPCOVID_BUILD_OPTIMFLAGS = -O0 -g3
 HELPCOVID_PKG_CONFIG = pkg-config
-HELPCOVID_PKG_NAMES =  jsoncpp libpqxx openssl
+HELPCOVID_PKG_NAMES = glibmm-2.4 giomm-2.4 jsoncpp libpqxx openssl
 HELPCOVID_PKG_CFLAGS:= $(shell $(HELPCOVID_PKG_CONFIG) --cflags $(HELPCOVID_PKG_NAMES))
 HELPCOVID_PKG_LIBS:= $(shell $(HELPCOVID_PKG_CONFIG) --libs $(HELPCOVID_PKG_NAMES))
 
 
-## we link most libraries statically, hoping that the resulting ELF
-## executable might run on various Linux distributions
-LIBES= -Bstatic $(HELPCOVID_PKG_LIBS) -lunistring  /usr/lib64/libstdc++.a  -Bdynamic -rdynamic -ldl
+## it is not reasonable to link libraries statically
+LIBES=  $(HELPCOVID_PKG_LIBS) -lunistring   -Bdynamic -rdynamic -ldl
 RM= rm -f
 MV= mv
 CC = $(HELPCOVID_BUILD_CCACHE) $(HELPCOVID_BUILD_CC)
@@ -56,7 +55,7 @@ all:
 ## we prefer to link the C++ library statically, some of them are incompatible
 ## the resulting executable might be more portable to various Linux distro.
 helpcovid: $(HELPCOVID_OBJECTS) __timestamp.o
-	$(LINK.c) $(HELPCOVID_OBJECTS)  __timestamp.o \
+	$(LINK.cc) $(HELPCOVID_OBJECTS)  __timestamp.o \
            $(LIBES) -o $@-tmp
 	$(MV) --backup $@-tmp $@
 	$(MV) --backup __timestamp.c __timestamp.c~
