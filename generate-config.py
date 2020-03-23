@@ -86,11 +86,12 @@ def main():
         # Generate timestamp
         ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
 
-        # Wrap up
+        # Wrap up, ensuring chmod 600
         print('\nConfiguration file saved to {0}]'.format(rc_path))
         rc_file.write('\n# generated on %s\n' % ts)
         rc_file.write('# end of generated file ~/.helpcovidrc\n');
         rc_file.close()
+        os.chmod(rc_path, 0o600)
 
     # Handle interrupt
     except (EOFError, KeyboardInterrupt) as e:
