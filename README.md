@@ -157,8 +157,9 @@ It provides "global" settings
 
 * `startup_popen_command`, a dangerous string passed to
   [`popen(3)`](http://man7.org/linux/man-pages/man3/popen.3.html)
-  which is run once at startup. Use with great caution. The output of
-  that pipe goes to the system log. It is run after `seteuid` facilities.
+  which is run once at startup. Use with great caution, and review our
+  code in `hcv_main.cc` before using it.  The output of that pipe goes
+  to the system log. It is run after `seteuid` facilities.
 
 #### `web` group
 
