@@ -82,12 +82,12 @@ with `sudo -s`). Then, according to
 and run under that PostGreSQL user the `createdb helpcovid_db` command.
 
 Concretely, the steps needed to setup the helpcovid database from psql are as
-follows:
+follows with PostGreSQL password `1234helpcovid` is:
 
 ```
 $ sudo -u postgres psql
 postgres =# CREATE DATABASE helpcovid_db;
-postgres =# CREATE USER helpcovid_usr WITH PASSWORD 'password';
+postgres =# CREATE USER helpcovid_usr WITH PASSWORD 'passwd1234helpcovid';
 postgres =# ALTER ROLE helpcovid_usr SET client_encoding TO 'utf8';
 postgres =# ALTER ROLE helpcovid_usr SET default_transaction_isolation TO  'read committed';
 postgres =# ALTER ROLE helpcovid_usr SET timezone TO 'UTC';
@@ -104,7 +104,7 @@ need to be set to have `0600` permissions.
 
 The `$HOME/.pgpass` file would contain a single line similar to the following:
 ```
-localhost:5432:helpcovid_db:helpcovid_usr:PASSWORD
+localhost:5432:helpcovid_db:helpcovid_usr:
 ```
 
 However, there is a possible caveat to consider -- that the `$HOME/.pgpass` file
@@ -112,9 +112,14 @@ might be applicable to the `psql` program, and not to the `libpqxx` library. In
 such a case, we could still benefit from having a password file (other than
 `$HOME/.pgpass`) that contains the following connection string:
 ```
-dbname = helpcovid_db user = helpcovid_usr password =  PASS \
-hostaddr = localhost port = 5432
+dbname=helpcovid_db user=helpcovid_usr password=passwd1234helpcovid  \
+hostaddr=localhost port=5432
 ```
+
+Read more about [PostGreSQL connection
+string](https://www.postgresql.org/docs/12/libpq-connect.html#LIBPQ-CONNSTRING). Notice
+that the password could be kept in a file given with `passfile`.
+
 
 This connection string (excluding the backslash) would be read by the 
 `hcv_initialize_database()` function and used in the constructor for 
