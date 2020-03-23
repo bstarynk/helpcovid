@@ -26,32 +26,72 @@
 ##    You should have received a copy of the GNU General Public License
 ##    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##****************************************************************************
+
+
+import readline
 import os
 
-print('Starting HelpCovid configuration generator...')
 
-# Ask for keys
-url = input('URL: ')
-root = input('Root: ')
-ssl_cert = input('SSL Certificate: ')
-ssl_key = input('SSL Key: ')
-conn_str = input('Connection String: ')
 
-# Create $HOME/.helpcovidrc file
-rc_path = os.path.expanduser('~') + '/.helpcovidrc'
-rc_file = open(rc_path, 'a')
+# https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
+def make_completer(vocabulary):
+    def custom_complete(text, state):
+        results = [x for x in vocabulary if x.startswith(text)] + [None]
+        return results[state] + ' '
+    return custom_complete
 
-# Write keys for web group
-rc_file.write('[web]\n\n')
-rc_file.write('url=%s\n' % url)
-rc_file.write('root=%s\n' % root)
-rc_file.write('sslcert=%s\n' % ssl_cert)
-rc_file.write('sslkey=%s\n\n' % ssl_key)
 
-# Write keys for postgresql group
-rc_file.write('[postgresql]\n\n')
-rc_file.write('connection=%s\n' % conn_str)
 
-# Wrap up
-rc_file.close()
+def main():
+    print('Starting HelpCovid configuration generator...')
+
+    # Define tab completion vocabulary
+    vocabulary = {
+        'localhost', 'webroot', 'helpcovid_db', 'helpcovid_usr', 'helpcovid'
+    }
+
+    # Initialise GNU readline
+    readline.parse_and_bind('tab: complete')
+    readline.set_completer(make_completer(vocabulary))
+
+    # Create configuration file in $HOME
+    rc_path = os.path.expanduser('~') + '/.helpcovidrc'
+    rc_file = open(rc_path, 'w')
+
+    # Read keys and save to config file
+    try:
+        url = input('URL: ').strip()
+        print('[url = {0}]'.format(url))
+        rc_file.write('[web]\n\n')
+        rc_file.write('url=%s\n' % url)
+
+        root = input('Root: ').strip()
+        print('[root = {0}]'.format(root))
+        rc_file.write('root=%s\n' % root)
+
+        ssl_cert = input('SSL Certificate: ').strip()
+        print('[sslcert = {0}]'.format(ssl_cert))
+        rc_file.write('sslcert=%s\n' % ssl_cert)
+
+        ssl_key = input('SSL Key: ').strip()
+        print('[sslkey = {0}]'.format(ssl_key))
+        rc_file.write('sslkey=%s\n\n' % ssl_key)
+
+        conn_str = input('Connection String: ').strip()
+        print('[connection = {0}]'.format(conn_str))
+        rc_file.write('[postgresql]\n\n')
+        rc_file.write('connection=%s\n' % conn_str)
+       
+        # Wrap up
+        print('\nConfiguration file saved to {0}]'.format(rc_path))
+        rc_file.close()
+
+    # Handle interrupt
+    except (EOFError, KeyboardInterrupt) as e:
+        print('\nInterrupt detected, exiting...')
+        rc_file.close()
+
+
+if __name__ == '__main__':
+    main()
 
