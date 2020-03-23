@@ -28,10 +28,9 @@
 ##****************************************************************************
 
 
-import readline
+import datetime
 import os
-
-<<<<<<< HEAD
+import readline
 
 
 # https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
@@ -83,9 +82,13 @@ def main():
         print('[connection = {0}]'.format(db_conn))
         rc_file.write('[postgresql]\n\n')
         rc_file.write('connection=%s\n' % db_conn)
-       
+
+        # Generate timestamp
+        ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+
         # Wrap up
         print('\nConfiguration file saved to {0}]'.format(rc_path))
+        rc_file.write('\n# generated on %s\n' % ts)
         rc_file.write('# end of generated file ~/.helpcovidrc\n');
         rc_file.close()
 
