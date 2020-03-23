@@ -40,14 +40,34 @@ std::recursive_mutex hcv_dbmtx;
 void
 hcv_initialize_database(const std::string&uri)
 {
-  if (uri.empty() || uri=="-")
+  std::string connstr = uri;
+  if (connstr.empty())
     {
-      HCV_SYSLOGOUT(LOG_WARNING, "no PostGreSQL database initialization: " << uri);
+      if (hcv_config_has_group("postgresql"))
+        {
+          hcv_config_do([&connstr](const Glib::KeyFile*kf)
+          {
+            if (!kf->has_key("postgresql","connection"))
+              HCV_FATALOUT("missing 'connection' key in [postgresql] section of configuration");
+            connstr = kf->get_string("postgresql","connection");
+            HCV_SYSLOGOUT(LOG_INFO, "using '" << connstr
+                          << "' as PostGreSQL connection string.");
+          });
+        }
+      else
+        {
+          HCV_SYSLOGOUT(LOG_WARNING, "cannot initialize database. Configuration file should have a [postgresql] group.");
+          return;
+        }
+    };
+  if (connstr.empty() || connstr=="-")
+    {
+      HCV_SYSLOGOUT(LOG_WARNING, "no PostGreSQL database initialization: " << connstr);
       return;
     }
-  HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database uri=" << uri);
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database connstr=" << connstr);
   ///
-  hcv_dbconn.reset(new pqxx::connection(uri));
+  hcv_dbconn.reset(new pqxx::connection(connstr));
   {
     pqxx::work transact(*hcv_dbconn);
     ////================ user table, with mandatory data
@@ -74,7 +94,7 @@ CREATE TABLE IF NOT EXISTS tb_password (
 )crpasswdtab");
     transact.commit();
   }
-  HCV_SYSLOGOUT(LOG_NOTICE, "PostGreSQL database " << uri << " successfully initialized");
+  HCV_SYSLOGOUT(LOG_NOTICE, "PostGreSQL database " << connstr << " successfully initialized");
 } // end hcv_initialize_database
 
 
