@@ -63,7 +63,7 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
       if (!S_ISREG(keystat.st_mode))
         HCV_FATALOUT("OpenSSL key " << opensslkey << " is not a regular file.");
       if (keystat.st_mode & S_IRWXO)
-        HCV_FATALOUT("OpenSSL key " << opensslkey << " is world readable or writable but should not be.");
+        HCV_FATALOUT("OpenSSL key " << opensslkey << " is world readable or writable but should not be. Run chmod o-rwx " << opensslkey);
       hcv_webserver = new httplib::SSLServer(opensslcert.c_str(), opensslkey.c_str());
       HCV_SYSLOGOUT(LOG_NOTICE, "starting HTTPS server with OpenSSL certificate " << opensslcert
                     << " and key " << opensslkey << std::endl

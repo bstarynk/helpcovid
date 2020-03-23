@@ -35,6 +35,8 @@ std::recursive_mutex hcv_fatalmtx;
 std::recursive_mutex hcv_syslogmtx;
 
 char hcv_startimbuf[80];
+
+extern "C" void hcv_load_config_file(void);
 ////////////////////////////////////////////////////////////////
 /// https://www.gnu.org/software/libc/manual/html_node/Program-Arguments.html
 
@@ -46,6 +48,7 @@ enum hcv_progoption_en
   HCVPROGOPT_SYSLOG='S',
   HCVPROGOPT_WEBROOT='R',
   HCVPROGOPT_SETEUID='U',
+  HCVPROGOPT_CONFIG='C',
 
   HCVPROGOPT_WEBSSLCERT=1000,
   HCVPROGOPT_WEBSSLKEY=1001,
@@ -83,6 +86,14 @@ struct argp_option hcv_progoptions[] =
     /*arg:*/ "WEBROOT", ///
     /*flags:*/0, ///
     /*doc:*/ "default webroot local file directory to serve static URLs without .. (defaults to $HELPCOVID_WEBROOT)", ///
+    /*group:*/0 ///
+  },
+  /* ======= set the configuration file ======= */
+  {/*name:*/ "config", ///
+    /*key:*/ HCVPROGOPT_CONFIG, ///
+    /*arg:*/ "CONFIGFILE", ///
+    /*flags:*/0, ///
+    /*doc:*/ "default configuration key file (defaults to $HELPCOVID_CONFIG or else " HCV_DEFAULT_CONFIG_PATH ")", ///
     /*group:*/0 ///
   },
   /* ======= set the web OpenSSL certificate ======= */
@@ -125,6 +136,7 @@ struct hcv_progarguments
   unsigned hcvprog_magic; // always HCV_PROGARG_MAGIC
   std::string hcvprog_progname;
   std::string hcvprog_weburl;
+  std::string hcvprog_config;
   std::string hcvprog_postgresuri;
   std::string hcvprog_webroot;
   std::string hcvprog_seteuid;
@@ -137,6 +149,7 @@ static struct hcv_progarguments hcv_progargs =
   .hcvprog_magic = HCV_PROGARG_MAGIC,
   .hcvprog_progname = "",
   .hcvprog_weburl = "",
+  .hcvprog_config = "",
   .hcvprog_postgresuri = "",
   .hcvprog_webroot = "",
   .hcvprog_seteuid = "",
@@ -183,6 +196,10 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 
     case HCVPROGOPT_POSTGRESURI:
       progargs->hcvprog_postgresuri = std::string(arg);
+      return 0;
+
+    case HCVPROGOPT_CONFIG:
+      progargs->hcvprog_config = std::string(arg);
       return 0;
 
     case HCVPROGOPT_SYSLOG:
@@ -363,6 +380,80 @@ hcv_syslog_at (const char *fil, int lin, int prio, const std::string&str)
   syslog(prio, "%s:%d - %s", fil, lin, str.c_str());
 } // end hcv_syslog_at....
 
+////////////////////////////////////////////////// configuration
+extern "C" Glib::KeyFile hcv_config_key_file;
+Glib::KeyFile hcv_config_key_file;
+extern "C" std::recursive_mutex hcv_config_mtx;
+std::recursive_mutex hcv_config_mtx;
+void
+hcv_load_config_file(void)
+{
+  std::string configpath;
+  errno=0;
+  if (!hcv_progargs.hcvprog_config.empty())
+    configpath=hcv_progargs.hcvprog_config;
+  else if (getenv("HELPCOVID_CONFIG"))
+    configpath=std::string(getenv("HELPCOVID_CONFIG"));
+  else
+    configpath=HCV_DEFAULT_CONFIG_PATH;
+  errno=0;
+  struct stat configstat;
+  memset (&configstat, 0, sizeof(configstat));
+  if (stat(configpath.c_str(), &configstat))
+    HCV_FATALOUT("helpcovid failed to stat configuration file " << configpath);
+  if (!S_ISREG(configstat.st_mode))
+    HCV_FATALOUT("helpcovid configuration file " << configpath
+                 << " is not a regular file.");
+  if (configstat.st_mode & S_IRWXO)
+    HCV_FATALOUT("helpcovid configuration file " << configpath
+                 << " is world readable or writable but should not be. Run chmod o-rwx " << configpath);
+  HCV_SYSLOGOUT(LOG_NOTICE, "loading configuration file " << configpath);
+  try
+    {
+      bool ok = hcv_config_key_file.load_from_file(configpath);
+      if (!ok)
+        HCV_FATALOUT("helpcovid configuration file " << configpath << " failed to load");
+    }
+  catch (std::exception &sex)
+    {
+      HCV_FATALOUT("helpcovid configuration load of " << configpath << " got standard exception " << sex.what());
+    }
+  catch (Glib::Exception &gex)
+    {
+      HCV_FATALOUT("helpcovid configuration load of " << configpath << " got Glib exception " << gex.what());
+    }
+} // end hcv_load_config_file
+
+bool
+hcv_config_has_group(const char*grpname)
+{
+  if (!grpname || !std::isalpha(grpname[0]))
+    HCV_FATALOUT("helpcovid bad configuration group name " << (grpname?:"**null**"));
+  std::lock_guard<std::recursive_mutex> gu(hcv_config_mtx);
+  return hcv_config_key_file.has_group(grpname);
+} // end of hcv_config_has_group
+
+bool
+hcv_config_has_key(const char*grpname, const char*keyname)
+{
+  if (!grpname || !std::isalpha(grpname[0]))
+    HCV_FATALOUT("helpcovid bad configuration group name " << (grpname?:"**null**"));
+  if (!keyname || !std::isalpha(keyname[0]))
+    HCV_FATALOUT("helpcovid bad configuration key name " << (keyname?:"**null**"));
+  std::lock_guard<std::recursive_mutex> gu(hcv_config_mtx);
+  return hcv_config_key_file.has_key(grpname,keyname);
+} // end of hcv_config_has_key
+
+
+void
+hcv_config_do(const std::function<void(Glib::KeyFile*)>&dofun)
+{
+  if (!dofun)
+    HCV_FATALOUT("helpcovid missing function to hcv_config_do");
+  std::lock_guard<std::recursive_mutex> gu(hcv_config_mtx);
+  dofun(&hcv_config_key_file);
+} // end hcv_config_do
+
 ////////////////////////////////////////////////////////////////
 int
 main(int argc, char**argv)
@@ -373,6 +464,7 @@ main(int argc, char**argv)
                 <<  " version:" << hcv_versionmsg << std::endl
                 << " at " << hcv_startimbuf
                 << " on " << hcv_hostname);
+  hcv_load_config_file();
   /// the web interface should be initialized early, before seteuid(2)
   if (!hcv_progargs.hcvprog_weburl.empty())
     hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot,
