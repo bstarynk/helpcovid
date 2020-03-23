@@ -390,7 +390,7 @@ hcv_load_config_file(const char*configfile)
 {
   std::lock_guard<std::recursive_mutex> gu(hcv_config_mtx);
   std::string configpath;
-  std::string defaultconfigpath= std::string(getenv("HOME")?:"/etc") + "/helpcovid.conf";
+  std::string defaultconfigpath= std::string(getenv("HOME")?:"/etc") + "/.helpcovidrc";
   errno=0;
   if (configfile && configfile[0])
     configpath = std::string(configfile);
