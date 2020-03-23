@@ -193,6 +193,7 @@ extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
 
 extern "C" std::string hcv_expand_template_file(const std::string& filepath, httplib::Request*req=nullptr, long reqnum= 0);
 
+#warning we probably want to have a class made of HTTP requests, request numbers and replies, and think of Websockets too...
 typedef std::function<void(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum)> hcv_template_expanding_closure_t;
 // the name should be like a C identifier
 extern "C" void hcv_register_template_expander_closure(const std::string&name, const hcv_template_expanding_closure_t&expfun);
