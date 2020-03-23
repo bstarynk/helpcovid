@@ -159,8 +159,11 @@ It can provide the following keys (for [cpp-httplib](https://github.com/yhirose/
 
 ### `postgresql` group
 
-It can provide the following keys (for [libpqxx](http://pqxx.org/development/libpqxx) ...):
+It can provide the following keys (for [libpqxx](http://pqxx.org/development/libpqxx) that is to [PostGreSQL](https://postgresql.org/):
 
+* `connection`, the connection string for
+  [`pcxx::connection`](http://pqxx.org/development/libpqxx); same role
+  as `$HELPCOVID_POSTGRESQL` or `--postgresl-database`
 
 
 ------------------------------------------------
