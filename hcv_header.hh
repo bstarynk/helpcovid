@@ -73,6 +73,7 @@
 #include <dirent.h>
 #include <pthread.h>
 #include <pwd.h>
+#include <poll.h>
 
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx

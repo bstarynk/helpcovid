@@ -390,7 +390,7 @@ hcv_load_config_file(const char*configfile)
 {
   std::lock_guard<std::recursive_mutex> gu(hcv_config_mtx);
   std::string configpath;
-  std::string defaultconfigpath= std::string(getenv("HOME")?:"/etc") + "/helcovid.conf";
+  std::string defaultconfigpath= std::string(getenv("HOME")?:"/etc") + "/helpcovid.conf";
   errno=0;
   if (configfile && configfile[0])
     configpath = std::string(configfile);
@@ -467,6 +467,7 @@ hcv_config_do(const std::function<void(const Glib::KeyFile*)>&dofun)
 int
 main(int argc, char**argv)
 {
+  std::string seteuid;
   hcv_early_initialize(argv[0]);
   hcv_parse_program_arguments(argc, argv);
   HCV_SYSLOGOUT(LOG_NOTICE, "start of " << argv[0] << std::endl
@@ -487,7 +488,19 @@ main(int argc, char**argv)
                            std::string(kf->get_string("web","sslcert")),
                            std::string(kf->get_string("web","sslkey")));
       });
-    }
+    };
+  if (hcv_config_has_group("helpcovid"))
+    {
+      hcv_config_do([&](const Glib::KeyFile*kf)
+      {
+        std::string logmsg = kf->get_string("helpcovid","log_message");
+        if (!logmsg.empty())
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid log_message" << logmsg);
+        seteuid = kf->get_string("helpcovid","seteuid");
+        if (!seteuid.empty())
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will seteuid " << seteuid << " from configuration file");
+      });
+    };
   errno = 0;
   /////==================================================
   //// CYBERSECURITY RISK: use seteuid(2).....
@@ -497,7 +510,64 @@ main(int argc, char**argv)
   //// then http://man7.org/linux/man-pages/man7/credentials.7.html
   if (!hcv_progargs.hcvprog_seteuid.empty())
     hcv_set_euid(hcv_progargs.hcvprog_seteuid);
+  else if (!seteuid.empty())
+    hcv_set_euid(seteuid);
   ////===================================================
+  if (hcv_config_has_group("helpcovid"))
+    {
+      hcv_config_do([&](const Glib::KeyFile*kf)
+      {
+        /// we have to be paranoid here.... This could be a cybersecurity risk.
+        std::string startupcmd = kf->get_string("helpcovid","startup_popen_command");
+        static constexpr double maxelapsedtime = 5.0;
+        double startim = hcv_monotonic_real_time();
+        if (!startupcmd.empty())
+          {
+            static constexpr int  maxlinecnt = 1000;
+            std::string cmd = "ulimit -t 4 -u 128 -v 2048 ; ";
+            cmd += startupcmd;
+            HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid running perhaps dangerous startup popen command " << cmd);
+            fflush(nullptr);
+            FILE* popcmd= popen(cmd.c_str(), "r");
+            if (!popcmd)
+              HCV_FATALOUT("popen " << cmd.c_str() << " failed");
+            char linbuf[1024];
+            int lincnt = 0;
+            while (lincnt<maxlinecnt+2)
+              {
+                struct pollfd mypollarr[3];
+                memset (mypollarr, 0, sizeof(mypollarr));
+                mypollarr[0].fd = fileno(popcmd);
+                mypollarr[0].events = POLLIN;
+                int p = poll(mypollarr, 1, 100);
+                if (hcv_monotonic_real_time() - startim >= maxelapsedtime)
+                  HCV_FATALOUT("helpcovid startup popen command " << cmd
+                               << " timed-out " << (hcv_monotonic_real_time() - startim) << " seconds");
+                if (p==0)
+                  continue;
+                if (p<0)
+                  HCV_FATALOUT("helpcovid startup startup popen command " << cmd << " poll failure");
+                memset(linbuf, 0, sizeof(linbuf));
+                if (!fgets(linbuf, sizeof(linbuf), popcmd))
+                  break;
+                lincnt ++;
+                if (linbuf[sizeof(linbuf)-2])
+                  HCV_FATALOUT("popen line#" << lincnt << "is too wide: " << linbuf);
+                char lincntbuf[8];
+                snprintf(lincntbuf, sizeof(lincntbuf), "%04d", lincnt);
+                HCV_SYSLOGOUT(LOG_NOTICE, "startup.L." <<  lincntbuf << ":" << linbuf);
+              }; // end while lincnt<maxlinecnt+2
+            if (lincnt>=maxlinecnt)
+              HCV_FATALOUT("helpcovid startup popen command " << cmd
+                           << " too verbose: " << lincnt << " lines. Use shell redirections");
+            int pc = pclose(popcmd);
+            if (pc != 0)
+              HCV_FATALOUT("helpcovid startup popen command " << cmd << " failed with pclose code " << pc);
+            HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid did startup popen command " << cmd
+                          << " in " << (hcv_monotonic_real_time() - startim) << " elapsed seconds");
+          }
+      });
+    }
   errno = 0;
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
   errno = 0;
