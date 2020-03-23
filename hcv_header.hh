@@ -158,6 +158,7 @@ extern "C" bool hcv_config_has_key(const char*grpname, const char*keyname);
  ***/
 extern "C" void hcv_config_do(const std::function<void(const Glib::KeyFile*)>&dofun);
 
+extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 
 ////////////////////////////////////////////////////////////////
 

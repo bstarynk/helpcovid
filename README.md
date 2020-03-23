@@ -127,6 +127,45 @@ This connection string (excluding the backslash) would be read by the
 
 To change passwords in PostGreSQL see [this](https://www.postgresqltutorial.com/postgresql-change-password/).
 
+
+
+## configuration file
+
+A mandatory configuration file should be provided, by the `--config`
+program argument, or by the `$HELPCOVID_CONFIG` environment variable,
+or in `$HOME/helpcovid.conf` or in the `/etc/helpcovid.conf` system
+configuration file.
+
+That configuration file is a [Glib key-value
+file](https://developer.gnome.org/glib/stable/glib-Key-value-file-parser.html)
+and cannot be world-readable. It is read by the `hcv_load_config_file`
+C++ function and can be accessed by C++ functions
+`hcv_config_has_group`, `hcv_config_has_key`, `hcv_config_do`.
+
+### configuration groups
+
+#### `web` group
+
+It can provide the following keys (for [cpp-httplib](https://github.com/yhirose/cpp-httplib) ...):
+
+* `url` for the served URL basename, e.g. `http://localhost:8089`; same role as `$HELPCOVID_WEBURL` environment variable or `--web-url` program option.
+
+* `root` for the served HTTP root document directory, e.g. `/var/www/helpcovid/`; same role as `$HELPCOVID_WEBROOT` environment variable or `--webroot` program option.
+
+* `sslcert` for the OpenSSL certificate (used for HTTPS) e.g. `/etc/helpcovid/sslcert.pem`; same role as `$HELPCOVID_SSLCERT` or `--websslcert`
+
+* `sslkey` for the OpenSSL private key (used for HTTPS) e.g. `/etc/helpcovid/sslkey.pem`; same role as `$HELPCOVID_SSLKEY` or  `--websslkey`
+
+
+### `postgresql` group
+
+It can provide the following keys (for [libpqxx](http://pqxx.org/development/libpqxx) ...):
+
+
+
+------------------------------------------------
+
+
 ## communication
 
 We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)

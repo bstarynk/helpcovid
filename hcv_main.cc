@@ -36,7 +36,7 @@ std::recursive_mutex hcv_syslogmtx;
 
 char hcv_startimbuf[80];
 
-extern "C" void hcv_load_config_file(void);
+extern "C" void hcv_load_config_file(const char*);
 ////////////////////////////////////////////////////////////////
 /// https://www.gnu.org/software/libc/manual/html_node/Program-Arguments.html
 
@@ -386,14 +386,20 @@ Glib::KeyFile hcv_config_key_file;
 extern "C" std::recursive_mutex hcv_config_mtx;
 std::recursive_mutex hcv_config_mtx;
 void
-hcv_load_config_file(void)
+hcv_load_config_file(const char*configfile)
 {
+  std::lock_guard<std::recursive_mutex> gu(hcv_config_mtx);
   std::string configpath;
+  std::string defaultconfigpath= std::string(getenv("HOME")?:"/etc") + "/helcovid.conf";
   errno=0;
-  if (!hcv_progargs.hcvprog_config.empty())
+  if (configfile && configfile[0])
+    configpath = std::string(configfile);
+  else if (!hcv_progargs.hcvprog_config.empty())
     configpath=hcv_progargs.hcvprog_config;
   else if (getenv("HELPCOVID_CONFIG"))
     configpath=std::string(getenv("HELPCOVID_CONFIG"));
+  else if (!access(defaultconfigpath.c_str(), R_OK))
+    configpath = defaultconfigpath;
   else
     configpath=HCV_DEFAULT_CONFIG_PATH;
   errno=0;
@@ -411,7 +417,9 @@ hcv_load_config_file(void)
   try
     {
       bool ok = hcv_config_key_file.load_from_file(configpath);
-      if (!ok)
+      if (ok)
+        HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid loaded configuration file " << configpath);
+      else
         HCV_FATALOUT("helpcovid configuration file " << configpath << " failed to load");
     }
   catch (std::exception &sex)
@@ -422,6 +430,7 @@ hcv_load_config_file(void)
     {
       HCV_FATALOUT("helpcovid configuration load of " << configpath << " got Glib exception " << gex.what());
     }
+  errno = 0;
 } // end hcv_load_config_file
 
 bool
@@ -446,7 +455,7 @@ hcv_config_has_key(const char*grpname, const char*keyname)
 
 
 void
-hcv_config_do(const std::function<void(Glib::KeyFile*)>&dofun)
+hcv_config_do(const std::function<void(const Glib::KeyFile*)>&dofun)
 {
   if (!dofun)
     HCV_FATALOUT("helpcovid missing function to hcv_config_do");
@@ -469,6 +478,16 @@ main(int argc, char**argv)
   if (!hcv_progargs.hcvprog_weburl.empty())
     hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot,
                        hcv_progargs.hcvprog_opensslcert, hcv_progargs.hcvprog_opensslkey);
+  else if (hcv_config_has_group("web"))
+    {
+      hcv_config_do([=](const Glib::KeyFile*kf)
+      {
+        hcv_initialize_web(std::string(kf->get_string("web","url")),
+                           std::string(kf->get_string("web","root")),
+                           std::string(kf->get_string("web","sslcert")),
+                           std::string(kf->get_string("web","sslkey")));
+      });
+    }
   errno = 0;
   /////==================================================
   //// CYBERSECURITY RISK: use seteuid(2).....
