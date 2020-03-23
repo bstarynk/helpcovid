@@ -422,6 +422,10 @@ hcv_load_config_file(const char*configfile)
       else
         HCV_FATALOUT("helpcovid configuration file " << configpath << " failed to load");
     }
+  catch (Glib::KeyFileError &kferr)
+    {
+      HCV_FATALOUT("helpcovid configuration load of " << configpath << " got Glib::KeyFileError " << kferr.what() << " of code#" << kferr.code());
+    }
   catch (std::exception &sex)
     {
       HCV_FATALOUT("helpcovid configuration load of " << configpath << " got standard exception " << sex.what());
