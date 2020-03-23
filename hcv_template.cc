@@ -69,7 +69,7 @@ hcv_forget_template_expander(const std::string&name)
 
 
 void
-hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset)
+hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum)
 {
   char namebuf[80];
   memset (namebuf, 0, sizeof(namebuf));
@@ -96,13 +96,13 @@ hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr
       return;
     };
   hcv_template_expanding_closure_t clos = it->second;
-  return clos(out,procinstr,filename,lineno,offset);
+  return clos(out,procinstr,filename,lineno,offset,req,reqnum);
 } // end hcv_expand_processing_instruction
 
 
 
 std::string
-hcv_expand_template_file(const std::string& srcfilepath)
+hcv_expand_template_file(const std::string& srcfilepath, httplib::Request*req, long reqnum)
 {
   static constexpr unsigned max_template_size = 128*1024;
   struct stat srcfilestat;
@@ -141,7 +141,7 @@ hcv_expand_template_file(const std::string& srcfilepath)
               continue;
             }
           std::string procinstr=linbuf.substr(prevcol, qrpos+2-prevcol);
-          hcv_expand_processing_instruction(outp, procinstr, srcfilepath.c_str(), lincnt, off);
+          hcv_expand_processing_instruction(outp, procinstr, srcfilepath.c_str(), lincnt, off, req, reqnum);
           prevcol=col;
           col = qrpos+2;
           gotpe = true;
@@ -152,5 +152,55 @@ hcv_expand_template_file(const std::string& srcfilepath)
   outp<<std::endl;
   return outp.str();
 } // end hcv_expand_template_file
+
+
+
+void
+hcv_initialize_templates(void)
+{
+  hcv_register_template_expander_closure
+  ("date",
+   [](std::ostream&out, const std::string &procinstr,
+      [[unused]] const char*filename, [[unused]] int lineno,
+      [[unused]]  long offset, [[unused]] httplib::Request*req, [[unused]] long reqnum)
+  {
+    time_t nowt = 0;
+    time(&nowt);
+    struct tm nowtm;
+    memset (&nowtm, 0, sizeof(nowtm));
+    char nowbuf[80];
+    memset (nowbuf, 0, sizeof(nowbuf));
+    localtime_r (&nowt, &nowtm);
+    strftime(nowbuf, sizeof(nowbuf), "%Y, %b, %d", &nowtm);
+    hcv_output_cstr_encoded_html(out, nowbuf);
+  });
+  hcv_register_template_expander_closure
+  ("now",
+   [](std::ostream&out, const std::string &procinstr,
+      [[unused]] const char*filename, [[unused]] int lineno,
+      [[unused]]  long offset, [[unused]] httplib::Request*req, [[unused]] long reqnum)
+  {
+    time_t nowt = 0;
+    time(&nowt);
+    struct tm nowtm;
+    memset (&nowtm, 0, sizeof(nowtm));
+    char nowbuf[80];
+    memset (nowbuf, 0, sizeof(nowbuf));
+    localtime_r (&nowt, &nowtm);
+    strftime(nowbuf, sizeof(nowbuf), "%c %Z", &nowtm);
+    hcv_output_cstr_encoded_html(out, nowbuf);
+  });
+  hcv_register_template_expander_closure
+  ("request_number",
+   [](std::ostream&out, const std::string &procinstr,
+      [[unused]] const char*filename, [[unused]] int lineno,
+      [[unused]]  long offset, [[unused]] httplib::Request*req, long reqnum)
+  {
+    char numbuf[32];
+    memset(numbuf, 0, sizeof(numbuf));
+    snprintf(numbuf, sizeof(numbuf), "%ld", reqnum);
+    hcv_output_cstr_encoded_html(out, numbuf);
+  });
+} // end hcv_initialize_templates
 
 /************* end of file hcv_template in github.com/bstarynk/helpcovid*/

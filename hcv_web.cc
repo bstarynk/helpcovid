@@ -102,7 +102,70 @@ hcv_stop_web()
 void
 hcv_initialize_webserver(void)
 {
+  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_initialize_webserver");
+#warning hcv_initialize_webserver unimplemented
 } // end of hcv_initialize_webserver
+
+void
+hcv_output_encoded_html(std::ostream&out, const std::string&str)
+{
+  for (char c: str)
+    {
+      switch(c)
+        {
+        case '<':
+          out << "&lt;";
+          break;
+        case '>':
+          out << "&gt;";
+          break;
+        case '\'':
+          out << "&apos;";
+          break;
+        case '&':
+          out << "&amp;";
+          break;
+        case '\"':
+          out << "&quot;";
+          break;
+        default:
+          out << c;
+          break;
+        }
+    }
+} // end hcv_output_encoded_html
+
+
+void
+hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr)
+{
+  if (!cstr)
+    return;
+  for (const char*pc=cstr; *pc; pc++)
+    {
+      switch(*pc)
+        {
+        case '<':
+          out << "&lt;";
+          break;
+        case '>':
+          out << "&gt;";
+          break;
+        case '\'':
+          out << "&apos;";
+          break;
+        case '&':
+          out << "&amp;";
+          break;
+        case '\"':
+          out << "&quot;";
+          break;
+        default:
+          out << *pc;
+          break;
+        }
+    }
+} // end hcv_output_cstr_encoded_html
 
 
 
