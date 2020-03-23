@@ -99,7 +99,24 @@ hcv_stop_web()
 } // end hcv_stop_web
 
 
+void
+hcv_initialize_webserver(void)
+{
+} // end of hcv_initialize_webserver
 
+
+
+void
+hcv_web_error_handler(const httplib::Request& req,
+                      httplib::Response& resp, long reqnum)
+{
+  static std::once_flag err_once_flag;
+  static std::string err_string;
+  std::call_once(err_once_flag,
+                 [&err_string]()
+  {
+  });
+} // end hcv_web_error_handler
 
 void
 hcv_webserver_run(void)
@@ -140,6 +157,13 @@ hcv_webserver_run(void)
     else
       HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
   }
+  hcv_webserver->set_error_handler
+  ([](const httplib::Request& req,
+      httplib::Response& resp)
+  {
+    auto n = std::atomic_load(&hcv_web_request_counter);
+    hcv_web_error_handler(req, resp, n);
+  });
   hcv_webserver->Get("/hello",
                      [](const httplib::Request&req, httplib::Response& resp)
   {

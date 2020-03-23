@@ -66,6 +66,13 @@ provided by `$HELPCOVID_SSLKEY`. See also the `--websslcert` and
 `--websslkey` program options. These files should not be
 world-readable.
 
+### template conventions
+
+In some HTML-like files, template expansion occurs. These are
+SGML-like [processing
+instructions](https://en.wikipedia.org/wiki/Processing_Instruction)
+starting with `<?hcv ` in lower-case. See our source file `hcv_template.cc`.
+
 ## building
 
 Edit the `Makefile` then run `make`

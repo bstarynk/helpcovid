@@ -184,7 +184,16 @@ void hcv_stop_web(void);
 extern "C" void hcv_webserver_run(void);
 
 
-//////////////// timing %functions
+////////////////////////////////////////////////////////////////
+
+//// template machinery: in some quasi HTML file starting with
+//// '<!DOCTYPE html' expand every occurrence of <?hcv markup...?>
+//// where <?hcv is verbatim; and return the expanded string.
+
+extern "C" std::string hcv_expand_template_file(const std::string& filepath);
+
+////////////////////////////////////////////////////////////////
+//////////////// timing functions
 // see http://man7.org/linux/man-pages/man2/clock_gettime.2.html
 static inline double
 hcv_wallclock_real_time(void)
