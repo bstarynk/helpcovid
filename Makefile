@@ -72,6 +72,6 @@ indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
 
 localtest0: helpcovid
-	./generate-config.py
+#	./generate-config.py
 	./helpcovid
 
