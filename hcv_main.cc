@@ -48,6 +48,7 @@ enum hcv_progoption_en
   HCVPROGOPT_WEBROOT='R',
   HCVPROGOPT_SETEUID='U',
   HCVPROGOPT_CONFIG='C',
+  HCVPROGOPT_WRITEPID='p',
 
   HCVPROGOPT_WEBSSLCERT=1000,
   HCVPROGOPT_WEBSSLKEY=1001,
@@ -60,7 +61,8 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_WEBURL, ///
     /*arg:*/ "WEBURL", ///
     /*flags:*/ 0, ///
-    /*doc:*/ "sets the served WEB url (defaults to $HELPCOVID_URL), e.g. --web-url=https://myexample.com/helpcovid/", ///
+    /*doc:*/ "sets the served WEB url (defaults to $HELPCOVID_URL),"
+    "  e.g. --web-url=https://myexample.com/helpcovid/, config: web/url", ///
     /*group:*/0 ///
   },
   /* ======= set the PostgreSQL database URI ======= */
@@ -68,7 +70,8 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_POSTGRESURI, ///
     /*arg:*/ "POSTGRESQLURI", ///
     /*flags:*/0, ///
-    /*doc:*/ "sets the PostgreSQL database URI (defaults to $HELPCOVID_POSTGRESQL), e.g. --postgresql-database=postgresql://www-data@localhost/helpcovid", ///
+    /*doc:*/ "sets the PostgreSQL database URI (defaults to $HELPCOVID_POSTGRESQL),"
+    " e.g. --postgresql-database=postgresql://www-data@localhost/helpcovid, config: postgresql/connection", ///
     /*group:*/0 ///
   },
   /* ======= set the syslog level ======= */
@@ -84,7 +87,8 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_WEBROOT, ///
     /*arg:*/ "WEBROOT", ///
     /*flags:*/0, ///
-    /*doc:*/ "default webroot local file directory to serve static URLs without .. (defaults to $HELPCOVID_WEBROOT)", ///
+    /*doc:*/ "default webroot local file directory to serve static URLs without ..\n"
+    " (defaults to $HELPCOVID_WEBROOT), config: web/root", ///
     /*group:*/0 ///
   },
   /* ======= set the configuration file ======= */
@@ -100,7 +104,8 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_WEBSSLCERT, ///
     /*arg:*/ "WEBSSLCERT", ///
     /*flags:*/0, ///
-    /*doc:*/ "web OpenSSL certificate file, e.g. --websslcert=/etc/helpcovid/somecert.pem (defaults to $HELPCOVID_SSLCERT)", ///
+    /*doc:*/ "web OpenSSL certificate file, e.g. --websslcert=/etc/helpcovid/somecert.pem"
+    " (defaults to $HELPCOVID_SSLCERT), config: web/sslcert", ///
     /*group:*/0 ///
   },
   /* ======= set the web OpenSSL private key ======= */
@@ -108,7 +113,8 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_WEBSSLKEY, ///
     /*arg:*/ "WEBSSLKEY", ///
     /*flags:*/0, ///
-    /*doc:*/ "web OpenSSL private key, e.g. --websslkey=/etc/helpcovid/somekey.pem (defaults to $HELPCOVID_SSLKEY)", ///
+    /*doc:*/ "web OpenSSL private key, e.g. --websslkey=/etc/helpcovid/somekey.pem"
+    " (defaults to $HELPCOVID_SSLKEY), config: web/sslkey", ///
     /*group:*/0 ///
   },
   /* ======= set the effective user id ======= */
@@ -116,7 +122,18 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_SETEUID, ///
     /*arg:*/ "EFFECTIVEUSER", ///
     /*flags:*/0, ///
-    /*doc:*/ "call seteuid(2) on given user name or numerical id (defaults to $HELPCOVID_SETEUID), cybersecurity risk if badly used...", ///
+    /*doc:*/ "call seteuid(2) on given user name or numerical id"
+    " (defaults to $HELPCOVID_SETEUID), config: helpcovid/seteuid."
+    " Huge cybersecurity risk if badly used...", ///
+    /*group:*/0 ///
+  },
+  /* ======= set the pid file ======= */
+  {/*name:*/ "write-pid", ///
+    /*key:*/ HCVPROGOPT_WRITEPID, ///
+    /*arg:*/ "PIDFILE", ///
+    /*flags:*/0, ///
+    /*doc:*/ "write the current pid to the given file"
+    " (defaults to $HELPCOVID_PIDFILE or else /var/run/helpcovid.pid), config: helpcovid/pid_file", ///
     /*group:*/0 ///
   },
   /* ======= terminating empty option ======= */
@@ -141,6 +158,7 @@ struct hcv_progarguments
   std::string hcvprog_seteuid;
   std::string hcvprog_opensslcert;
   std::string hcvprog_opensslkey;
+  std::string hcvprog_pidfile;
 };
 
 static struct hcv_progarguments hcv_progargs =
@@ -154,6 +172,7 @@ static struct hcv_progarguments hcv_progargs =
   .hcvprog_seteuid = "",
   .hcvprog_opensslcert = "",
   .hcvprog_opensslkey = "",
+  .hcvprog_pidfile = "",
 };
 
 static char hcv_hostname[64];
@@ -199,6 +218,10 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 
     case HCVPROGOPT_CONFIG:
       progargs->hcvprog_config = std::string(arg);
+      return 0;
+
+    case HCVPROGOPT_WRITEPID:
+      progargs->hcvprog_pidfile = std::string(arg);
       return 0;
 
     case HCVPROGOPT_SYSLOG:
@@ -367,6 +390,11 @@ hcv_parse_program_arguments(int &argc, char**argv)
       hcv_progargs.hcvprog_opensslkey = getenv("HELPCOVID_SSLKEY");
       HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_SSLKEY=" << hcv_progargs.hcvprog_opensslkey);
     }
+  if (hcv_progargs.hcvprog_pidfile.empty() && getenv("HELPCOVID_PIDFILE"))
+    {
+      hcv_progargs.hcvprog_pidfile = getenv("HELPCOVID_PIDFILE");
+      HCV_SYSLOGOUT(LOG_INFO, "using $HELPCOVID_PIDFILE=" << hcv_progargs.hcvprog_pidfile);
+    }
   HCV_SYSLOGOUT(LOG_NOTICE, "parsed " << argc << " program arguments");
 } // end hcv_parse_program_arguments
 
@@ -523,6 +551,7 @@ hcv_config_handle_helpcovid_config_group(void)
                       << " in " << (hcv_monotonic_real_time() - startim) << " elapsed seconds");
       }
   });
+
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid did handle 'helpcovid' config group");
 } // end hcv_config_handle_helpcovid_config_group
 
@@ -562,6 +591,12 @@ main(int argc, char**argv)
         seteuid = kf->get_string("helpcovid","seteuid");
         if (!seteuid.empty())
           HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will seteuid " << seteuid << " from configuration file");
+        std::string pidpath = kf->get_string("helpcovid","pid_file");
+        if (!pidpath.empty() && pidpath[0] == '/')
+          {
+            hcv_progargs.hcvprog_pidfile = pidpath;
+            HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use pid_file " << pidpath << " from configuration file");
+          }
       });
     };
   errno = 0;
@@ -578,6 +613,34 @@ main(int argc, char**argv)
   ////===================================================
   if (hcv_config_has_group("helpcovid"))
     hcv_config_handle_helpcovid_config_group();
+  /// write the pidfile
+  if (!hcv_progargs.hcvprog_pidfile.empty() && hcv_progargs.hcvprog_pidfile != "-")
+    {
+      FILE*pidf = fopen(hcv_progargs.hcvprog_pidfile.c_str(), "w");
+      if (!pidf)
+        HCV_FATALOUT("helpcovid failed to fopen pidfile " << hcv_progargs.hcvprog_pidfile);
+      fprintf(pidf, "%ld\n", (long)getpid());
+      if (fchmod(fileno(pidf), 0644))
+        HCV_FATALOUT("helpcovid failed to fchmod pidfile " << hcv_progargs.hcvprog_pidfile);
+      if (fclose(pidf))
+        HCV_FATALOUT("helpcovid failed to fclose pidfile " << hcv_progargs.hcvprog_pidfile);
+      HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid wrote its pid into " << hcv_progargs.hcvprog_pidfile);
+    }
+  else
+    {
+#define HCV_BUILTIN_PIDFILE "/var/run/helpcovid.pid"
+      FILE*pidf = fopen(HCV_BUILTIN_PIDFILE, "w");
+      if (pidf)
+        {
+          fprintf(pidf, "%ld\n", (long)getpid());
+          if (fchmod(fileno(pidf), 0644))
+            HCV_FATALOUT("helpcovid failed to fchmod " << HCV_BUILTIN_PIDFILE);
+          if (fclose(pidf))
+            HCV_FATALOUT("helpcovid failed to fclose  " << HCV_BUILTIN_PIDFILE);
+        }
+      else
+        HCV_SYSLOGOUT(LOG_WARNING, "helpcovid unable to write builtin pidfile " << HCV_BUILTIN_PIDFILE);
+    }
   errno = 0;
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
   errno = 0;
