@@ -93,10 +93,33 @@ def main():
         rc_file.close()
         os.chmod(rc_path, 0o600)
 
+        create_database()
+
     # Handle interrupt
     except (EOFError, KeyboardInterrupt) as e:
         print('\nInterrupt detected, exiting...')
         rc_file.close()
+
+
+def create_database():
+    sql_path = os.path.expanduser('~') + '/.helpcovid.sql'
+    sql_file = open(sql_path, 'w')
+
+    sql_file.write('CREATE DATABASE helpcovid_db;\n')
+    sql_file.write('CREATE USER helpcovid_usr WITH PASSWORD \'passwd1234helpcovid\';\n')
+    sql_file.write('ALTER ROLE helpcovid_usr SET client_encoding TO \'utf8\';\n')
+    sql_file.write('ALTER ROLE helpcovid_usr SET default_transaction_isolation TO \'read committed\';\n')
+    sql_file.write('ALTER ROLE helpcovid_usr SET timezone to \'UTC\';\n')
+    sql_file.write('GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;\n')
+
+    sql_file.close()
+    os.chmod(sql_path, 0o600)
+
+    print('Creating database...')
+    cmd = 'sudo -u postgres psql -f ' + sql_path
+    print(cmd)
+    os.system(cmd)
+
 
 
 if __name__ == '__main__':
