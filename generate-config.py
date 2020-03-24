@@ -91,8 +91,9 @@ def create_configuration_file():
     print("\n ==== HelpCovid PostGreSQL database configuration, see https://www.postgresql.org/ ====\n")
     rc_file.write('\n[postgresql]\n\n')
     print("Enter the PostGreSQL connnection string, see https://www.postgresql.org/docs/current/libpq-connect.html")
+    print('The format is dbname:username:password')
     conn = write_key_value_pair('connection', rc_file)
-    print('Enter the HelpCovid PostgreSQL password file')
+    print('Enter *full path* of the HelpCovid PostgreSQL password file')
     config_dict['passfile'] = write_key_value_pair('passfile', rc_file)
 
     # Generate timestamp
