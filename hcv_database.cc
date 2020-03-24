@@ -69,6 +69,15 @@ hcv_initialize_database(const std::string&uri)
   hcv_dbconn.reset(new pqxx::connection(connstr));
   {
     HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database for connstr=" << connstr << " hcv_dbconn is " << hcv_dbconn.get());
+    ////================ query the PostGreSQL version
+    {
+      pqxx::work firsttransact(*hcv_dbconn);
+      pqxx::row rversion = firsttransact.exec1("SELECT VERSION();");
+      std::string pqversion = rversion[0].as<std::string>();
+      HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database got PostGreSQL version " << pqversion);
+      firsttransact.commit();
+    }
+    ////================ create tables if they are missing
     pqxx::work transact(*hcv_dbconn);
     ////================ user table, with mandatory data
     transact.exec0(R"crusertab(
