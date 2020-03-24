@@ -197,6 +197,26 @@ It can provide the following keys (for [libpqxx](http://pqxx.org/development/lib
 ------------------------------------------------
 
 
+## simple tests
+
+First, run once and successfully the `generate-config.py`.
+
+If something goes wrong, you may need to restore PostGreSQL to a pristine state with:
+
+```
+sudo -u postgres psql
+DROP DATABASE helpcovid_db;
+DROP USER helpcovid_usr;
+\q
+```
+
+and one of the `DROP` above could be not needed.
+
+The run `make localtest0`
+
+After that, use your browser, e.g. on `http://localhost:8089/` if that was the URL you configured for `helpcovid`
+
+
 ## communication
 
 We use the `HelpCovid software` group on [https://web.whatsapp.com/](WhatsApp)
