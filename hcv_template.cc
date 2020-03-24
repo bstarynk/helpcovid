@@ -165,12 +165,12 @@ hcv_initialize_templates(void)
   hcv_register_template_expander_closure
   ("date",
    [](Hcv_template_data*templdata, const std::string &procinstr,
-      [[unused]] const char*filename, [[unused]] int lineno,
-      [[unused]]  long offset)
+      const char*filename, int lineno,
+      long offset)
   {
     if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
-      HCV_FATALOUT("no template data for '<?hcv date?>' processing instruction in "
-                   << filename << ":" << lineno);
+      HCV_FATALOUT("no template data for '<?hcv date?>' processing instruction "
+                   << procinstr << " in "  << filename << ":" << lineno);
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
@@ -179,18 +179,23 @@ hcv_initialize_templates(void)
     memset (nowbuf, 0, sizeof(nowbuf));
     localtime_r (&nowt, &nowtm);
     strftime(nowbuf, sizeof(nowbuf), "%Y, %b, %d", &nowtm);
-    hcv_output_cstr_encoded_html(*(templdata->output_stream()), nowbuf);
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, nowbuf);
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv date?>' processing instruction in "
+                    << filename << ":" << lineno << " @" << offset);
   });
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv now?>
   hcv_register_template_expander_closure
   ("now",
    [](Hcv_template_data*templdata, const std::string &procinstr,
-      [[unused]] const char*filename, [[unused]] int lineno,
-      [[unused]]  long offset)
+      const char*filename, int lineno,
+      long offset)
   {
     if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
-      HCV_FATALOUT("no template data for '<?hcv now?>' processing instruction in "
+      HCV_FATALOUT("no template data for '<?hcv now?>' processing instruction "
+                   << procinstr <<" in "
                    << filename << ":" << lineno);
     time_t nowt = 0;
     time(&nowt);
@@ -200,23 +205,85 @@ hcv_initialize_templates(void)
     memset (nowbuf, 0, sizeof(nowbuf));
     localtime_r (&nowt, &nowtm);
     strftime(nowbuf, sizeof(nowbuf), "%c %Z", &nowtm);
-    hcv_output_cstr_encoded_html(*(templdata->output_stream()), nowbuf);
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, nowbuf);
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv now?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
   });
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv request_number?>
   hcv_register_template_expander_closure
   ("request_number",
    [](Hcv_template_data*templdata, const std::string &procinstr,
-      [[unused]] const char*filename, [[unused]] int lineno,
-      [[unused]]  long offset)
+      const char*filename, int lineno,
+      long offset)
   {
     if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
-      HCV_FATALOUT("no template data for '<?hcv request_number?>' processing instruction in "
+      HCV_FATALOUT("no template data for '<?hcv request_number?>' processing instruction  "
+                   << procinstr << " in "
                    << filename << ":" << lineno);
     char numbuf[32];
     memset(numbuf, 0, sizeof(numbuf));
     snprintf(numbuf, sizeof(numbuf), "%ld", templdata->serial());
-    hcv_output_cstr_encoded_html(*(templdata->output_stream()), numbuf);
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, numbuf);
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_number?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv gitid?>
+  hcv_register_template_expander_closure
+  ("gitid",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv gitid?>' processing instruction  "
+                   << procinstr << " in "
+                   << filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, hcv_gitid);
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_number?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv lastgitcommit?>
+  hcv_register_template_expander_closure
+  ("gitid",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv lastgitcommit?>' processing instruction  "
+                   << procinstr << " in "
+                   << filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, hcv_lastgitcommit);
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv lastgitcommit?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
+  //////////////// for <?hcv timestamp?>
+  hcv_register_template_expander_closure
+  ("timestamp",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv timestamp?>' processing instruction "
+                   << procinstr <<" in "
+                   << filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, hcv_timestamp);
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv timestamp?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
   });
 } // end hcv_initialize_templates
 
