@@ -183,8 +183,30 @@ void hcv_stop_web(void);
 
 extern "C" void hcv_webserver_run(void);
 
+extern "C" void hcv_output_encoded_html(std::ostream&out, const std::string&str);
+extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
+////////////////////////////////////////////////////////////////
 
-//////////////// timing %functions
+//// template machinery: in some quasi HTML file starting with
+//// '<!DOCTYPE html' expand every occurrence of <?hcv markup...?>
+//// where <?hcv is verbatim; and return the expanded string.
+
+extern "C" std::string hcv_expand_template_file(const std::string& filepath, httplib::Request*req=nullptr, long reqnum= 0);
+
+#warning we probably want to have a class made of HTTP requests, request numbers and replies, and think of Websockets too...
+typedef std::function<void(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum)> hcv_template_expanding_closure_t;
+// the name should be like a C identifier
+extern "C" void hcv_register_template_expander_closure(const std::string&name, const hcv_template_expanding_closure_t&expfun);
+
+extern "C" void hcv_forget_template_expander(const std::string&name);
+
+extern "C" void
+hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum);
+
+extern "C" void hcv_initialize_templates(void);
+
+////////////////////////////////////////////////////////////////
+//////////////// timing functions
 // see http://man7.org/linux/man-pages/man2/clock_gettime.2.html
 static inline double
 hcv_wallclock_real_time(void)

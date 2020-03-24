@@ -99,7 +99,87 @@ hcv_stop_web()
 } // end hcv_stop_web
 
 
+void
+hcv_initialize_webserver(void)
+{
+  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_initialize_webserver");
+#warning hcv_initialize_webserver unimplemented
+} // end of hcv_initialize_webserver
 
+void
+hcv_output_encoded_html(std::ostream&out, const std::string&str)
+{
+  for (char c: str)
+    {
+      switch(c)
+        {
+        case '<':
+          out << "&lt;";
+          break;
+        case '>':
+          out << "&gt;";
+          break;
+        case '\'':
+          out << "&apos;";
+          break;
+        case '&':
+          out << "&amp;";
+          break;
+        case '\"':
+          out << "&quot;";
+          break;
+        default:
+          out << c;
+          break;
+        }
+    }
+} // end hcv_output_encoded_html
+
+
+void
+hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr)
+{
+  if (!cstr)
+    return;
+  for (const char*pc=cstr; *pc; pc++)
+    {
+      switch(*pc)
+        {
+        case '<':
+          out << "&lt;";
+          break;
+        case '>':
+          out << "&gt;";
+          break;
+        case '\'':
+          out << "&apos;";
+          break;
+        case '&':
+          out << "&amp;";
+          break;
+        case '\"':
+          out << "&quot;";
+          break;
+        default:
+          out << *pc;
+          break;
+        }
+    }
+} // end hcv_output_cstr_encoded_html
+
+
+
+void
+hcv_web_error_handler(const httplib::Request& req,
+                      httplib::Response& resp, long reqnum)
+{
+  static std::once_flag err_once_flag;
+  static std::string err_string;
+  std::call_once(err_once_flag,
+                 [&err_string]()
+  {
+  });
+} // end hcv_web_error_handler
 
 void
 hcv_webserver_run(void)
@@ -140,6 +220,13 @@ hcv_webserver_run(void)
     else
       HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
   }
+  hcv_webserver->set_error_handler
+  ([](const httplib::Request& req,
+      httplib::Response& resp)
+  {
+    auto n = std::atomic_load(&hcv_web_request_counter);
+    hcv_web_error_handler(req, resp, n);
+  });
   hcv_webserver->Get("/hello",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
