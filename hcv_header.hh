@@ -191,17 +191,120 @@ extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
 //// '<!DOCTYPE html' expand every occurrence of <?hcv markup...?>
 //// where <?hcv is verbatim; and return the expanded string.
 
-extern "C" std::string hcv_expand_template_file(const std::string& filepath, httplib::Request*req=nullptr, long reqnum= 0);
+class Hcv_template_data
+{
+protected:
+  virtual ~Hcv_template_data();
+public:
+  enum class TmplKind_en
+  {
+    hcvtk_none=0,
+    hcvtk_http,
+    hcvtk_https,
+    hcvtk_websocket
+  };
+  virtual std::ostream* output_stream() const =0;
+  virtual long serial() const =0;
+private:
+  const TmplKind_en _hcvt_kind;
+protected:
+  Hcv_template_data(TmplKind_en knd)
+    : _hcvt_kind(knd)
+  {
+    if (knd == TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no kind in Hcv_template_data @" << (void*)this);
+  };
+public:
+  TmplKind_en kind() const
+  {
+    return _hcvt_kind;
+  };
+};				// end of Hcv_template_data
 
-#warning we probably want to have a class made of HTTP requests, request numbers and replies, and think of Websockets too...
-typedef std::function<void(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum)> hcv_template_expanding_closure_t;
+
+class Hcv_http_template_data : public Hcv_template_data
+{
+protected:
+  httplib::Request* _hcvhttp_request;
+  httplib::Response* _hcvhttp_response;
+  long _hcvhttp_reqnum;
+  mutable std::ostringstream _hcvhttp_outs;
+public:
+  Hcv_http_template_data(httplib::Request& req, httplib::Response&resp, long reqnum)
+    : Hcv_template_data(TmplKind_en::hcvtk_http),
+      _hcvhttp_request(&req),
+      _hcvhttp_response(&resp),
+      _hcvhttp_reqnum(reqnum),
+      _hcvhttp_outs()
+  {
+  };
+protected:
+  Hcv_http_template_data(TmplKind_en kind, httplib::Request& req, httplib::Response&resp, long reqnum)
+    : Hcv_template_data(kind),
+      _hcvhttp_request(&req),
+      _hcvhttp_response(&resp),
+      _hcvhttp_reqnum(reqnum),
+      _hcvhttp_outs()
+  {
+  };
+public:
+  virtual std::ostream* output_stream() const
+  {
+    return &_hcvhttp_outs;
+  };
+  virtual long serial() const
+  {
+    return _hcvhttp_reqnum;
+  };
+  httplib::Request*request() const
+  {
+    return _hcvhttp_request;
+  };
+  httplib::Response*response() const
+  {
+    return _hcvhttp_response;
+  };
+  virtual ~Hcv_http_template_data()
+  {
+    _hcvhttp_request = nullptr;
+    _hcvhttp_response = nullptr;
+    _hcvhttp_reqnum = 0;
+  };
+};				// end of Hcv_http_template_data
+
+
+class Hcv_https_template_data : public Hcv_http_template_data
+{
+public:
+  Hcv_https_template_data(httplib::Request& req, httplib::Response&resp, long reqnum) :
+    Hcv_http_template_data(TmplKind_en::hcvtk_https, req, resp, reqnum)
+  {
+  };
+  virtual ~Hcv_https_template_data()
+  {
+  };
+};				// end of Hcv_https_template_data
+
+
+#warning TODO: add class Hcv_websocket_template_data
+#if 0
+class Hcv_websocket_template_data : public Hcv_template_data
+{
+};				// end Hcv_websocket_template_data
+#endif /*missing Hcv_websocket_template_data*/
+
+
+
+extern "C" std::string hcv_expand_template_file(const std::string& filepath,Hcv_template_data*templdata);
+
+typedef std::function<void(Hcv_template_data*templdata, const std::string &procinstr, const char*filename, int lineno, long offset)> hcv_template_expanding_closure_t;
 // the name should be like a C identifier
 extern "C" void hcv_register_template_expander_closure(const std::string&name, const hcv_template_expanding_closure_t&expfun);
 
 extern "C" void hcv_forget_template_expander(const std::string&name);
 
 extern "C" void
-hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum);
+hcv_expand_processing_instruction(Hcv_template_data*templdata, const std::string &procinstr, const char*filename, int lineno, long offset);
 
 extern "C" void hcv_initialize_templates(void);
 

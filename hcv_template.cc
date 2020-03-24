@@ -69,8 +69,11 @@ hcv_forget_template_expander(const std::string&name)
 
 
 void
-hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr, const char*filename, int lineno, long offset, httplib::Request*req, long reqnum)
+hcv_expand_processing_instruction(Hcv_template_data*templdata, const std::string &procinstr, const char*filename, int lineno, long offset)
 {
+  if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+    HCV_FATALOUT("hcv_expand_processing_instruction: missing templdata for procinstr='"
+                 << procinstr << "' in " << (filename?:"??") << ":" << lineno);
   char namebuf[80];
   memset (namebuf, 0, sizeof(namebuf));
   static_assert (sizeof(namebuf) >= HCV_TEMPLATE_NAME_MAXLEN, "too short namebuf");
@@ -96,13 +99,13 @@ hcv_expand_processing_instruction(std::ostream&out, const std::string &procinstr
       return;
     };
   hcv_template_expanding_closure_t clos = it->second;
-  return clos(out,procinstr,filename,lineno,offset,req,reqnum);
+  return clos(templdata,procinstr,filename,lineno,offset);
 } // end hcv_expand_processing_instruction
 
 
 
 std::string
-hcv_expand_template_file(const std::string& srcfilepath, httplib::Request*req, long reqnum)
+hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templdata)
 {
   static constexpr unsigned max_template_size = 128*1024;
   struct stat srcfilestat;
@@ -141,7 +144,7 @@ hcv_expand_template_file(const std::string& srcfilepath, httplib::Request*req, l
               continue;
             }
           std::string procinstr=linbuf.substr(prevcol, qrpos+2-prevcol);
-          hcv_expand_processing_instruction(outp, procinstr, srcfilepath.c_str(), lincnt, off, req, reqnum);
+          hcv_expand_processing_instruction(templdata, procinstr, srcfilepath.c_str(), lincnt, off);
           prevcol=col;
           col = qrpos+2;
           gotpe = true;
@@ -158,12 +161,17 @@ hcv_expand_template_file(const std::string& srcfilepath, httplib::Request*req, l
 void
 hcv_initialize_templates(void)
 {
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv date?>
   hcv_register_template_expander_closure
   ("date",
-   [](std::ostream&out, const std::string &procinstr,
+   [](Hcv_template_data*templdata, const std::string &procinstr,
       [[unused]] const char*filename, [[unused]] int lineno,
-      [[unused]]  long offset, [[unused]] httplib::Request*req, [[unused]] long reqnum)
+      [[unused]]  long offset)
   {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv date?>' processing instruction in "
+                   << filename << ":" << lineno);
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
@@ -172,14 +180,19 @@ hcv_initialize_templates(void)
     memset (nowbuf, 0, sizeof(nowbuf));
     localtime_r (&nowt, &nowtm);
     strftime(nowbuf, sizeof(nowbuf), "%Y, %b, %d", &nowtm);
-    hcv_output_cstr_encoded_html(out, nowbuf);
+    hcv_output_cstr_encoded_html(*(templdata->output_stream()), nowbuf);
   });
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv now?>
   hcv_register_template_expander_closure
   ("now",
-   [](std::ostream&out, const std::string &procinstr,
+   [](Hcv_template_data*templdata, const std::string &procinstr,
       [[unused]] const char*filename, [[unused]] int lineno,
-      [[unused]]  long offset, [[unused]] httplib::Request*req, [[unused]] long reqnum)
+      [[unused]]  long offset)
   {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv now?>' processing instruction in "
+                   << filename << ":" << lineno);
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
@@ -188,19 +201,24 @@ hcv_initialize_templates(void)
     memset (nowbuf, 0, sizeof(nowbuf));
     localtime_r (&nowt, &nowtm);
     strftime(nowbuf, sizeof(nowbuf), "%c %Z", &nowtm);
-    hcv_output_cstr_encoded_html(out, nowbuf);
+    hcv_output_cstr_encoded_html(*(templdata->output_stream()), nowbuf);
   });
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv request_number?>
   hcv_register_template_expander_closure
   ("request_number",
-   [](std::ostream&out, const std::string &procinstr,
+   [](Hcv_template_data*templdata, const std::string &procinstr,
       [[unused]] const char*filename, [[unused]] int lineno,
-      [[unused]]  long offset, [[unused]] httplib::Request*req, long reqnum)
+      [[unused]]  long offset)
   {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv request_number?>' processing instruction in "
+                   << filename << ":" << lineno);
     char numbuf[32];
     memset(numbuf, 0, sizeof(numbuf));
-    snprintf(numbuf, sizeof(numbuf), "%ld", reqnum);
-    hcv_output_cstr_encoded_html(out, numbuf);
+    snprintf(numbuf, sizeof(numbuf), "%ld", templdata->serial());
+    hcv_output_cstr_encoded_html(*(templdata->output_stream()), numbuf);
   });
 } // end hcv_initialize_templates
 
-/************* end of file hcv_template in github.com/bstarynk/helpcovid*/
+/************* end of file hcv_template in github.com/bstarynk/helpcovid *********/
