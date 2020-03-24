@@ -102,7 +102,7 @@ def main():
 
 
 def create_database():
-    sql_path = os.path.expanduser('~') + '/.helpcovid.sql'
+    sql_path = '/tmp/helpcovid.sql'
     sql_file = open(sql_path, 'w')
 
     sql_file.write('CREATE DATABASE helpcovid_db;\n')
@@ -113,12 +113,9 @@ def create_database():
     sql_file.write('GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;\n')
 
     sql_file.close()
-    os.chmod(sql_path, 0o600)
 
     print('Creating database...')
-    cmd = 'sudo -u postgres psql -f ' + sql_path
-    print(cmd)
-    os.system(cmd)
+    os.system('sudo -u postgres psql -f ' + sql_path)
 
 
 
