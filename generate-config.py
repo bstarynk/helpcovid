@@ -36,6 +36,10 @@ import tempfile
 
 
 
+config_dict = dict()
+
+
+
 # https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
 def make_completer(vocabulary):
     def custom_complete(text, state):
@@ -89,6 +93,12 @@ def create_configuration_file():
     print("Enter the PostGreSQL connnection string, see https://www.postgresql.org/docs/current/libpq-connect.html")
     conn = write_key_value_pair('connection', rc_file)
 
+    # Read helpcovid keys
+    print('\n ==== Other HelpCovid keys ====\n')
+    rc_file.write('\n[helpcovid]\n\n')
+    print('Enter the HelpCovid PostgreSQL password file')
+    config_dict['passfile'] = write_key_value_pair('passfile', rc_file)
+
     # Generate timestamp
     ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     rc_file.write('\n# generated on %s\n' % ts)
@@ -104,47 +114,43 @@ def create_configuration_file():
 
 
 
-def create_connection_dict(conn):
+def write_connection_keys(conn):
     split = conn.split(':')
 
-    d = dict()
-    d['database'] = split[0]
-    d['user'] = split[1]
-    d['password'] = split[2]
-
-    return d
+    config_dict['database'] = split[0]
+    config_dict['user'] = split[1]
+    config_dict['password'] = split[2]
 
 
-def create_temp_sql(keys):
-    #sql_path = '/tmp/helpcovid.sql'
-    #sql_file = open(sql_path, 'w')
+
+def create_temp_sql():
     sql_file, sql_path = tempfile.mkstemp(suffix = 'helpcovid', text = True)
     sql_file = open(sql_file, 'w')
 
     sql_file.write('CREATE DATABASE ')
-    sql_file.write(keys['database'])
+    sql_file.write(config_dict['database'])
 
     sql_file.write(';\nCREATE USER ')
-    sql_file.write(keys['user'])
+    sql_file.write(config_dict['user'])
     sql_file.write(' WITH PASSWORD \'')
-    sql_file.write(keys['password'])
+    sql_file.write(config_dict['password'])
 
     sql_file.write('\';\nALTER ROLE ')
-    sql_file.write(keys['user'])
+    sql_file.write(config_dict['user'])
     sql_file.write(' SET client_encoding TO \'utf8\';')
 
     sql_file.write('\nALTER ROLE ')
-    sql_file.write(keys['user'])
+    sql_file.write(config_dict['user'])
     sql_file.write(' SET default_transaction_isolation TO \'read committed\';')
 
     sql_file.write('\nALTER ROLE ')
-    sql_file.write(keys['user'])
+    sql_file.write(config_dict['user'])
     sql_file.write(' SET timezone to \'UTC\';')
 
     sql_file.write('\nGRANT ALL PRIVILEGES ON DATABASE ')
-    sql_file.write(keys['database'])
+    sql_file.write(config_dict['database'])
     sql_file.write(' TO ')
-    sql_file.write(keys['user'])
+    sql_file.write(config_dict['user'])
     sql_file.write(';\n')
 
     sql_file.close
@@ -160,13 +166,12 @@ def create_database(sql_path):
 
 
 
-def create_password_file(keys):
-    pass_path = os.path.expanduser('~') + '/.pgpasswd_helpcovid'
-    pass_file = open(pass_path, 'w')
-    pass_file.write(keys['password'])
+def create_password_file():
+    pass_file = open(config_dict['passfile'], 'w')
+    pass_file.write(config_dict['password'])
     pass_file.close()
 
-    print('Password file created at ' + pass_path)
+    print('Password file created at ' + config_dict['passfile'])
 
 
 
@@ -187,10 +192,10 @@ def main():
     initialize_readline()
 
     conn = create_configuration_file()
-    keys = create_connection_dict(conn)
-    sql = create_temp_sql(keys)
-    create_database(sql)
-    create_password_file(keys)
+    write_connection_keys(conn)
+    sql_path = create_temp_sql()
+    create_database(sql_path)
+    create_password_file()
 
 
 
