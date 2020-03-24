@@ -156,7 +156,7 @@ def create_temp_sql(keys):
 def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres psql -f ' + sql_path)
-    os.system('sudo rm ' + sql_path)
+    os.system('sudo /usr/bin/rm -v ' + sql_path)
 
 
 
