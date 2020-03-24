@@ -307,6 +307,50 @@ hcv_initialize_templates(void)
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv timestamp?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   });
+  //////////////// for <?hcv request_method?>
+  hcv_register_template_expander_closure
+  ("request_method",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv request_method?>' processing instruction "
+                   << procinstr <<" in "
+                   << filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      {
+        if (auto httptempl = dynamic_cast<Hcv_http_template_data*>(templdata))
+          {
+            hcv_output_cstr_encoded_html(*pouts,httptempl->request_method().c_str());
+          }
+      }
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_method?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
+  //////////////// for <?hcv request_path?>
+  hcv_register_template_expander_closure
+  ("request_path",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv request_path?>' processing instruction "
+                   << procinstr <<" in "
+                   << filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      {
+        if (auto httptempl = dynamic_cast<Hcv_http_template_data*>(templdata))
+          {
+            hcv_output_cstr_encoded_html(*pouts,httptempl->request_path().c_str());
+          }
+      }
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_path?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
 } // end hcv_initialize_templates
 
-/************* end of file hcv_template in github.com/bstarynk/helpcovid *********/
+/************* end of file hcv_template.cc in github.com/bstarynk/helpcovid *********/
