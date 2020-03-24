@@ -92,10 +92,6 @@ def create_configuration_file():
     rc_file.write('\n[postgresql]\n\n')
     print("Enter the PostGreSQL connnection string, see https://www.postgresql.org/docs/current/libpq-connect.html")
     conn = write_key_value_pair('connection', rc_file)
-
-    # Read helpcovid keys
-    print('\n ==== Other HelpCovid keys ====\n')
-    rc_file.write('\n[helpcovid]\n\n')
     print('Enter the HelpCovid PostgreSQL password file')
     config_dict['passfile'] = write_key_value_pair('passfile', rc_file)
 
