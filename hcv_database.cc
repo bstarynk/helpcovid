@@ -86,9 +86,9 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_id SERIAL PRIMARY KEY NOT NULL,
   user_firstname VARCHAR(31) NOT NULL,
   user_familyname VARCHAR(62) NOT NULL,
-  user_email VARCHAR(71) NOY NULL,
+  user_email VARCHAR(71) NOT NULL,
   user_gender CHAR(1) NOT NULL,
-  user_crtime DATE NOT NULL,
+  user_crtime DATE NOT NULL
 ); --- end TABLE tb_user
 )crusertab");
     ////================ password table
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS tb_password (
   passw_id SERIAL PRIMARY KEY NOT NULL, -- unique key in this table
   passw_userid INT NOT NULL, -- the user id whose password we store
   passw_encr VARCHAR(62) NOT NULL, -- the encrypted password
-  passw_mtime  TIMESTAMP NOT NULL, -- the last time that password was modified
+  passw_mtime  TIMESTAMP NOT NULL -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");
     transact.commit();

@@ -91,7 +91,8 @@ def create_configuration_file():
     print("\n ==== HelpCovid PostGreSQL database configuration, see https://www.postgresql.org/ ====\n")
     rc_file.write('\n[postgresql]\n\n')
     print("Enter the PostGreSQL connnection string, see https://www.postgresql.org/docs/current/libpq-connect.html")
-    print('The format is dbname:username:password')
+    print('Example: dbname=helpcovid_db user=helpcovid_usr'
+            ' password=passwd1234 hostaddr=127.0.0.1 port=5432')
     conn = write_key_value_pair('connection', rc_file)
     print('Enter *full path* of the HelpCovid PostgreSQL password file')
     config_dict['passfile'] = write_key_value_pair('passfile', rc_file)
@@ -112,11 +113,11 @@ def create_configuration_file():
 
 
 def write_connection_keys(conn):
-    split = conn.split(':')
+    split = conn.split()
 
-    config_dict['database'] = split[0]
-    config_dict['user'] = split[1]
-    config_dict['password'] = split[2]
+    config_dict['database'] = split[0].split('=')[1]
+    config_dict['user'] = split[1].split('=')[1]
+    config_dict['password'] = split[2].split('=')[1]
 
 
 
