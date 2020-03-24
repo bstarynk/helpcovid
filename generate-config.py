@@ -124,8 +124,11 @@ def create_temp_sql():
     sql_file, sql_path = tempfile.mkstemp(suffix = 'helpcovid', text = True)
     sql_file = open(sql_file, 'w')
 
-    sql_file.write('CREATE DATABASE ')
-    sql_file.write(config_dict['database'])
+    # https://stackoverflow.com/questions/18389124/
+    sql = 'SELECT \'CREATE DATABASE {0}\' WHERE NOT EXISTS \
+        (SELECT FROM pg_database WHERE datname = \'{0}\')\\gexec\n'.format(
+            config_dict['database'])
+    sql_file.write(sql)
 
     sql_file.write(';\nCREATE USER ')
     sql_file.write(config_dict['user'])
@@ -159,7 +162,7 @@ def create_temp_sql():
 def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres /usr/bin/psql -f ' + sql_path)
-    os.system('sudo /usr/bin/rm -v ' + sql_path)
+    os.remove(sql_path)
 
 
 
