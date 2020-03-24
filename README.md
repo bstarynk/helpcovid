@@ -167,6 +167,11 @@ It provides "global" settings
   code in `hcv_main.cc` before using it.  The output of that pipe goes
   to the system log. It is run after `seteuid` facilities.
 
+* `pid_file`, a file path where the process id of the running `helpcovid`
+  process is written. Defaults to
+  `/var/run/helpcovid.pid`. Overridable by `$HELPCOVID_PIDFILE` or
+  `--write-pid` option.
+
 #### `web` group
 
 It can provide the following keys (for [cpp-httplib](https://github.com/yhirose/cpp-httplib) ...):
