@@ -226,12 +226,12 @@ public:
 class Hcv_http_template_data : public Hcv_template_data
 {
 protected:
-  httplib::Request* _hcvhttp_request;
+  const httplib::Request* _hcvhttp_request;
   httplib::Response* _hcvhttp_response;
   long _hcvhttp_reqnum;
   mutable std::ostringstream _hcvhttp_outs;
 public:
-  Hcv_http_template_data(httplib::Request& req, httplib::Response&resp, long reqnum)
+  Hcv_http_template_data(const httplib::Request& req, httplib::Response&resp, long reqnum)
     : Hcv_template_data(TmplKind_en::hcvtk_http),
       _hcvhttp_request(&req),
       _hcvhttp_response(&resp),
@@ -240,7 +240,7 @@ public:
   {
   };
 protected:
-  Hcv_http_template_data(TmplKind_en kind, httplib::Request& req, httplib::Response&resp, long reqnum)
+  Hcv_http_template_data(TmplKind_en kind, const httplib::Request& req, httplib::Response&resp, long reqnum)
     : Hcv_template_data(kind),
       _hcvhttp_request(&req),
       _hcvhttp_response(&resp),
@@ -257,7 +257,7 @@ public:
   {
     return _hcvhttp_reqnum;
   };
-  httplib::Request*request() const
+  const httplib::Request*request() const
   {
     return _hcvhttp_request;
   };
@@ -265,25 +265,18 @@ public:
   {
     return _hcvhttp_response;
   };
-  virtual ~Hcv_http_template_data()
-  {
-    _hcvhttp_request = nullptr;
-    _hcvhttp_response = nullptr;
-    _hcvhttp_reqnum = 0;
-  };
+  virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
 
 
 class Hcv_https_template_data : public Hcv_http_template_data
 {
 public:
-  Hcv_https_template_data(httplib::Request& req, httplib::Response&resp, long reqnum) :
+  Hcv_https_template_data(const httplib::Request& req, httplib::Response&resp, long reqnum) :
     Hcv_http_template_data(TmplKind_en::hcvtk_https, req, resp, reqnum)
   {
   };
-  virtual ~Hcv_https_template_data()
-  {
-  };
+  virtual ~Hcv_https_template_data();
 };				// end of Hcv_https_template_data
 
 

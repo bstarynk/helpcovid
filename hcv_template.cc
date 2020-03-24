@@ -33,6 +33,28 @@ extern "C" const char hcv_template_date[] = __DATE__;
 static std::map<std::string, hcv_template_expanding_closure_t> hcv_template_expander_dict;
 static std::recursive_mutex hcv_template_mtx;
 
+////////////////////////////////////////////////////////////////
+
+
+Hcv_template_data::~Hcv_template_data()
+{
+} // end Hcv_template_data::~Hcv_template_data
+
+Hcv_http_template_data::~Hcv_http_template_data()
+{
+  _hcvhttp_request = nullptr;
+  _hcvhttp_response = nullptr;
+  _hcvhttp_reqnum = 0;
+} // end Hcv_http_template_data::~Hcv_http_template_data
+
+
+Hcv_https_template_data::~Hcv_https_template_data()
+{
+} // end Hcv_https_template_data::~Hcv_https_template_data
+
+
+
+////////////////////////////////////////////////////////////////
 #define HCV_TEMPLATE_NAME_MAXLEN 64
 void
 hcv_register_template_expander_closure(const std::string&name, const hcv_template_expanding_closure_t&expfun)
