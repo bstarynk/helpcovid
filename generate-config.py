@@ -28,9 +28,12 @@
 ##****************************************************************************
 
 
+
 import datetime
 import os
 import readline
+import tempfile
+
 
 
 # https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
@@ -113,8 +116,10 @@ def create_connection_dict(conn):
 
 
 def create_temp_sql(keys):
-    sql_path = '/tmp/helpcovid.sql'
-    sql_file = open(sql_path, 'w')
+    #sql_path = '/tmp/helpcovid.sql'
+    #sql_file = open(sql_path, 'w')
+    sql_file, sql_path = tempfile.mkstemp(suffix = 'helpcovid', text = True)
+    sql_file = open(sql_file, 'w')
 
     sql_file.write('CREATE DATABASE ')
     sql_file.write(keys['database'])
@@ -143,6 +148,7 @@ def create_temp_sql(keys):
     sql_file.write(';\n')
 
     sql_file.close
+    os.system('sudo /usr/bin/chown postgres:postgres ' + sql_path)
     return sql_path
 
 
@@ -150,6 +156,7 @@ def create_temp_sql(keys):
 def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres psql -f ' + sql_path)
+    os.system('sudo rm ' + sql_path)
 
 
 
