@@ -130,12 +130,17 @@ def create_temp_sql():
             config_dict['database'])
     sql_file.write(sql)
 
-    sql_file.write(';\nCREATE USER ')
+    # https://stackoverflow.com/questions/8092086/
+    sql_file.write('DO $$\n BEGIN\n')
+    sql_file.write('CREATE USER ')
     sql_file.write(config_dict['user'])
     sql_file.write(' WITH PASSWORD \'')
     sql_file.write(config_dict['password'])
+    sql_file.write('\';\nEXCEPTION WHEN DUPLICATE_OBJECT THEN\n')
+    sql_file.write('RAISE NOTICE \'user already exists; skipping...\';\n')
+    sql_file.write('END\n$$;')
 
-    sql_file.write('\';\nALTER ROLE ')
+    sql_file.write('ALTER ROLE ')
     sql_file.write(config_dict['user'])
     sql_file.write(' SET client_encoding TO \'utf8\';')
 
