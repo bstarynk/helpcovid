@@ -33,8 +33,18 @@ extern "C" const char hcv_database_date[] = __DATE__;
 /// the database connection
 std::unique_ptr<pqxx::connection> hcv_dbconn;
 
+/// the short PostGreSQL server version
+std::string hcv_our_postgresql_server_version;
+
 /// the recursive mutex to serialize access to that database
 std::recursive_mutex hcv_dbmtx;
+
+
+const std::string hcv_postgresql_version(void)
+{
+  return hcv_our_postgresql_server_version;
+};
+
 
 void
 hcv_initialize_database(const std::string&uri)
@@ -74,7 +84,10 @@ hcv_initialize_database(const std::string&uri)
       pqxx::work firsttransact(*hcv_dbconn);
       pqxx::row rversion = firsttransact.exec1("SELECT VERSION();");
       std::string pqversion = rversion[0].as<std::string>();
-      HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database got PostGreSQL version " << pqversion);
+      pqxx::row r2version = firsttransact.exec1("SHOW SERVER_VERSION;");
+      hcv_our_postgresql_server_version = r2version[0].as<std::string>();
+      HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database got PostGreSQL version " << pqversion
+                    << "(server version " << hcv_our_postgresql_server_version << ")");
       firsttransact.commit();
     }
     ////================ create tables if they are missing

@@ -294,6 +294,7 @@ hcv_webserver_run(void)
       jsob["process_rss"] = procrss;
     if (procshared>0)
       jsob["process_shared"] = procshared;
+    jsob["postgresql_version"] = hcv_postgresql_version();
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
