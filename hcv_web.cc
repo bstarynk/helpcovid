@@ -172,12 +172,19 @@ void
 hcv_web_error_handler(const httplib::Request& req,
                       httplib::Response& resp, long reqnum)
 {
-  static std::once_flag err_once_flag;
-  static std::string err_string;
-  std::call_once(err_once_flag,
-                 [&err_string]()
-  {
-  });
+  Hcv_http_template_data webdata(req,resp,reqnum);
+#warning unimplemented hcv_web_error_handler
+  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_web_error_handler reqnum=" << reqnum);
+  if (!hcv_webroot.empty() && hcv_webroot[0] == '/')
+    {
+      std::string errfilpath = hcv_webroot + "/html/error.thtml";
+      if (access(errfilpath.c_str(), R_OK))
+        {
+        }
+      else
+        {
+        }
+    }
 } // end hcv_web_error_handler
 
 void
@@ -186,8 +193,10 @@ hcv_webserver_run(void)
   static double startcputime = hcv_process_cpu_time();
   static double startmonotonictime = hcv_monotonic_real_time();
   unsigned webport;
-  if (getuid() == 0) webport = 80;
-  else webport = 8080;
+  if (getuid() == 0)
+    webport = 80;
+  else
+    webport = 8080;
   HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server hcv_webserver@" << (void*)hcv_webserver
                 << " with hcv_weburl=" << hcv_weburl);
   if (!hcv_webserver)
