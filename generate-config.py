@@ -95,10 +95,12 @@ def create_configuration_file():
 
 
 def create_connection_dict(conn):
+    split = conn.split(':')
+
     d = dict()
-    d['database'] = 'helpcovid_db'
-    d['user'] = 'helpcovid_usr'
-    d['password'] = 'passwd1234helpcovid'
+    d['database'] = split[0]
+    d['user'] = split[1]
+    d['password'] = split[2]
 
     return d
 
@@ -137,9 +139,21 @@ def create_temp_sql(keys):
     return sql_path
 
 
+
 def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres psql -f ' + sql_path)
+
+
+
+def create_password_file(keys):
+    pass_path = os.path.expanduser('~') + '/.pgpasswd_helpcovid'
+    pass_file = open(pass_path, 'w')
+    pass_file.write(keys['password'])
+    pass_file.close()
+
+    print('Password file created at ' + pass_path)
+
 
 
 def main():
@@ -152,6 +166,7 @@ def main():
     keys = create_connection_dict(conn)
     sql = create_temp_sql(keys)
     create_database(sql)
+    create_password_file(keys)
 
 
 
