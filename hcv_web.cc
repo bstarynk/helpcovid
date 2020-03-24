@@ -258,6 +258,17 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     if (reqcnt<=0)
       reqcnt=1;
+    long procsize=0, procrss=0, procshared=0;
+    {
+      FILE* pself = fopen("/proc/self/statm", "r");
+      if (pself)
+        {
+          fscanf(pself, " %ld %ld %ld", &procsize, &procrss, &procshared);
+          fclose(pself);
+          /// we sleep slightly against DoS attacks; this is not very effective, but might be helpful
+          usleep(1000*(1+(reqcnt%8)) + (reqcnt&0xff));
+        }
+    }
     Json::Value jsob(Json::objectValue);
     jsob["helpcovid"] = "github.com/bstarynk/helpcovid";
     jsob["license"] = "GPLv3+";
@@ -268,6 +279,12 @@ hcv_webserver_run(void)
     jsob["total_elapsed_time"] = hcv_monotonic_real_time() - startmonotonictime;
     jsob["cpu_time_per_request"] = (hcv_process_cpu_time() - startcputime) / reqcnt;
     jsob["elapsed_time_per_request"] = (hcv_monotonic_real_time() - startmonotonictime) / reqcnt;
+    if (procsize>0)
+      jsob["process_size"] = procsize;
+    if (procrss>0)
+      jsob["process_rss"] = procrss;
+    if (procshared>0)
+      jsob["process_shared"] = procshared;
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
