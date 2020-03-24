@@ -174,7 +174,7 @@ hcv_web_error_handler(const httplib::Request& req,
 {
   Hcv_http_template_data webdata(req,resp,reqnum);
 #warning unimplemented hcv_web_error_handler
-  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_web_error_handler reqnum=" << reqnum);
+  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_web_error_handler reqnum=" << reqnum << " req." << req.method << " path=" << req.path);
   if (!hcv_webroot.empty() && hcv_webroot[0] == '/')
     {
       std::string errfilpath = hcv_webroot + "/html/error.thtml";
