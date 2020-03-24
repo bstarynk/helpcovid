@@ -249,6 +249,20 @@ protected:
   {
   };
 public:
+  std::string request_method() const
+  {
+    if (_hcvhttp_request)
+      return _hcvhttp_request->method;
+    else
+      return "";
+  };
+  std::string request_path() const
+  {
+    if (_hcvhttp_request)
+      return _hcvhttp_request->path;
+    else
+      return "";
+  };
   virtual std::ostream* output_stream() const
   {
     return &_hcvhttp_outs;
