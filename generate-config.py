@@ -70,13 +70,20 @@ def create_configuration_file():
 
     # Read web keys and save to config file
     rc_file.write('[web]\n\n')
+    print("\n ==== HelpCovid web configuration =====\n")
+    print("Enter web served URL, e.g. http://localhost:8089/ or https://example.com/\n")
     write_key_value_pair('url', rc_file)
+    print("Enter web document root, a local directory containing web served resources (e.g. HTML files, CSS stylesheets)\n");
     write_key_value_pair('root', rc_file)
+    print("Enter the OpenSSL public certificate, for HTTPS - can be left empty; see https://www.openssl.org/\n")
     write_key_value_pair('sslcert', rc_file)
+    print("Enter the OpenSSL private key, for HTTPS")
     write_key_value_pair('sskey', rc_file)
 
     # Read postgresql keys
+    print("\n ==== HelpCovid PostGreSQL database configuration, see https://www.postgresql.org/ ====\n")
     rc_file.write('\n[postgresql]\n\n')
+    print("Enter the PostGreSQL connnection string, see https://www.postgresql.org/docs/current/libpq-connect.html")
     conn = write_key_value_pair('connection', rc_file)
 
     # Generate timestamp
