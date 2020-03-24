@@ -30,6 +30,7 @@
 
 import datetime
 import os
+import pwd
 import readline
 import tempfile
 
@@ -169,12 +170,22 @@ def create_password_file(keys):
 
 
 
+def check_postgres_exists():
+    try:
+        pwd.getpwnam('postgres')
+    except(KeyError):
+        print('postgres user not available. Please install PostgreSQL first...')
+
+
+
 def main():
     print('Starting HelpCovid configuration generator...')
     print('See https://github.com/bstarynk/helpcovid and its README.md\n')
 
 
+    check_postgres_exists()
     initialize_readline()
+
     conn = create_configuration_file()
     keys = create_connection_dict(conn)
     sql = create_temp_sql(keys)
