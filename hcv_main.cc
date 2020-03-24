@@ -71,7 +71,7 @@ struct argp_option hcv_progoptions[] =
     /*arg:*/ "POSTGRESQLURI", ///
     /*flags:*/0, ///
     /*doc:*/ "sets the PostgreSQL database URI (defaults to $HELPCOVID_POSTGRESQL),"
-    " e.g. --postgresql-database=postgresql://www-data@localhost/helpcovid, config: postgresql/connection", ///
+    " e.g. --postgresql-database=postgresql://www-data@localhost/helpcovid, config: postgresql/connection; use - to disable PostGreSQL (useless except for debugging purposes)", ///
     /*group:*/0 ///
   },
   /* ======= set the syslog level ======= */
@@ -412,6 +412,14 @@ extern "C" Glib::KeyFile hcv_config_key_file;
 Glib::KeyFile hcv_config_key_file;
 extern "C" std::recursive_mutex hcv_config_mtx;
 std::recursive_mutex hcv_config_mtx;
+std::string hcv_config_file_path;
+
+std::string
+hcv_get_config_file_path(void)
+{
+  return   hcv_config_file_path;
+} // end of hcv_get_config_file_path
+
 void
 hcv_load_config_file(const char*configfile)
 {
@@ -445,7 +453,10 @@ hcv_load_config_file(const char*configfile)
     {
       bool ok = hcv_config_key_file.load_from_file(configpath);
       if (ok)
-        HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid loaded configuration file " << configpath);
+        {
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid loaded configuration file " << configpath);
+          hcv_config_file_path = configpath;
+        }
       else
         HCV_FATALOUT("helpcovid configuration file " << configpath << " failed to load");
     }
@@ -575,28 +586,46 @@ main(int argc, char**argv)
     {
       hcv_config_do([=](const Glib::KeyFile*kf)
       {
+        if (!kf->has_key("web","url"))
+          HCV_FATALOUT("helpcovid missing 'url' key in group 'web' of config file " << hcv_config_file_path);
+        if (!kf->has_key("web","root"))
+          HCV_FATALOUT("helpcovid missing 'root' key in group 'web' of config file " << hcv_config_file_path);
+        std::string sslcertstr, sslkeystr;
+        if (kf->has_key("web","sslcert") && kf->has_key("web","sslkey"))
+          {
+            sslcertstr = std::string(kf->get_string("web","sslcert"));
+            sslkeystr = std::string(kf->get_string("web","sslkey"));
+          };
         hcv_initialize_web(std::string(kf->get_string("web","url")),
                            std::string(kf->get_string("web","root")),
-                           std::string(kf->get_string("web","sslcert")),
-                           std::string(kf->get_string("web","sslkey")));
+                           sslcertstr, sslkeystr);
       });
     };
   if (hcv_config_has_group("helpcovid"))
     {
       hcv_config_do([&](const Glib::KeyFile*kf)
       {
-        std::string logmsg = kf->get_string("helpcovid","log_message");
-        if (!logmsg.empty())
-          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid log_message:" << logmsg);
-        seteuid = kf->get_string("helpcovid","seteuid");
-        if (!seteuid.empty())
-          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will seteuid " << seteuid << " from configuration file");
-        std::string pidpath = kf->get_string("helpcovid","pid_file");
-        if (!pidpath.empty() && pidpath[0] == '/')
+        if (kf->has_key("helpcovid","log_message"))
           {
-            hcv_progargs.hcvprog_pidfile = pidpath;
-            HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use pid_file " << pidpath << " from configuration file");
-          }
+            std::string logmsg = kf->get_string("helpcovid","log_message");
+            if (!logmsg.empty())
+              HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid log_message:" << logmsg);
+          };
+        if (kf->has_key("helpcovid","seteuid"))
+          {
+            seteuid = kf->get_string("helpcovid","seteuid");
+            if (!seteuid.empty())
+              HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will seteuid " << seteuid << " from configuration file");
+          };
+        if (kf->has_key("helpcovid","pid_file"))
+          {
+            std::string pidpath = kf->get_string("helpcovid","pid_file");
+            if (!pidpath.empty() && pidpath[0] == '/')
+              {
+                hcv_progargs.hcvprog_pidfile = pidpath;
+                HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use pid_file " << pidpath << " from configuration file");
+              }
+          };
       });
     };
   errno = 0;
