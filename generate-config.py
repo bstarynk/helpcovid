@@ -77,7 +77,7 @@ def create_configuration_file():
 
     # Read postgresql keys
     rc_file.write('\n[postgresql]\n\n')
-    db_conn = write_key_value_pair('connection', rc_file)
+    conn = write_key_value_pair('connection', rc_file)
 
     # Generate timestamp
     ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
@@ -90,26 +90,56 @@ def create_configuration_file():
 
     # Wrap up
     print('\nConfiguration file saved to {0}]'.format(rc_path))
-    return db_conn
+    return conn
 
 
 
-def create_database():
+def create_connection_dict(conn):
+    d = dict()
+    d['database'] = 'helpcovid_db'
+    d['user'] = 'helpcovid_usr'
+    d['password'] = 'passwd1234helpcovid'
+
+    return d
+
+
+def create_temp_sql(keys):
     sql_path = '/tmp/helpcovid.sql'
     sql_file = open(sql_path, 'w')
 
-    sql_file.write('CREATE DATABASE helpcovid_db;\n')
-    sql_file.write('CREATE USER helpcovid_usr WITH PASSWORD \'passwd1234helpcovid\';\n')
-    sql_file.write('ALTER ROLE helpcovid_usr SET client_encoding TO \'utf8\';\n')
-    sql_file.write('ALTER ROLE helpcovid_usr SET default_transaction_isolation TO \'read committed\';\n')
-    sql_file.write('ALTER ROLE helpcovid_usr SET timezone to \'UTC\';\n')
-    sql_file.write('GRANT ALL PRIVILEGES ON DATABASE helpcovid_db TO helpcovid_usr;\n')
+    sql_file.write('CREATE DATABASE ')
+    sql_file.write(keys['database'])
 
-    sql_file.close()
+    sql_file.write(';\nCREATE USER ')
+    sql_file.write(keys['user'])
+    sql_file.write(' WITH PASSWORD \'')
+    sql_file.write(keys['password'])
 
+    sql_file.write('\';\nALTER ROLE ')
+    sql_file.write(keys['user'])
+    sql_file.write(' SET client_encoding TO \'utf8\';')
+
+    sql_file.write('\nALTER ROLE ')
+    sql_file.write(keys['user'])
+    sql_file.write(' SET default_transaction_isolation TO \'read committed\';')
+
+    sql_file.write('\nALTER ROLE ')
+    sql_file.write(keys['user'])
+    sql_file.write(' SET timezone to \'UTC\';')
+
+    sql_file.write('\nGRANT ALL PRIVILEGES ON DATABASE ')
+    sql_file.write(keys['database'])
+    sql_file.write(' TO ')
+    sql_file.write(keys['user'])
+    sql_file.write(';\n')
+
+    sql_file.close
+    return sql_path
+
+
+def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres psql -f ' + sql_path)
-
 
 
 def main():
@@ -118,8 +148,10 @@ def main():
 
 
     initialize_readline()
-    db_conn = create_configuration_file()
-    create_database()
+    conn = create_configuration_file()
+    keys = create_connection_dict(conn)
+    sql = create_temp_sql(keys)
+    create_database(sql)
 
 
 
