@@ -42,10 +42,7 @@ def make_completer(vocabulary):
 
 
 
-def main():
-    print('Starting HelpCovid configuration generator...')
-    print('See https://github.com/bstarynk/helpcovid and its README.md\n')
-
+def initialize_readline():
     # Define tab completion vocabulary
     vocabulary = {
         'localhost', 'webroot', 'helpcovid_db', 'helpcovid_usr', 'helpcovid'
@@ -55,50 +52,46 @@ def main():
     readline.parse_and_bind('tab: complete')
     readline.set_completer(make_completer(vocabulary))
 
+
+
+def write_key_value_pair(key, conf_file):
+    val =  input('{0}: '.format(key)).strip()
+    print('[{0} = {1}]'.format(key, val))
+    conf_file.write('{0}={1}\n'.format(key, val))
+
+    return val
+
+
+
+def create_configuration_file():
     # Create configuration file in $HOME
     rc_path = os.path.expanduser('~') + '/.helpcovidrc'
     rc_file = open(rc_path, 'w')
 
-    # Read keys and save to config file
-    try:
-        url = input('URL: ').strip()
-        print('[url = {0}]'.format(url))
-        rc_file.write('[web]\n\n')
-        rc_file.write('url=%s\n' % url)
+    # Read web keys and save to config file
+    rc_file.write('[web]\n\n')
+    write_key_value_pair('url', rc_file)
+    write_key_value_pair('root', rc_file)
+    write_key_value_pair('sslcert', rc_file)
+    write_key_value_pair('sskey', rc_file)
 
-        root = input('Root: ').strip()
-        print('[root = {0}]'.format(root))
-        rc_file.write('root=%s\n' % root)
+    # Read postgresql keys
+    rc_file.write('\n[postgresql]\n\n')
+    db_conn = write_key_value_pair('connection', rc_file)
 
-        ssl_cert = input('SSL Certificate: ').strip()
-        print('[sslcert = {0}]'.format(ssl_cert))
-        rc_file.write('sslcert=%s\n' % ssl_cert)
+    # Generate timestamp
+    ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    rc_file.write('\n# generated on %s\n' % ts)
+    rc_file.write('# end of generated file ~/.helpcovidrc\n');
 
-        ssl_key = input('SSL Key: ').strip()
-        print('[sslkey = {0}]'.format(ssl_key))
-        rc_file.write('sslkey=%s\n\n' % ssl_key)
+    # Ensure chmod 600
+    rc_file.close()
+    os.chmod(rc_path, 0o600)
 
-        db_conn = input('PostgreSQL Connection String: ').strip()
-        print('[connection = {0}]'.format(db_conn))
-        rc_file.write('[postgresql]\n\n')
-        rc_file.write('connection=%s\n' % db_conn)
+    # Wrap up
+    print('\nConfiguration file saved to {0}]'.format(rc_path))
+    return db_conn
 
-        # Generate timestamp
-        ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-
-        # Wrap up, ensuring chmod 600
-        print('\nConfiguration file saved to {0}]'.format(rc_path))
-        rc_file.write('\n# generated on %s\n' % ts)
-        rc_file.write('# end of generated file ~/.helpcovidrc\n');
-        rc_file.close()
-        os.chmod(rc_path, 0o600)
-
-        create_database()
-
-    # Handle interrupt
-    except (EOFError, KeyboardInterrupt) as e:
-        print('\nInterrupt detected, exiting...')
-        rc_file.close()
 
 
 def create_database():
@@ -116,6 +109,17 @@ def create_database():
 
     print('Creating database...')
     os.system('sudo -u postgres psql -f ' + sql_path)
+
+
+
+def main():
+    print('Starting HelpCovid configuration generator...')
+    print('See https://github.com/bstarynk/helpcovid and its README.md\n')
+
+
+    initialize_readline()
+    db_conn = create_configuration_file()
+    create_database()
 
 
 
