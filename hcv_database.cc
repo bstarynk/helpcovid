@@ -68,6 +68,7 @@ hcv_initialize_database(const std::string&uri)
   ///
   hcv_dbconn.reset(new pqxx::connection(connstr));
   {
+    HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database for connstr=" << connstr << " hcv_dbconn is " << hcv_dbconn.get());
     pqxx::work transact(*hcv_dbconn);
     ////================ user table, with mandatory data
     transact.exec0(R"crusertab(
