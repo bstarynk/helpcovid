@@ -151,6 +151,7 @@ extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::str
 ////////////////////////////////////////////////////////////////
 ///// configuration file https://developer.gnome.org/glibmm/stable/classGlib_1_1KeyFile.html
 #define HCV_DEFAULT_CONFIG_PATH "/etc/helpcovid.conf"
+extern "C" std::string hcv_get_config_file_path(void);
 extern "C" bool hcv_config_has_group(const char*grpname);
 extern "C" bool hcv_config_has_key(const char*grpname, const char*keyname);
 /*** Do something with the configuration file, serialized by a mutex. For example:
