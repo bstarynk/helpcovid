@@ -362,5 +362,33 @@ hcv_thread_cpu_time(void)
 } // end hcv_thread_cpu_time
 
 
+///////////////////////////////////////////////////////////////////////////////
+// LoginView class
+///////////////////////////////////////////////////////////////////////////////
+
+namespace hcv {
+  class LoginView {
+    public:
+      LoginView(const httplib::Request& req, std::string html)
+        : m_req(req), m_html(html)
+      { }
+
+      ~LoginView()
+      { }
+
+      std::string content()
+      { 
+        std::string content = "<p>Hello, world!</p>";
+        return content;
+        // TODO
+      }
+
+    private:
+      httplib::Request m_req;
+      std::string m_html;
+    };
+}
+
+
 
 #endif /*HELPCOVID_HEADER*/
