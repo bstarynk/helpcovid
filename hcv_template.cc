@@ -231,6 +231,13 @@ hcv_expand_template_input_stream(std::istream&srcinp, const char*inpname, Hcv_te
 
 
 
+std::string
+hcv_expand_template_string(const std::string&inpstr, const char*inpname, Hcv_template_data*templdata)
+{
+  std::istringstream inp(inpstr);
+  return hcv_expand_template_input_stream(inp,inpname,templdata);
+} // end hcv_expand_template_input_string
+
 
 void
 hcv_initialize_templates(void)
@@ -388,7 +395,7 @@ hcv_initialize_templates(void)
       HCV_FATALOUT("no template data for '<?hcv hostname?>' processing instruction "
                    << procinstr <<" in "
                    << filename << ":" << lineno);
-    if (auto pouts = templdata->output_stream()) 
+    if (auto pouts = templdata->output_stream())
       *pouts << hcv_get_hostname();
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv hostname?>' processing instruction in "

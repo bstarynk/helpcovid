@@ -167,7 +167,7 @@ hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr)
 } // end hcv_output_cstr_encoded_html
 
 
-
+///////////////////////////// HTTP error handler, uses html/error.html when available
 void
 hcv_web_error_handler(const httplib::Request& req,
                       httplib::Response& resp, long reqnum)
@@ -194,13 +194,30 @@ hcv_web_error_handler(const httplib::Request& req,
     outhtmlstr = hcv_expand_template_file(errfilpath, &webdata);
   else
     {
-#warning hcv_web_error_handler incomplete
-      HCV_FATALOUT("hcv_web_error_handler should provide a builtin string"
-                   " to be expanded by hcv_expand_template_input_stream for reqnum="
-                   << reqnum << " req." << req.method << " path=" << req.path);
+      constexpr const char builtin_error_html[] =
+        R"builtinerror(<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <title>HelpCovid builtin error</title>
+</head>
+<body>
+<h1>HelpCovid builtin error</h1>
+  <p>Please ask the webmaster to add a proper <tt>html/error.html</tt> file.<br/></p>
+  <p>Error on <?hcv now?> for request #<?hcv request_number?> to <?hcv request_method?> of <?hcv request_path?>.<br/>
+    HelpCovid git <tt><?hcv gitid?></tt> pid <?hcv pid?> on <tt><i><?hcv hostname?></i></tt>.<br/> 
+    Please go back to <a href='/'>root webpage</a>.
+  </p>
+</body>
+</html>
+)builtinerror";
+      outhtmlstr = hcv_expand_template_string(std::string(builtin_error_html),
+					      "*builtin-error*", &webdata);
     }
   resp.set_content(outhtmlstr.c_str(), "text/html");
 } // end hcv_web_error_handler
+
+
 
 void
 hcv_webserver_run(void)
@@ -250,6 +267,7 @@ hcv_webserver_run(void)
     auto n = std::atomic_load(&hcv_web_request_counter);
     hcv_web_error_handler(req, resp, n);
   });
+#if 0 && oldhellocode
   hcv_webserver->Get("/hello",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
@@ -276,6 +294,7 @@ hcv_webserver_run(void)
          << std::endl;
     resp.set_content(outs.str().c_str(), "text/plain");
   });
+#endif /*old hello code*/
   hcv_webserver->Get("/status.json",
                      [](const httplib::Request&req, httplib::Response& resp)
   {

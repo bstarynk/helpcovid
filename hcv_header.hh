@@ -316,6 +316,9 @@ extern "C" std::string hcv_expand_template_file(const std::string& filepath,Hcv_
 
 extern "C" std::string hcv_expand_template_input_stream(std::istream&srcinp, const char*inpname, Hcv_template_data*templdata);
 
+
+extern "C" std::string hcv_expand_template_string(const std::string&inpstr, const char*inpname, Hcv_template_data*templdata);
+
 typedef std::function<void(Hcv_template_data*templdata, const std::string &procinstr, const char*filename, int lineno, long offset)> hcv_template_expanding_closure_t;
 // the name should be like a C identifier
 extern "C" void hcv_register_template_expander_closure(const std::string&name, const hcv_template_expanding_closure_t&expfun);
@@ -373,32 +376,33 @@ hcv_thread_cpu_time(void)
 // LoginView class
 ///////////////////////////////////////////////////////////////////////////////
 
-class Hcv_LoginView {
-  public:
-    Hcv_LoginView(const httplib::Request& req, const httplib::Response& resp,
-      std::string thtml)
-      : m_req(req), m_resp(resp), m_thtml(thtml)
-    { }
+class Hcv_LoginView
+{
+public:
+  Hcv_LoginView(const httplib::Request& req, const httplib::Response& resp,
+                std::string thtml)
+    : m_req(req), m_resp(resp), m_thtml(thtml)
+  { }
 
-    ~Hcv_LoginView()
-    { }
+  ~Hcv_LoginView()
+  { }
 
-    std::string get()
-    { 
-      Hcv_http_template_data data(m_req, m_resp, 1);
-      return hcv_expand_template_file(m_thtml, &data);
-    }
+  std::string get()
+  {
+    Hcv_http_template_data data(m_req, m_resp, 1);
+    return hcv_expand_template_file(m_thtml, &data);
+  }
 
-    std::string post()
-    {
-        // TODO
-        return "";
-    }
+  std::string post()
+  {
+    // TODO
+    return "";
+  }
 
-  private:
-    httplib::Request m_req;
-    httplib::Response m_resp;
-    std::string m_thtml;
+private:
+  httplib::Request m_req;
+  httplib::Response m_resp;
+  std::string m_thtml;
 };				// end of class Hcv_LoginView
 
 
