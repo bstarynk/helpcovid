@@ -124,6 +124,7 @@ CREATE TABLE IF NOT EXISTS tb_password (
 
 
 /// https://libpqxx.readthedocs.io/en/stable/a01331.html
+/// https://www.tutorialspoint.com/postgresql/postgresql_c_cpp.htm
 void
 hcv_prepare_statements_in_database(void)
 {
