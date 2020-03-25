@@ -238,7 +238,7 @@ hcv_web_error_handler(const httplib::Request& req,
 } // end hcv_web_error_handler
 
 
-
+////////////////////////////////////////////////////////////////
 void
 hcv_webserver_run(void)
 {
@@ -372,6 +372,24 @@ hcv_webserver_run(void)
     resp.set_content(str.c_str(), "application/json");
   });
 
+  hcv_webserver->Get("/ajax/",
+                     [](const httplib::Request&req, httplib::Response& resp)
+		     {
+		       HCV_SYSLOGOUT(LOG_WARNING,
+				     "hcv_webserver_run AJAX GET request unimplemented path="
+				     << req.path);
+#warning hcv_webserver_run unimplemented AJAX GET
+		     });
+
+  hcv_webserver->Post("/ajax/",
+                     [](const httplib::Request&req, httplib::Response& resp)
+		     {
+		       HCV_SYSLOGOUT(LOG_WARNING,
+				     "hcv_webserver_run AJAX POST request unimplemented path="
+				     << req.path);
+#warning hcv_webserver_run unimplemented AJAX POST
+		     });
+		     
   hcv_webserver->Get("/login", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
