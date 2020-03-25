@@ -152,9 +152,15 @@ hcv_database_with_known_email (const std::string& emailstr)
     }
   std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
   pqxx::work transact(*hcv_dbconn);
-  pqxx::result r = transact.exec_prepared("find_user_by_email_pstm", emailstr);
-  HCV_FATALOUT("incomplete hcv_database_with_known_email emailstr=" << emailstr);
-#warning incomplete hcv_database_with_known_email
+  pqxx::result res = transact.exec_prepared("find_user_by_email_pstm", emailstr);
+  long id = -1;
+  for (auto rowit : res) {
+    id = rowit[0].as<long>();
+  }
   transact.commit();
-}
+  return id>0;
+} // end hcv_database_with_known_email
+
+
+
 /////////// end of file hcv_database.cc in github.com/bstarynk/helpcovid
