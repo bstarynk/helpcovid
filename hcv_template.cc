@@ -99,19 +99,20 @@ hcv_expand_processing_instruction(Hcv_template_data*templdata, const std::string
   memset (namebuf, 0, sizeof(namebuf));
   static_assert (sizeof(namebuf) >= HCV_TEMPLATE_NAME_MAXLEN, "too short namebuf");
   int endpos = -1;
-  if (sscanf(procinstr.c_str(), "<?hcv %64[a-zA-Z0-9_] %n", namebuf, &endpos)<1 || endpos<0)
+  const char*procstr = procinstr.c_str();
+  if (sscanf(procstr, "<?hcv %64[a-zA-Z0-9_] %n", namebuf, &endpos)<1 || endpos<0)
     {
       HCV_SYSLOGOUT(LOG_WARNING,"hcv_expand_processing_instruction: invalid procinstr='" << procinstr
                     << "' in " << (filename?:"**??**")
                     << ":" << lineno << " @" << offset);
       return;
     }
-  auto endpi = strstr(procinstr.c_str()+endpos, "?>");
+  auto endpi = strstr(procstr+endpos, "?>");
   if (!endpi || endpi[2])
     HCV_FATALOUT("hcv_expand_processing_instruction: corrupted procinstr='" << procinstr
                  << "' in " << (filename?:"**??**")
                  << ":" << lineno << " @" << offset);
-  std::string arg = procinstr.substr(endpos,endpi-procinstr.c_str());
+  std::string arg(procstr+endpos, endpi-(procstr+endpos));
   std::lock_guard<std::recursive_mutex> gu(hcv_template_mtx);
   auto it = hcv_template_expander_dict.find(std::string(namebuf));
   if (it == hcv_template_expander_dict.end())
