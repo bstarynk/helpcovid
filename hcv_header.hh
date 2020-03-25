@@ -362,28 +362,30 @@ hcv_thread_cpu_time(void)
 // LoginView class
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace hcv {
-  class LoginView {
-    public:
-      LoginView(const httplib::Request& req, std::string html)
-        : m_req(req), m_html(html)
-      { }
+class Hcv_LoginView {
+  public:
+    Hcv_LoginView(const httplib::Request& req, std::string thtml)
+      : m_req(req), m_thtml(thtml)
+    { }
 
-      ~LoginView()
-      { }
+    ~Hcv_LoginView()
+    { }
 
-      std::string content()
-      { 
-        std::string content = "<p>Hello, world!</p>";
-        return content;
+    std::string get()
+    { 
+      return hcv_expand_template_file(m_thtml, nullptr);
+    }
+
+    std::string post()
+    {
         // TODO
-      }
+        return "";
+    }
 
-    private:
-      httplib::Request m_req;
-      std::string m_html;
-    };
-}
+  private:
+    httplib::Request m_req;
+    std::string m_thtml;
+};
 
 
 
