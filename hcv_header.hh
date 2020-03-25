@@ -375,8 +375,9 @@ hcv_thread_cpu_time(void)
 
 class Hcv_LoginView {
   public:
-    Hcv_LoginView(const httplib::Request& req, std::string thtml)
-      : m_req(req), m_thtml(thtml)
+    Hcv_LoginView(const httplib::Request& req, const httplib::Response& resp,
+      std::string thtml)
+      : m_req(req), m_resp(resp), m_thtml(thtml)
     { }
 
     ~Hcv_LoginView()
@@ -384,7 +385,8 @@ class Hcv_LoginView {
 
     std::string get()
     { 
-      return hcv_expand_template_file(m_thtml, nullptr);
+      Hcv_http_template_data data(m_req, m_resp, 1);
+      return hcv_expand_template_file(m_thtml, &data);
     }
 
     std::string post()
@@ -395,6 +397,7 @@ class Hcv_LoginView {
 
   private:
     httplib::Request m_req;
+    httplib::Response m_resp;
     std::string m_thtml;
 };				// end of class Hcv_LoginView
 
