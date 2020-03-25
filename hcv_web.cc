@@ -103,6 +103,8 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
   hcv_webroot = webroot;
   hcv_json_builder["commentStyle"] = "None";
   hcv_json_builder["indentation"] = " ";
+
+  hcv_webserver->set_mount_point("/", webroot.c_str());
 } // end hcv_initialize_web
 
 
