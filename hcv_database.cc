@@ -39,12 +39,13 @@ std::string hcv_our_postgresql_server_version;
 /// the recursive mutex to serialize access to that database
 std::recursive_mutex hcv_dbmtx;
 
+extern "C" void hcv_prepare_statements_in_database(void);
 
-const std::string hcv_postgresql_version(void)
+const std::string
+hcv_postgresql_version(void)
 {
   return hcv_our_postgresql_server_version;
-};
-
+} // end  hcv_postgresql_version
 
 void
 hcv_initialize_database(const std::string&uri)
@@ -116,8 +117,26 @@ CREATE TABLE IF NOT EXISTS tb_password (
 )crpasswdtab");
     transact.commit();
   }
+  HCV_DEBUGOUT("hcv_initialize_database before preparing statements in " << connstr);
+  hcv_prepare_statements_in_database();
   HCV_SYSLOGOUT(LOG_NOTICE, "PostGreSQL database " << connstr << " successfully initialized");
 } // end hcv_initialize_database
+
+
+/// https://libpqxx.readthedocs.io/en/stable/a01331.html
+void
+hcv_prepare_statements_in_database(void)
+{
+  std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
+  ////// find a user by his/her email
+  HCV_DEBUGOUT("preparing find_user_by_email_pstm");
+  hcv_dbconn->prepare
+    ("find_user_by_email_pstm",
+     R"finduseremail(
+SELECT user_id FROM tb_user WHERE user_email=$1
+)finduseremail");
+} // end hcv_prepare_statements_in_database
+
 
 // https://www.postgresqltutorial.com/postgresql-where/
 // https://www.postgresql.org/docs/current/sql-prepare.html
@@ -132,9 +151,10 @@ hcv_database_with_known_email (const std::string& emailstr)
       return false;
     }
   std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
-  pqxx::work firsttransact(*hcv_dbconn);
-  // we need to quote the emailstr
-  pqxx::row ruid = firsttransact.exec1("SELECT user_id FROM tb_user WHERE user_email=XXX;");
-  
+  pqxx::work transact(*hcv_dbconn);
+  pqxx::result r = transact.exec_prepared("find_user_by_email_pstm", emailstr);
+  HCV_FATALOUT("incomplete hcv_database_with_known_email emailstr=" << emailstr);
+#warning incomplete hcv_database_with_known_email
+  transact.commit();
 }
 /////////// end of file hcv_database.cc in github.com/bstarynk/helpcovid
