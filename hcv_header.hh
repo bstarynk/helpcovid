@@ -108,6 +108,7 @@ extern "C" void hcv_fatal_stop_at (const char *, int, int) __attribute__((noretu
 
 extern "C" std::recursive_mutex hcv_fatalmtx;
 
+extern "C" const char*hcv_get_hostname(void);
 
 #define HCV_FATALOUT_AT_BIS(Fil,Lin,...) do {		\
   int err##Lin = errno;					\

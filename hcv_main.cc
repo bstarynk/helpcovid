@@ -566,7 +566,15 @@ hcv_config_handle_helpcovid_config_group(void)
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid did handle 'helpcovid' config group");
 } // end hcv_config_handle_helpcovid_config_group
 
+
+
 ////////////////////////////////////////////////////////////////
+
+const char*
+hcv_get_hostname(void) {
+  return hcv_hostname;
+} // end hcv_get_hostname
+
 int
 main(int argc, char**argv)
 {
