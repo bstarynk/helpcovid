@@ -422,7 +422,7 @@ hcv_initialize_templates(void)
   });
   //////////////// for <?hcv hostname?>
   hcv_register_template_expander_closure
-  ("pid",
+  ("hostname",
    [](Hcv_template_data*templdata, const std::string &procinstr,
       const char*filename, int lineno,
       long offset)
