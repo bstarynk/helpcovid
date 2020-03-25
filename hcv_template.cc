@@ -156,7 +156,7 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data* temp
 
   auto outp = dynamic_cast<std::ostringstream*>(templdata->output_stream());
   if (outp == nullptr)
-      HCV_FATALOUT("hcv_expand_template_file: bad templdata->output_stream()");
+    HCV_FATALOUT("hcv_expand_template_file: bad templdata->output_stream()");
 
   //std::ostringstream *outp = outstrptr;
   std::ifstream srcinp(srcfilepath);
