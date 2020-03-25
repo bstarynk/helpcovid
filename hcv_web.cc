@@ -50,7 +50,7 @@ extern "C" std::string hcv_get_web_root(void)
 
 extern "C" long hcv_get_web_request_counter(void)
 {
-    return std::atomic_fetch_add(&hcv_web_request_counter, 1);
+  return std::atomic_fetch_add(&hcv_web_request_counter, 1);
 }
 
 
@@ -69,9 +69,9 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
     HCV_FATALOUT("hcv_initialize_web: missing webroot");
   if (webroot[webroot.size()-1] != '/')
     HCV_FATALOUT("hcv_initialize_web: webroot directory " << webroot
-		 << " does not end with a terminating slash" <<std::endl
-		 << "... but it should." << std::endl
-		 << " For example something like /var/helpcovid/webroot/");
+                 << " does not end with a terminating slash" <<std::endl
+                 << "... but it should." << std::endl
+                 << " For example something like /var/helpcovid/webroot/");
   if (!opensslcert.empty() && !opensslkey.empty())
     {
       struct stat certstat, keystat;

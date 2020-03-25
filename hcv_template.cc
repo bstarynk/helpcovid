@@ -166,31 +166,35 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
           outp << linbuf << std::endl;
           continue;
         }
-      long col=0, prevcol=0, lqpos=0, qrpos=0;
-      while ((lqpos=linbuf.find("<?hcv ", col)>0) != (long)std::string::npos
-             && lqpos<(long)linbuf.size())
+      const char*linestr= linbuf.c_str();
+      const char*startpi = nullptr;
+      const char*curpc = linestr;
+      while (curpc && (startpi = strstr(curpc, "<?hcv ")) != nullptr)
         {
-          outp << linbuf.substr(prevcol, lqpos-prevcol);
-          qrpos = linbuf.find("?>", lqpos);
-          if (qrpos == (long)std::string::npos)
+          const char*endpi = strstr(curpc+strlen("<?hcv "), "?>");
+          if (endpi == nullptr)
             {
               HCV_SYSLOGOUT(LOG_WARNING,
                             "hcv_expand_template_file: " << srcfilepath
                             << ":" << lincnt
                             << " line has unclosed template markup:" << std::endl
                             << linbuf);
-              outp << linbuf.substr(prevcol);
-              col = lqpos + strlen("<?hcv ");
+              outp << std::string(curpc);
+              curpc = nullptr;
               break;
             }
-          std::string procinstr=linbuf.substr(prevcol, qrpos+2-prevcol);
-          hcv_expand_processing_instruction(templdata, procinstr, srcfilepath.c_str(), lincnt, off);
-          prevcol=col;
-          col = qrpos+2;
-          gotpe = true;
-        };
-      if (gotpe)
-        outp << std::flush;
+          else
+            {
+              std::string before(curpc, startpi-curpc);
+              outp << before;
+              std::string procinstr(startpi, (endpi+2)-startpi);
+              hcv_expand_processing_instruction(templdata, procinstr, srcfilepath.c_str(), lincnt, off);
+              curpc = endpi+2;
+              gotpe = true;
+            };
+          if (gotpe)
+            outp << std::flush;
+        } // end while curpc && (startpi=....)
     }
   outp << std::endl;
   return outp.str();
@@ -214,29 +218,35 @@ hcv_expand_template_input_stream(std::istream&srcinp, const char*inpname, Hcv_te
         HCV_FATALOUT("hcv_expand_template_input_stream: source input " << inpname
                      << " is too big: "
                      << (long)off << " bytes.");
-      int col=0, prevcol=0, lqpos=0, qrpos=0;
-      while ((lqpos=linbuf.find("<?hcv ", col)>0) >=0)
+      const char*linestr= linbuf.c_str();
+      const char*startpi = nullptr;
+      const char*curpc = linestr;
+      while (curpc && (startpi = strstr(curpc, "<?hcv ")) != nullptr)
         {
-          outp << linbuf.substr(prevcol, lqpos-prevcol);
-          qrpos = linbuf.find("?>", lqpos);
-          if (qrpos<0)
+          const char*endpi = strstr(curpc+strlen("<?hcv "), "?>");
+          if (endpi == nullptr)
             {
               HCV_SYSLOGOUT(LOG_WARNING,
                             "hcv_expand_template_input_stream: " << inpname
                             << ":" << lincnt
                             << " line has unclosed template markup:" << std::endl
                             << linbuf);
-              outp << linbuf.substr(prevcol);
-              continue;
+              outp << std::string(curpc);
+              curpc = nullptr;
+              break;
             }
-          std::string procinstr=linbuf.substr(prevcol, qrpos+2-prevcol);
-          hcv_expand_processing_instruction(templdata, procinstr, inpname, lincnt, off);
-          prevcol=col;
-          col = qrpos+2;
-          gotpe = true;
-        };
-      if (gotpe)
-        outp << std::flush;
+          else
+            {
+              std::string before(curpc, startpi-curpc);
+              outp << before;
+              std::string procinstr(startpi, (endpi+2)-startpi);
+              hcv_expand_processing_instruction(templdata, procinstr, inpname, lincnt, off);
+              curpc = endpi+2;
+              gotpe = true;
+            };
+          if (gotpe)
+            outp << std::flush;
+        } // end while curpc && (startpi=....)
     }
   outp<<std::endl;
   return outp.str();
@@ -466,8 +476,8 @@ hcv_initialize_templates(void)
    [](Hcv_template_data* templdata, const std::string& procinstr,
       const char* filename, int lineno, long offset)
   {
-    if (!templdata 
-        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none) 
+    if (!templdata
+        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
       HCV_FATALOUT("no template data for '<?hcv webroot?>' processing instruction  "
                    << procinstr << " in " << filename << ":" << lineno);
 
