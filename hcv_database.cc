@@ -96,12 +96,12 @@ hcv_initialize_database(const std::string&uri)
     transact.exec0(R"crusertab(
 ---- TABLE tb_user
 CREATE TABLE IF NOT EXISTS tb_user (
-  user_id SERIAL PRIMARY KEY NOT NULL,
-  user_firstname VARCHAR(31) NOT NULL,
-  user_familyname VARCHAR(62) NOT NULL,
-  user_email VARCHAR(71) NOT NULL,
-  user_gender CHAR(1) NOT NULL,
-  user_crtime DATE NOT NULL
+  user_id SERIAL PRIMARY KEY NOT NULL,  -- unique user_id
+  user_firstname VARCHAR(31) NOT NULL,  -- first name, in capitals, UTF8
+  user_familyname VARCHAR(62) NOT NULL, -- family name, in capitals, UTF8
+  user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
+  user_gender CHAR(1) NOT NULL,         -- 'F' | 'M' | '?'
+  user_crtime DATE NOT NULL             -- user entry creation time
 ); --- end TABLE tb_user
 )crusertab");
     ////================ password table
@@ -109,9 +109,9 @@ CREATE TABLE IF NOT EXISTS tb_user (
 ---- TABLE tb_password
 CREATE TABLE IF NOT EXISTS tb_password (
   passw_id SERIAL PRIMARY KEY NOT NULL, -- unique key in this table
-  passw_userid INT NOT NULL, -- the user id whose password we store
-  passw_encr VARCHAR(62) NOT NULL, -- the encrypted password
-  passw_mtime  TIMESTAMP NOT NULL -- the last time that password was modified
+  passw_userid INT NOT NULL,            -- the user id whose password we store
+  passw_encr VARCHAR(62) NOT NULL,      -- the encrypted password
+  passw_mtime  TIMESTAMP NOT NULL       -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");
     transact.commit();
@@ -119,6 +119,22 @@ CREATE TABLE IF NOT EXISTS tb_password (
   HCV_SYSLOGOUT(LOG_NOTICE, "PostGreSQL database " << connstr << " successfully initialized");
 } // end hcv_initialize_database
 
-
-
+// https://www.postgresqltutorial.com/postgresql-where/
+// https://www.postgresql.org/docs/current/sql-prepare.html
+#warning we need to use PostGreSQL prepared statements 
+bool
+hcv_database_with_known_email (const std::string& emailstr)
+{
+  HCV_DEBUGOUT("hcv_database_with_known_email: emailstr='" << emailstr << "'");
+  if (emailstr.empty() || emailstr.find('@') == std::string::npos)
+    {
+      HCV_DEBUGOUT("hcv_database_with_known_email bad email" << emailstr);
+      return false;
+    }
+  std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
+  pqxx::work firsttransact(*hcv_dbconn);
+  // we need to quote the emailstr
+  pqxx::row ruid = firsttransact.exec1("SELECT user_id FROM tb_user WHERE user_email=XXX;");
+  
+}
 /////////// end of file hcv_database.cc in github.com/bstarynk/helpcovid

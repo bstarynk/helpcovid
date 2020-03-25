@@ -198,6 +198,8 @@ extern "C" void hcv_initialize_database(const std::string&uri);
 
 extern "C" const std::string hcv_postgresql_version(void);
 
+// query if an email is known or not
+extern "C" bool hcv_database_with_known_email(const std::string&emailstr);
 
 ////////////////////////////////////////////////////////////////
 
