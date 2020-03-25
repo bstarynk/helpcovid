@@ -292,6 +292,8 @@ hcv_early_initialize(const char*progname)
   errno = 0;
   if (gethostname(hcv_hostname, sizeof(hcv_hostname)))
     HCV_FATALOUT("gethostname failure");
+  if (getenv("$HELPCOVID_NBWORKERTHREADS")) 
+    hcv_http_max_threads = atoi(getenv("$HELPCOVID_NBWORKERTHREADS"));
   if (hcv_http_max_threads >= std::thread::hardware_concurrency())
     hcv_http_max_threads = std::thread::hardware_concurrency()-1;
   if (hcv_http_max_threads < 2)

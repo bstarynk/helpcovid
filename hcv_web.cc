@@ -242,13 +242,16 @@ hcv_webserver_run(void)
     webport = 80;
   else
     webport = 8080;
-  HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server hcv_webserver@" << (void*)hcv_webserver
-                << " with hcv_weburl=" << hcv_weburl);
   if (!hcv_webserver)
     HCV_FATALOUT("no hcv_webserver");
   //
   if (hcv_weburl.empty())
     HCV_FATALOUT("no hcv_weburl");
+  HCV_SYSLOGOUT(LOG_INFO, "Starting HelpCovid web server hcv_webserver@"
+		<< (void*)hcv_webserver
+                << " with hcv_weburl=" << hcv_weburl
+		<< " and " <<  hcv_http_max_threads << " threads and "
+		<< hcv_http_payload_max << " maximal payload");
   // parse hcv_weburl
   char webhost[64];
   {
