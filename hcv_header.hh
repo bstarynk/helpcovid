@@ -193,6 +193,9 @@ extern "C" void hcv_webserver_run(void);
 
 extern "C" void hcv_output_encoded_html(std::ostream&out, const std::string&str);
 extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
+
+extern "C" std::string hcv_get_web_root(void);
+
 ////////////////////////////////////////////////////////////////
 
 //// template machinery: in some quasi HTML file starting with
