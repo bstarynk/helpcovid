@@ -173,18 +173,33 @@ hcv_web_error_handler(const httplib::Request& req,
                       httplib::Response& resp, long reqnum)
 {
   Hcv_http_template_data webdata(req,resp,reqnum);
-#warning unimplemented hcv_web_error_handler
-  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_web_error_handler reqnum=" << reqnum << " req." << req.method << " path=" << req.path);
+  HCV_SYSLOGOUT(LOG_WARNING, "hcv_web_error_handler reqnum=" << reqnum << " req." << req.method << " path=" << req.path);
+  std::string outhtmlstr;
+  bool goodhtml = false;
+  std::string errfilpath;
   if (!hcv_webroot.empty() && hcv_webroot[0] == '/')
     {
-      std::string errfilpath = hcv_webroot + "/html/error.thtml";
-      if (access(errfilpath.c_str(), R_OK))
+      errfilpath = hcv_webroot + "/html/error.html";
+      if (auto ferr= fopen(errfilpath.c_str(), "r"))
         {
-        }
-      else
-        {
-        }
+          char firstlinbuf[80];
+          memset (firstlinbuf, 0, sizeof(firstlinbuf));
+          fgets(firstlinbuf, sizeof(firstlinbuf), ferr);
+          if (!strncmp(firstlinbuf, HCV_HTML5_START, strlen(HCV_HTML5_START)))
+            goodhtml = true;
+          fclose(ferr);
+        };
+    };
+  if (goodhtml)
+    outhtmlstr = hcv_expand_template_file(errfilpath, &webdata);
+  else
+    {
+#warning hcv_web_error_handler incomplete
+      HCV_FATALOUT("hcv_web_error_handler should provide a builtin string"
+                   " to be expanded by hcv_expand_template_input_stream for reqnum="
+                   << reqnum << " req." << req.method << " path=" << req.path);
     }
+  resp.set_content(outhtmlstr.c_str(), "text/html");
 } // end hcv_web_error_handler
 
 void
@@ -315,8 +330,9 @@ hcv_webserver_run(void)
     resp.set_content(str.c_str(), "application/json");
   });
 
-  hcv_webserver->Get("/login", [](const httplib::Request& req, 
-        httplib::Response& resp) {
+  hcv_webserver->Get("/login", [](const httplib::Request& req,
+                                  httplib::Response& resp)
+  {
 
     auto view = Hcv_LoginView(req, resp, "html/login.html");
     resp.set_content(view.get(), "text/html");
