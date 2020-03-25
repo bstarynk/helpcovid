@@ -346,11 +346,11 @@ hcv_webserver_run(void)
     jsob["cpu_time_per_request"] = (hcv_process_cpu_time() - startcputime) / reqcnt;
     jsob["elapsed_time_per_request"] = (hcv_monotonic_real_time() - startmonotonictime) / reqcnt;
     if (procsize>0)
-      jsob["process_size"] = procsize;
+      jsob["process_size"] = (Json::Value::Int)procsize;
     if (procrss>0)
-      jsob["process_rss"] = procrss;
+      jsob["process_rss"] = (Json::Value::Int)procrss;
     if (procshared>0)
-      jsob["process_shared"] = procshared;
+      jsob["process_shared"] = (Json::Value::Int)procshared;
     jsob["postgresql_version"] = hcv_postgresql_version();
     time_t nowt = 0;
     time(&nowt);
@@ -365,9 +365,9 @@ hcv_webserver_run(void)
     gethostname(hostbuf, sizeof(hostbuf));
     jsob["ctime"] = nowbuf;
     jsob["hostname"] = hostbuf;
-    jsob["nowtime"] = (long) nowt;
-    jsob["pid"] = (int)getpid();
-    jsob["web_request_count"] = reqcnt;
+    jsob["nowtime"] = (Json::Value::Int64) nowt;
+    jsob["pid"] = (Json::Value::Int)getpid();
+    jsob["web_request_count"] =  (Json::Value::Int64)reqcnt;
     auto str = Json::writeString(hcv_json_builder, jsob);
     resp.set_content(str.c_str(), "application/json");
   });
