@@ -124,11 +124,12 @@ hcv_expand_processing_instruction(Hcv_template_data*templdata, const std::string
 } // end hcv_expand_processing_instruction
 
 
+const unsigned hcv_max_template_size = 128*1024;
+
 
 std::string
 hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templdata)
 {
-  static constexpr unsigned max_template_size = 128*1024;
   struct stat srcfilestat;
   memset (&srcfilestat, 0, sizeof(srcfilestat));
   if (stat(srcfilepath.c_str(), &srcfilestat))
@@ -136,7 +137,7 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
   if (!S_ISREG(srcfilestat.st_mode))
     HCV_FATALOUT("hcv_expand_template_file: source file " << srcfilepath
                  << " is not a regular file.");
-  if (srcfilestat.st_size > max_template_size)
+  if (srcfilestat.st_size > hcv_max_template_size)
     HCV_FATALOUT("hcv_expand_template_file: source file " << srcfilepath
                  << " is too big: "
                  << (long)srcfilestat.st_size << " bytes.");
@@ -176,6 +177,53 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
   outp<<std::endl;
   return outp.str();
 } // end hcv_expand_template_file
+
+
+std::string
+hcv_expand_template_input_stream(std::istream&srcinp, const char*inpname, Hcv_template_data*templdata)
+{
+  if (!inpname)
+    inpname = "??*null*??";
+  std::ostringstream outp;
+  int lincnt = 0;
+  bool gotpe = false;
+  long off=0;
+  for (std::string linbuf; (off=srcinp.tellg()), std::getline(srcinp, linbuf); )
+    {
+      gotpe = false;
+      lincnt++;
+      if (off > hcv_max_template_size)
+        HCV_FATALOUT("hcv_expand_template_input_stream: source input " << inpname
+                     << " is too big: "
+                     << (long)off << " bytes.");
+      int col=0, prevcol=0, lqpos=0, qrpos=0;
+      while ((lqpos=linbuf.find("<?hcv ", col)>0) >=0)
+        {
+          outp << linbuf.substr(prevcol, lqpos-prevcol);
+          qrpos = linbuf.find("?>", lqpos);
+          if (qrpos<0)
+            {
+              HCV_SYSLOGOUT(LOG_WARNING,
+                            "hcv_expand_template_input_stream: " << inpname
+                            << ":" << lincnt
+                            << " line has unclosed template markup:" << std::endl
+                            << linbuf);
+              outp << linbuf.substr(prevcol);
+              continue;
+            }
+          std::string procinstr=linbuf.substr(prevcol, qrpos+2-prevcol);
+          hcv_expand_processing_instruction(templdata, procinstr, inpname, lincnt, off);
+          prevcol=col;
+          col = qrpos+2;
+          gotpe = true;
+        };
+      if (gotpe)
+        outp << std::flush;
+    }
+  outp<<std::endl;
+  return outp.str();
+} // end hcv_expand_template_input_stream
+
 
 
 

@@ -192,6 +192,8 @@ extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
 //// '<!DOCTYPE html' expand every occurrence of <?hcv markup...?>
 //// where <?hcv is verbatim; and return the expanded string.
 
+extern "C" const unsigned hcv_max_template_size;
+
 class Hcv_template_data
 {
 protected:
@@ -304,6 +306,8 @@ class Hcv_websocket_template_data : public Hcv_template_data
 
 
 extern "C" std::string hcv_expand_template_file(const std::string& filepath,Hcv_template_data*templdata);
+
+extern "C" std::string hcv_expand_template_input_stream(std::istream&srcinp, const char*inpname, Hcv_template_data*templdata);
 
 typedef std::function<void(Hcv_template_data*templdata, const std::string &procinstr, const char*filename, int lineno, long offset)> hcv_template_expanding_closure_t;
 // the name should be like a C identifier
