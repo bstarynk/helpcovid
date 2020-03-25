@@ -202,6 +202,8 @@ extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
 
 extern "C" std::string hcv_get_web_root(void);
 
+extern "C" long hcv_get_web_request_counter(void);
+
 ////////////////////////////////////////////////////////////////
 
 //// template machinery: in some quasi HTML file starting with
@@ -388,9 +390,8 @@ hcv_thread_cpu_time(void)
 class Hcv_LoginView
 {
 public:
-  Hcv_LoginView(const httplib::Request& req, const httplib::Response& resp,
-                std::string thtml)
-    : m_req(req), m_resp(resp), m_thtml(thtml)
+  Hcv_LoginView(const httplib::Request& req, const httplib::Response& resp)
+    : m_req(req), m_resp(resp)
   { }
 
   ~Hcv_LoginView()
@@ -398,8 +399,10 @@ public:
 
   std::string get()
   {
-    Hcv_http_template_data data(m_req, m_resp, 1);
-    return hcv_expand_template_file(m_thtml, &data);
+    Hcv_http_template_data data(m_req, m_resp, hcv_get_web_request_counter());
+    std::string thtml = hcv_get_web_root() + "html/signin.html";
+
+    return hcv_expand_template_file(thtml, &data);
   }
 
   std::string post()
@@ -411,7 +414,6 @@ public:
 private:
   httplib::Request m_req;
   httplib::Response m_resp;
-  std::string m_thtml;
 };				// end of class Hcv_LoginView
 
 
