@@ -135,7 +135,7 @@ const unsigned hcv_max_template_size = 128*1024;
 
 
 std::string
-hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templdata)
+hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data* templdata)
 {
   struct stat srcfilestat;
   memset (&srcfilestat, 0, sizeof(srcfilestat));
@@ -153,7 +153,12 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
     HCV_FATALOUT("hcv_expand_template_file: source file " << srcfilepath
                  << " is too big: "
                  << (long)srcfilestat.st_size << " bytes.");
-  std::ostringstream outp;
+
+  auto outp = dynamic_cast<std::ostringstream*>(templdata->output_stream());
+  if (outp == nullptr)
+      HCV_FATALOUT("hcv_expand_template_file: bad templdata->output_stream()");
+
+  //std::ostringstream *outp = outstrptr;
   std::ifstream srcinp(srcfilepath);
   int lincnt = 0;
   bool gotpe = false;
@@ -164,13 +169,13 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
       lincnt++;
       if (linbuf.empty())
         {
-          outp << std::endl;
+          *outp << std::endl;
           continue;
         }
       /// skip <!DOCTYPE html> or <!-- html comment --> in first 8 lines
       if (lincnt < 8 && linbuf.size()>4 && linbuf[0]=='<' && linbuf[1]=='!')
         {
-          outp << linbuf << std::endl;
+          *outp << linbuf << std::endl;
           continue;
         }
       const char*linestr= linbuf.c_str();
@@ -186,28 +191,29 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
                             << ":" << lincnt
                             << " line has unclosed template markup:" << std::endl
                             << linbuf);
-              outp << std::string(curpc);
+              *outp << std::string(curpc);
               curpc = nullptr;
               break;
             }
           else
             {
               std::string before(curpc, startpi-curpc);
-              outp << before;
+              *outp << before;
               std::string procinstr(startpi, (endpi+2)-startpi);
               hcv_expand_processing_instruction(templdata, procinstr, srcfilepath.c_str(), lincnt, off);
               curpc = endpi+2;
               gotpe = true;
             };
           if (gotpe)
-            outp << std::flush;
+            *outp << std::flush;
         } // end while curpc && (startpi=....)
       if (curpc && !startpi)
-        outp << curpc;
-      outp << std::endl;
+        *outp << curpc;
+      *outp << std::endl;
     };
-  outp.flush();
-  return outp.str();
+  outp->flush();
+
+  return outp->str();
 } // end hcv_expand_template_file
 
 
