@@ -176,6 +176,9 @@ It provides "global" settings
   `/var/run/helpcovid.pid`. Overridable by `$HELPCOVID_PIDFILE` or
   `--write-pid` option.
 
+* `threads`, the number of working threads. Overridable by `$HELPCOVID_NBWORKERTHREADS` or
+  `--threads` option.
+
 #### `web` group
 
 It can provide the following keys (for [cpp-httplib](https://github.com/yhirose/cpp-httplib) ...):
