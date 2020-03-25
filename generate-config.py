@@ -61,8 +61,13 @@ def initialize_readline():
 
 
 
-def write_key_value_pair(key, conf_file):
+def write_key_value_pair(key, conf_file, suffix_slash = False):
     val =  input('{0}: '.format(key)).strip()
+
+    if suffix_slash == True:
+        if not val.endswith('/'):
+            val += '/'
+
     print('[{0} = {1}]'.format(key, val))
     conf_file.write('{0}={1}\n'.format(key, val))
 
@@ -79,9 +84,9 @@ def create_configuration_file():
     rc_file.write('[web]\n\n')
     print("\n ==== HelpCovid web configuration =====\n")
     print("Enter web served URL, e.g. http://localhost:8089/ or https://example.com/\n")
-    write_key_value_pair('url', rc_file)
+    write_key_value_pair('url', rc_file, True)
     print("Enter web document root, a local directory containing web served resources (e.g. HTML files, CSS stylesheets)\n");
-    write_key_value_pair('root', rc_file)
+    write_key_value_pair('root', rc_file, True)
     print("Enter the OpenSSL public certificate, for HTTPS - can be left empty; see https://www.openssl.org/\n")
     write_key_value_pair('sslcert', rc_file)
     print("Enter the OpenSSL private key, for HTTPS")
