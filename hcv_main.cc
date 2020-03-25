@@ -34,7 +34,8 @@ std::recursive_mutex hcv_fatalmtx;
 std::recursive_mutex hcv_syslogmtx;
 
 char hcv_startimbuf[80];
-
+std::atomic<bool> hcv_debugging;
+double hcv_monotonic_start_time;
 unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
 
@@ -54,6 +55,7 @@ enum hcv_progoption_en
   HCVPROGOPT_CONFIG='C',
   HCVPROGOPT_THREADS='T',
   HCVPROGOPT_WRITEPID='p',
+  HCVPROGOPT_DEBUG = 'D',
 
   HCVPROGOPT_WEBSSLCERT=1000,
   HCVPROGOPT_WEBSSLKEY=1001,
@@ -149,6 +151,14 @@ struct argp_option hcv_progoptions[] =
     " (defaults to $HELPCOVID_PIDFILE or else /var/run/helpcovid.pid), config: helpcovid/pid_file", ///
     /*group:*/0 ///
   },
+  /* ======= enable debug messages ======= */
+  {/*name:*/ "debug", ///
+    /*key:*/ HCVPROGOPT_DEBUG, ///
+    /*arg:*/ nullptr, ///
+    /*flags:*/0, ///
+    /*doc:*/ "write debug messages to syslog(LOG_DEBUG, ...)", ///
+    /*group:*/0 ///
+  },
   /* ======= terminating empty option ======= */
   {/*name:*/(const char*)0, ///
     /*key:*/0, ///
@@ -204,6 +214,34 @@ void hcv_fatal_stop_at (const char *fil, int lin, int err)
   abort();
 } // end hcv_fatal_stop_at
 
+void
+hcv_debug_at (const char*fil, int lin, std::ostringstream&outs)
+{
+  static std::recursive_mutex dbgmtx;
+  static long dbgcnt;
+  outs.flush();
+  if (!fil) fil="??";
+  if (fil)
+    {
+      auto ls = strrchr(fil, '/');
+      if (ls && ls[1]) fil = ls+1;
+    };
+  std::lock_guard<std::recursive_mutex> gu(dbgmtx);
+  dbgcnt++;
+  auto elapsed = hcv_monotonic_real_time() - hcv_monotonic_start_time;
+  if (dbgcnt % 100 == 0)
+    {
+      time_t nowt = 0;
+      time(&nowt);
+      struct tm nowtm = {};
+      localtime_r(&nowt, &nowtm);
+      char timbuf[64];
+      strftime(timbuf, sizeof(timbuf), "%c %Z", &nowtm);
+      syslog(LOG_DEBUG, "========== DEBUG timestamp %s #%ld ==========", timbuf, dbgcnt);
+    }
+  // we use the Δ U+0394 GREEK CAPITAL LETTER DELTA
+  syslog(LOG_DEBUG, "ΔBG!%s:%d:%05.2f s %s", fil, lin, elapsed, outs.str().c_str());
+} // end hcv_debug_at
 
 // parse a single program option
 static error_t
@@ -290,6 +328,7 @@ void
 hcv_early_initialize(const char*progname)
 {
   errno = 0;
+  hcv_monotonic_start_time = hcv_monotonic_real_time();
   if (gethostname(hcv_hostname, sizeof(hcv_hostname)))
     HCV_FATALOUT("gethostname failure");
   if (getenv("$HELPCOVID_NBWORKERTHREADS"))
@@ -685,6 +724,17 @@ main(int argc, char**argv)
               }
           };
       });
+    };
+  //////////////// debugging
+  errno = 0;
+  if (hcv_debugging.load())
+    {
+      HCV_SYSLOGOUT(LOG_INFO, "helpcovid debugging enabled");
+      HCV_DEBUGOUT("helpcovid is debugging");
+    }
+  else
+    {
+      HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid debugging disabled");
     };
   errno = 0;
   /////==================================================

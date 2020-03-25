@@ -136,22 +136,42 @@ extern "C" const char*hcv_get_hostname(void);
 
 extern "C" std::recursive_mutex hcv_syslogmtx;
 extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::string&str);
-#define HCV_SYSLOGOUT_AT_BIS(Fil,Lin,Prio,...) do {	\
-  int err##Lin = errno;					\
-  std::lock_guard<std::recursive_mutex>			\
-    gu##Lin(hcv_syslogmtx);				\
-  std::ostringstream outs##Lin;				\
-  outs##Lin << " !! "					\
-	 << __VA_ARGS__ << std::endl;			\
-  if (err##Lin)						\
-    outs##Lin << "-: " << strerror(err##Lin);		\
-  hcv_syslog_at ((Fil),(Lin),(Prio),(outs##Lin.str()));	\
+#define HCV_SYSLOGOUT_AT_BIS(Fil,Lin,Prio,...) do {		\
+  int err##Lin = errno;						\
+  std::lock_guard<std::recursive_mutex>				\
+    gu##Lin(hcv_syslogmtx);					\
+  std::ostringstream outs##Lin;					\
+  outs##Lin << " !! "						\
+	 << __VA_ARGS__ << std::endl;				\
+  if (err##Lin)							\
+    outs##Lin << "-: " << strerror(err##Lin);			\
+  hcv_syslog_at ((Fil), (Lin), (Prio), (outs##Lin.str()));	\
   } while(0)
 
 #define HCV_SYSLOGOUT_AT(Fil,Lin,Prio,...) HCV_SYSLOGOUT_AT_BIS(Fil,Lin,(Prio),##__VA_ARGS__)
 
 // typical usage would be HCV_SYSLOGOUT(LOG_NOTICE,"x=" << x)
 #define HCV_SYSLOGOUT(Prio,...) HCV_SYSLOGOUT_AT(__FILE__,__LINE__,(Prio),##__VA_ARGS__)
+
+
+
+// debug facility
+extern "C" std::atomic<bool> hcv_debugging;
+
+
+extern "C" void hcv_debug_at (const char *fil, int lin, std::ostringstream&outs);
+#define HCV_DEBUGOUT_AT_BIS(Fil,Lin,...) do {	\
+  if (hcv_debugging.load()) {			\
+  std::ostringstream outs##Lin;			\
+  outs##Lin << " "				\
+	    << __VA_ARGS__ << std::flush;	\
+  hcv_debug_at ((Fil),(Lin),(outs##Lin));	\
+  } } while(0)
+
+#define HCV_DEBUGOUT_AT(Fil,Lin,...) HCV_DEBUGOUT_AT_BIS(Fil,Lin,##__VA_ARGS__)
+
+// typical usage would be HCV_DEBUGOUT("x=" << x)
+#define HCV_DEBUGOUT(...) HCV_DEBUGOUT_AT(__FILE__,__LINE__,##__VA_ARGS__)
 
 
 
@@ -344,6 +364,7 @@ extern "C" void hcv_initialize_templates(void);
 ////////////////////////////////////////////////////////////////
 //////////////// timing functions
 // see http://man7.org/linux/man-pages/man2/clock_gettime.2.html
+extern "C" double hcv_monotonic_start_time;
 static inline double
 hcv_wallclock_real_time(void)
 {
