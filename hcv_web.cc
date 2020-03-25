@@ -48,6 +48,12 @@ extern "C" std::string hcv_get_web_root(void)
 }
 
 
+extern "C" long hcv_get_web_request_counter(void)
+{
+    return std::atomic_fetch_add(&hcv_web_request_counter, 1);
+}
+
+
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port. So be specially careful here!
 void hcv_initialize_web(const std::string&weburl, const std::string&webroot, const std::string&opensslcert, const std::string&opensslkey)
