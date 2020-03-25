@@ -2,7 +2,7 @@
 
 A quick and dirty C++17 application (GPLv3+) to help neighbours making
 essential buying (food, medicine) during the [2019–20 coronavirus pandemic](https://en.wikipedia.org/wiki/2019–20_coronavirus_pandemic).
-For Linux only. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
+**For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
 
 Of course that application stores personal data in some
 [PostGreSQL](http://postgresql.org/) database, so is concerned by
