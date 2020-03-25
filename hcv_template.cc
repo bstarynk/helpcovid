@@ -199,7 +199,8 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
       if (curpc && !startpi)
         outp << curpc;
       outp << std::endl;
-    }
+    };
+  outp.flush();
   return outp.str();
 } // end hcv_expand_template_file
 
@@ -254,6 +255,7 @@ hcv_expand_template_input_stream(std::istream&srcinp, const char*inpname, Hcv_te
         outp << curpc;
       outp<<std::endl;
     }
+  outp.flush();
   return outp.str();
 } // end hcv_expand_template_input_stream
 
