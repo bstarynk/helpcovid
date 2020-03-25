@@ -82,6 +82,12 @@
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
 #define CPPHTTPLIB_OPENSSL_SUPPORT 1
+extern "C" unsigned hcv_http_max_threads;
+extern "C" unsigned hcv_http_payload_max;
+
+#define CPPHTTPLIB_THREAD_POOL_COUNT     hcv_http_max_threads
+#define CPPHTTPLIB_PAYLOAD_MAX_LENGTH    hcv_http_payload_max
+
 #include "httplib.h"
 
 // JsonCPP https://github.com/open-source-parsers/jsoncpp

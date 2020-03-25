@@ -44,7 +44,7 @@ Json::StreamWriterBuilder hcv_json_builder;
 
 extern "C" std::string hcv_get_web_root(void)
 {
-    return hcv_webroot;
+  return hcv_webroot;
 }
 
 

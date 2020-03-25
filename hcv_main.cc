@@ -35,6 +35,10 @@ std::recursive_mutex hcv_syslogmtx;
 
 char hcv_startimbuf[80];
 
+unsigned hcv_http_max_threads = 8;
+unsigned hcv_http_payload_max = 16*1024*1024;
+
+
 extern "C" void hcv_load_config_file(const char*);
 ////////////////////////////////////////////////////////////////
 /// https://www.gnu.org/software/libc/manual/html_node/Program-Arguments.html
@@ -48,6 +52,7 @@ enum hcv_progoption_en
   HCVPROGOPT_WEBROOT='R',
   HCVPROGOPT_SETEUID='U',
   HCVPROGOPT_CONFIG='C',
+  HCVPROGOPT_THREADS='T',
   HCVPROGOPT_WRITEPID='p',
 
   HCVPROGOPT_WEBSSLCERT=1000,
@@ -80,6 +85,14 @@ struct argp_option hcv_progoptions[] =
     /*arg:*/ "SYSLOGLEVEL", ///
     /*flags:*/0, ///
     /*doc:*/ "sets the syslog level to SYSLOGLEVEL for openlog(3) (defaults to 0 for LOG_LOCAL0), between 0 and 7, e.g. --syslog-level=1", ///
+    /*group:*/0 ///
+  },
+  /* ======= set the number of worker threads ======= */
+  {/*name:*/ "threads", ///
+    /*key:*/ HCVPROGOPT_THREADS, ///
+    /*arg:*/ "NBWORKERTHREADS", ///
+    /*flags:*/0, ///
+    /*doc:*/ "sets the number of worker threads, (defaults to $HELPCOVID_NBWORKERTHREADS), config: helpcovid/threads", ///
     /*group:*/0 ///
   },
   /* ======= set the web document root ======= */
@@ -224,6 +237,18 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       progargs->hcvprog_pidfile = std::string(arg);
       return 0;
 
+    case HCVPROGOPT_THREADS:
+      hcv_http_max_threads = (unsigned)atoi(arg);
+      if (hcv_http_max_threads < 2)
+        hcv_http_max_threads = 2;
+      else if (hcv_http_max_threads > 4 && hcv_http_max_threads > std::thread::hardware_concurrency() - 1)
+        hcv_http_max_threads =
+          (std::thread::hardware_concurrency() > 8)
+          ? ((std::thread::hardware_concurrency() -1))
+          : 4;
+      return 0;
+
+
     case HCVPROGOPT_SYSLOG:
     {
       int lev = -1;
@@ -267,6 +292,10 @@ hcv_early_initialize(const char*progname)
   errno = 0;
   if (gethostname(hcv_hostname, sizeof(hcv_hostname)))
     HCV_FATALOUT("gethostname failure");
+  if (hcv_http_max_threads >= std::thread::hardware_concurrency())
+    hcv_http_max_threads = std::thread::hardware_concurrency()-1;
+  if (hcv_http_max_threads < 2)
+    hcv_http_max_threads = 2;
   snprintf(hcv_versionmsg, sizeof(hcv_versionmsg),
            "github.com/bstarynk/helpcovid built %s\n... gitcommit %s\n... md5sum %s on %s",
            hcv_timestamp, hcv_lastgitcommit,
@@ -560,7 +589,7 @@ hcv_config_handle_helpcovid_config_group(void)
           HCV_FATALOUT("helpcovid startup popen command " << cmd << " failed with pclose code " << pc);
         HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid did startup popen command " << cmd
                       << " in " << (hcv_monotonic_real_time() - startim) << " elapsed seconds");
-      }
+      };
   });
 
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid did handle 'helpcovid' config group");
@@ -587,6 +616,24 @@ main(int argc, char**argv)
                 << " at " << hcv_startimbuf
                 << " on " << hcv_hostname);
   hcv_load_config_file();
+  if (hcv_config_has_group("helpcovid"))
+    {
+      hcv_config_do([&](const Glib::KeyFile*kf)
+      {
+        if (kf->has_key("helpcovid","threads"))
+          {
+            hcv_http_max_threads = (unsigned)kf->get_int64("helpcovid","threads");
+            if (hcv_http_max_threads < 2)
+              hcv_http_max_threads = 2;
+            else if (hcv_http_max_threads > 4 && hcv_http_max_threads > std::thread::hardware_concurrency() - 1)
+              hcv_http_max_threads =
+                (std::thread::hardware_concurrency() > 8)
+                ? ((std::thread::hardware_concurrency() -1))
+                : 4;
+            HCV_SYSLOGOUT(LOG_INFO,"helpcovid startup threads#" << hcv_http_max_threads);
+          }
+      });
+    };
   /// the web interface should be initialized early, before seteuid(2)
   if (!hcv_progargs.hcvprog_weburl.empty())
     hcv_initialize_web(hcv_progargs.hcvprog_weburl, hcv_progargs.hcvprog_webroot,

@@ -155,18 +155,20 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
     {
       gotpe = false;
       lincnt++;
-      if (linbuf.empty()) {
-	outp << std::endl;
-	continue;
-      }
+      if (linbuf.empty())
+        {
+          outp << std::endl;
+          continue;
+        }
       /// skip <!DOCTYPE html> or <!-- html comment --> in first 8 lines
-      if (lincnt < 8 && linbuf.size()>4 && linbuf[0]=='<' && linbuf[1]=='!') {
-	outp << linbuf << std::endl;
-	continue;
-      }
+      if (lincnt < 8 && linbuf.size()>4 && linbuf[0]=='<' && linbuf[1]=='!')
+        {
+          outp << linbuf << std::endl;
+          continue;
+        }
       long col=0, prevcol=0, lqpos=0, qrpos=0;
       while ((lqpos=linbuf.find("<?hcv ", col)>0) != (long)std::string::npos
-	     && lqpos<(long)linbuf.size())
+             && lqpos<(long)linbuf.size())
         {
           outp << linbuf.substr(prevcol, lqpos-prevcol);
           qrpos = linbuf.find("?>", lqpos);
@@ -178,7 +180,7 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
                             << " line has unclosed template markup:" << std::endl
                             << linbuf);
               outp << linbuf.substr(prevcol);
-	      col = lqpos + strlen("<?hcv ");
+              col = lqpos + strlen("<?hcv ");
               break;
             }
           std::string procinstr=linbuf.substr(prevcol, qrpos+2-prevcol);
