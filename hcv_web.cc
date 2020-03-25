@@ -366,7 +366,7 @@ hcv_webserver_run(void)
                                   httplib::Response& resp)
   {
 
-    auto view = Hcv_LoginView(req, resp, hcv_webroot + "html/signin.html");
+    auto view = Hcv_LoginView(req, resp);
     resp.set_content(view.get(), "text/html");
   });
 
