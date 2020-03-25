@@ -407,8 +407,12 @@ public:
 
   std::string post()
   {
-    // TODO
-    return "";
+    // TODO: user authentication needs to be implemented.
+   
+    Hcv_http_template_data data(m_req, m_resp, hcv_get_web_request_counter()); 
+    std::string thtml = hcv_get_web_root() + "html/index.html";
+
+    return hcv_expand_template_file(thtml, &data);
   }
 
 private:

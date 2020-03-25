@@ -373,6 +373,13 @@ hcv_webserver_run(void)
     resp.set_content(view.get(), "text/html");
   });
 
+  hcv_webserver->Post("/login", [](const httplib::Request& req, 
+                                   httplib::Response& resp)
+  {
+    auto view = Hcv_LoginView(req, resp);
+    resp.set_content(view.post(), "text/html");
+  });
+
   hcv_webserver->listen(webhost, webport);
   HCV_SYSLOGOUT(LOG_INFO, "end hcv_webserver_run webhost=" << webhost << " webport=" << webport);
 } // end hcv_webserver_run
