@@ -314,6 +314,14 @@ hcv_webserver_run(void)
     auto str = Json::writeString(hcv_json_builder, jsob);
     resp.set_content(str.c_str(), "application/json");
   });
+
+  hcv_webserver->Get("/login", [](const httplib::Request& req, 
+        httplib::Response& resp) {
+
+    auto view = hcv::LoginView(req, "html/login.html");
+    resp.set_content(view.content(), "text/html");
+  });
+
   hcv_webserver->listen(webhost, webport);
   HCV_SYSLOGOUT(LOG_INFO, "end hcv_webserver_run webhost=" << webhost << " webport=" << webport);
 } // end hcv_webserver_run
