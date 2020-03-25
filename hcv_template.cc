@@ -458,6 +458,26 @@ hcv_initialize_templates(void)
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_path?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   });
+
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv webroot?>
+  hcv_register_template_expander_closure
+  ("webroot",
+   [](Hcv_template_data* templdata, const std::string& procinstr,
+      const char* filename, int lineno, long offset)
+  {
+    if (!templdata 
+        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none) 
+      HCV_FATALOUT("no template data for '<?hcv webroot?>' processing instruction  "
+                   << procinstr << " in " << filename << ":" << lineno);
+
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, hcv_get_web_root().c_str());
+
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_number?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
 } // end hcv_initialize_templates
 
 /************* end of file hcv_template.cc in github.com/bstarynk/helpcovid *********/
