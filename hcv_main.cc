@@ -571,7 +571,8 @@ hcv_config_handle_helpcovid_config_group(void)
 ////////////////////////////////////////////////////////////////
 
 const char*
-hcv_get_hostname(void) {
+hcv_get_hostname(void)
+{
   return hcv_hostname;
 } // end hcv_get_hostname
 
