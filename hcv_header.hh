@@ -176,6 +176,9 @@ extern "C" const std::string hcv_postgresql_version(void);
 
 //// Web service
 
+// the first bytes of every HTML5 file
+#define HCV_HTML5_START "<!DOCTYPE html"
+
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port.
 void hcv_initialize_web(const std::string&weburl, const std::string&webroot,
@@ -366,27 +369,29 @@ hcv_thread_cpu_time(void)
 // LoginView class
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace hcv {
-  class LoginView {
-    public:
-      LoginView(const httplib::Request& req, std::string html)
-        : m_req(req), m_html(html)
-      { }
+namespace hcv
+{
+class LoginView
+{
+public:
+  LoginView(const httplib::Request& req, std::string html)
+    : m_req(req), m_html(html)
+  { }
 
-      ~LoginView()
-      { }
+  ~LoginView()
+  { }
 
-      std::string content()
-      { 
-        std::string content = "<p>Hello, world!</p>";
-        return content;
-        // TODO
-      }
+  std::string content()
+  {
+    std::string content = "<p>Hello, world!</p>";
+    return content;
+    // TODO
+  }
 
-    private:
-      httplib::Request m_req;
-      std::string m_html;
-    };
+private:
+  httplib::Request m_req;
+  std::string m_html;
+};
 }
 
 

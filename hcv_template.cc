@@ -132,6 +132,11 @@ hcv_expand_template_file(const std::string& srcfilepath, Hcv_template_data*templ
 {
   struct stat srcfilestat;
   memset (&srcfilestat, 0, sizeof(srcfilestat));
+  if (srcfilepath.empty())
+    HCV_FATALOUT("hcv_expand_template_file with empty srcfilepath");
+  if (srcfilepath[0] != '/')
+    HCV_SYSLOGOUT(LOG_WARNING,
+                  "hcv_expand_template_file with relative path: " << srcfilepath);
   if (stat(srcfilepath.c_str(), &srcfilestat))
     HCV_FATALOUT("hcv_expand_template_file: stat failure on source file " << srcfilepath);
   if (!S_ISREG(srcfilestat.st_mode))
