@@ -117,7 +117,13 @@ hcv_expand_processing_instruction(Hcv_template_data*templdata, const std::string
   auto it = hcv_template_expander_dict.find(std::string(namebuf));
   if (it == hcv_template_expander_dict.end())
     {
-      HCV_SYSLOGOUT(LOG_WARNING,"hcv_expand_processing_instruction: unknown namebuf='" << namebuf << "'");
+      if (auto httptempl = dynamic_cast<Hcv_http_template_data*>(templdata))
+        HCV_SYSLOGOUT(LOG_WARNING,"hcv_expand_processing_instruction: unknown namebuf='"
+                      << namebuf << "' for HTTP request "
+                      << httptempl->request_method()
+                      << " on " << httptempl->request_path());
+      else
+        HCV_SYSLOGOUT(LOG_WARNING,"hcv_expand_processing_instruction: unknown namebuf='" << namebuf);
       return;
     };
   hcv_template_expanding_closure_t clos = it->second;
