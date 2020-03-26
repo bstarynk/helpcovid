@@ -93,7 +93,7 @@ hcv_initialize_database(const std::string&uri)
     }
     ////================ create tables if they are missing
     pqxx::work transact(*hcv_dbconn);
-    ////================ user table, with mandatory data
+    ////================ user table and indexes, with mandatory data
     transact.exec0(R"crusertab(
 ---- TABLE tb_user
 CREATE TABLE IF NOT EXISTS tb_user (
@@ -105,6 +105,24 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_crtime DATE NOT NULL             -- user entry creation time
 ); --- end TABLE tb_user
 )crusertab");
+    transact.exec0(R"cruserfamix(
+---- INDEX ix_user_familyname
+  CREATE INDEX IF NOT EXISTS ix_user_familyname 
+    ON tb_user(user_familyname);
+); --- end INDEX ix_user_familyname
+)cruserfamix");
+    transact.exec0(R"cruseremailix(
+---- INDEX ix_user_email
+  CREATE INDEX IF NOT EXISTS ix_user_email 
+    ON tb_user(user_email);
+); --- end INDEX ix_user_email
+)cruseremailix");
+    transact.exec0(R"crusertimeix(
+---- INDEX ix_user_crtime 
+  CREATE INDEX IF NOT EXISTS ix_user_crtime 
+    ON tb_user(user_crtime);
+); --- end INDEX ix_user_crtime
+)crusertimeix");
     ////================ password table
     transact.exec0(R"crpasswdtab(
 ---- TABLE tb_password
