@@ -149,9 +149,11 @@ void hcv_background_thread_body(void)
 void
 hcv_start_background_thread(void)
 {
+  //// see http://man7.org/linux/man-pages/man2/eventfd.2.html
   hcv_bg_event_fd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK);
   if (hcv_bg_event_fd < 0)
     HCV_FATALOUT("hcv_start_background_thread: eventfd failed for hcg_bg_event_fd");
+  //// see http://man7.org/linux/man-pages/man2/signalfd.2.html
   {
     sigset_t  sigmaskbits;
     memset (&sigmaskbits, 0, sizeof(sigmaskbits));
@@ -162,10 +164,12 @@ hcv_start_background_thread(void)
     hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK|SFD_CLOEXEC);
     if (hcv_bg_signal_fd < 0)
       HCV_FATALOUT("hcv_start_background_thread: signalfd failure");
-    hcv_bg_timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK|TFD_CLOEXEC);
-    if (hcv_bg_timer_fd < 0)
-      HCV_FATALOUT("hcv_start_background_thread:timerfd_create  failure");
   }
+  //// see http://man7.org/linux/man-pages/man2/timerfd_create.2.html
+  hcv_bg_timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK|TFD_CLOEXEC);
+  if (hcv_bg_timer_fd < 0)
+    HCV_FATALOUT("hcv_start_background_thread:timerfd_create  failure");
+  //////
   hcv_bgthread = std::thread([]()
   {
     hcv_background_thread_body();
