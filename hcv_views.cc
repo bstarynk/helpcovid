@@ -71,7 +71,7 @@ private:
 
 
 std::string 
-hcv_login_view_get(const httplib::Request& req, const httplib::Response& resp)
+hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
 {
     Hcv_LoginView vw(req, resp);
     return vw.get();
@@ -79,7 +79,7 @@ hcv_login_view_get(const httplib::Request& req, const httplib::Response& resp)
 
 
 std::string 
-hcv_login_view_post(const httplib::Request& req, const httplib::Response& resp)
+hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 {
     Hcv_LoginView vw(req, resp);
     return vw.post();
