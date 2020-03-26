@@ -290,34 +290,8 @@ hcv_webserver_run(void)
     auto n = std::atomic_load(&hcv_web_request_counter);
     hcv_web_error_handler(req, resp, n);
   });
-#if 0 && oldhellocode
-  hcv_webserver->Get("/hello",
-                     [](const httplib::Request&req, httplib::Response& resp)
-  {
-    std::atomic_fetch_add(&hcv_web_request_counter, 1);
-    std::ostringstream outs;
-    outs << "Hello, World, from HelpCovid - github.com/bstarynk/helpcovid - a GPLv3+ software." << std::endl
-         << " hcv_lastgitcommit: " << hcv_lastgitcommit << std::endl
-         << " hcv_md5sum: " << hcv_md5sum << std::endl
-         << " hcv_timestamp: " << hcv_timestamp << std::endl;
-    time_t nowt = 0;
-    time(&nowt);
-    struct tm nowtm;
-    memset (&nowtm, 0, sizeof(nowtm));
-    char nowbuf[80];
-    memset (nowbuf, 0, sizeof(nowbuf));
-    localtime_r (&nowt, &nowtm);
-    strftime(nowbuf, sizeof(nowbuf), "%c %Z", &nowtm);
-    char hostbuf[64];
-    memset(hostbuf, 0, sizeof(hostbuf));
-    gethostname(hostbuf, sizeof(hostbuf));
-    outs << " on " << nowbuf
-         << " host " <<  hostbuf
-         << " pid " << (int)(getpid())
-         << std::endl;
-    resp.set_content(outs.str().c_str(), "text/plain");
-  });
-#endif /*old hello code*/
+  ////////////////////////////////////////////////////////////////
+  //////////////// /status.json serving
   hcv_webserver->Get("/status.json",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
@@ -372,6 +346,8 @@ hcv_webserver_run(void)
     resp.set_content(str.c_str(), "application/json");
   });
 
+  ////////////////////////////////////////////////////////////////
+  //////////////// /ajax/ serving
   hcv_webserver->Get("/ajax/",
                      [](const httplib::Request&req, httplib::Response& resp)
 		     {
@@ -390,6 +366,21 @@ hcv_webserver_run(void)
 #warning hcv_webserver_run unimplemented AJAX POST
 		     });
 		     
+  ////////////////////////////////////////////////////////////////
+  //////////////// /login/ serving
+  hcv_webserver->Get("/login", [](const httplib::Request& req,
+                                  httplib::Response& resp)
+  {
+    resp.set_content(hcv_login_view_get(req, resp), "text/html");
+  });
+  ///////
+  hcv_webserver->Post("/login", [](const httplib::Request& req, 
+                                   httplib::Response& resp)
+  {
+    resp.set_content(hcv_login_view_post(req, resp), "text/html");
+  });
+  ////////////////////////////////////////////////////////////////
+  //////////////// /images/ serving
   hcv_webserver->Get("/login", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
@@ -403,19 +394,18 @@ hcv_webserver_run(void)
 				     "hcv_webserver_run GET /images request unimplemented path="
 				     << req.path);
   });
-
-  hcv_webserver->Post("/login", [](const httplib::Request& req, 
-                                   httplib::Response& resp)
-  {
-    resp.set_content(hcv_login_view_post(req, resp), "text/html");
-  });
-
+  ////////////////////////////////////////////////////////////////
   hcv_webserver->listen(webhost, webport);
   HCV_SYSLOGOUT(LOG_INFO, "end hcv_webserver_run webhost=" << webhost << " webport=" << webport);
 } // end hcv_webserver_run
 
 
-extern "C" std::string hcv_login_view_get(const httplib::Request& req, 
+
+
+
+
+extern "C" std::string
+hcv_login_view_get(const httplib::Request& req, 
         const httplib::Response& resp)
 {
     Hcv_LoginView vw(req, resp);
@@ -423,7 +413,8 @@ extern "C" std::string hcv_login_view_get(const httplib::Request& req,
 }
 
 
-extern "C" std::string hcv_login_view_post(const httplib::Request& req,
+extern "C" std::string
+hcv_login_view_post(const httplib::Request& req,
         const httplib::Response& resp)
 {
     Hcv_LoginView vw(req, resp);
