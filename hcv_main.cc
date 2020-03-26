@@ -783,6 +783,8 @@ main(int argc, char**argv)
   errno = 0;
   hcv_initialize_templates();
   errno = 0;
+  hcv_start_background_thread();
+  errno = 0;
   hcv_webserver_run();
 
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
