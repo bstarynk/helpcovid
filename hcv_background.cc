@@ -226,11 +226,30 @@ hcv_process_SIGHUP_signal(void)
 void
 hcv_bg_do_event(int64_t ev)
 {
-  HCV_SYSLOGOUT(LOG_INFO, "hcv_bg_do_event unimplemented " << ev);
-#warning hcv_bg_do_event unimplemented
-  /*** we probably want to use some std::condition_variable etc, to
-       manage a short TODO list, so that any thread could add closures into it.
-  ****/
+  std::lock_guard<std::recursive_mutex> gu(hcv_todo_mtx);
+  auto beg = hcv_todo_map.begin();
+  if (beg == hcv_todo_map.end())
+    return;
+  {
+    auto todo = beg->second;
+    hcv_todo_map.erase(beg);
+    todo.hcvtodo_func(todo.hcvtodo_data);
+    beg = hcv_todo_map.begin();
+    if (beg == hcv_todo_map.end())
+      return;
+  }
+  auto todonext =  beg->second;
+  double nextim = todonext.hcvtodo_time;
+  double fractim=0.0, itim=0.0;
+  fractim= std::modf(nextim,&itim);
+  struct itimerspec ts;
+  memset(&ts, 0, sizeof(ts));
+  ts.it_value.tv_sec = (time_t)itim;
+  ts.it_value.tv_nsec = (long)(fractim*1.0e9);
+  ts.it_interval.tv_sec = 0;
+  ts.it_interval.tv_nsec = 0;
+  if (timerfd_settime(hcv_bg_timer_fd,TFD_TIMER_ABSTIME, &ts, nullptr))
+    HCV_FATALOUT("hcv_do_event timerfd_settime failure");
 } // end hcv_bg_do_event
 
 
