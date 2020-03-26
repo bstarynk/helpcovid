@@ -394,8 +394,10 @@ hcv_webserver_run(void)
                                   httplib::Response& resp)
   {
 
-    auto view = Hcv_LoginView(req, resp);
-    resp.set_content(view.get(), "text/html");
+    //auto view = Hcv_LoginView(req, resp);
+    //resp.set_content(view.get(), "text/html");
+    
+    resp.set_content(hcv_login_view_get(req, resp), "text/html");
   });
 
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
