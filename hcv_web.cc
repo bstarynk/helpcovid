@@ -395,6 +395,14 @@ hcv_webserver_run(void)
   {
     resp.set_content(hcv_login_view_get(req, resp), "text/html");
   });
+  
+  hcv_webserver->Get("/images", [](const httplib::Request& req,
+                                  httplib::Response& resp)
+  {
+		       HCV_SYSLOGOUT(LOG_WARNING,
+				     "hcv_webserver_run GET /images request unimplemented path="
+				     << req.path);
+  });
 
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
                                    httplib::Response& resp)

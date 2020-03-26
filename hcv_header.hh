@@ -444,12 +444,12 @@ private:
 };				// end of class Hcv_LoginView
 
 
-extern "C" std::string hcv_login_view_get(const httplib::Request& req, 
-        const httplib::Response& resp);
+extern "C" std::string hcv_login_view_get(const httplib::Request& req,
+    const httplib::Response& resp);
 
 
 extern "C" std::string hcv_login_view_post(const httplib::Request& req,
-        const httplib::Response& resp);
+    const httplib::Response& resp);
 
 
 #endif /*HELPCOVID_HEADER*/
