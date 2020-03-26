@@ -47,6 +47,7 @@ struct hcv_todo_st
 };
 std::map<double, hcv_todo_st> hcv_todo_map;
 std::recursive_mutex hcv_todo_mtx;
+#define HCV_MAX_TODO 1024
 
 void hcv_process_SIGTERM_signal(void);
 void hcv_process_SIGXCPU_signal(void);
@@ -245,9 +246,16 @@ hcv_do_postpone_background(double delay,  const std::string&name, void*data,
   if (!todofun)
     HCV_FATALOUT("hcv_do_postpone_background missing todo: delay="  << delay
                  << ", name=" << name << ", data=" << data);
-  HCV_FATALOUT("hcv_do_postpone_background unimplemented: delay="  << delay
-               << ", name=" << name << ", data=" << data);
-#warning unimplemented hcv_do_postpone_background
+  double todotime = hcv_monotonic_real_time() + delay;
+  std::lock_guard<std::recursive_mutex> gu(hcv_todo_mtx);
+  if (hcv_todo_map.size() > HCV_MAX_TODO)
+    HCV_FATALOUT("hcv_do_postpone_background: too much todo:" << hcv_todo_map.size());
+  hcv_todo_map.insert({todotime,
+    {.hcvtodo_time=todotime, .hcvtodo_data=data, .hcvtodo_func= todofun}});
+  int64_t one=1;
+  if (write(hcv_bg_event_fd,&one,sizeof(one)) != sizeof(one))
+    HCV_FATALOUT("hcv_do_postpone_background failure to write hcv_bg_event_fd="
+                 << hcv_bg_event_fd);
 } // end hcv_do_postpone_background
 
 
