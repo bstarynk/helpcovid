@@ -293,6 +293,10 @@ protected:
   {
   };
 public:
+  long request_number() const
+  {
+    return _hcvhttp_reqnum;
+  };
   std::string request_method() const
   {
     if (_hcvhttp_request)
@@ -322,6 +326,16 @@ public:
   httplib::Response*response() const
   {
     return _hcvhttp_response;
+  };
+  void set_http_response_header(const char *key, const std::string &val)
+  {
+    if ( _hcvhttp_response)
+      {
+        HCV_DEBUGOUT("Hcv_http_template_data #" << request_number()
+                     << " set_http_response_header key=" << key
+                     << " val=" << val);
+        _hcvhttp_response->set_header(key, val);
+      }
   };
   virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
