@@ -133,16 +133,22 @@ CREATE TABLE IF NOT EXISTS tb_password (
   passw_mtime  TIMESTAMP NOT NULL       -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");
-    ////================ web session table, related to web cookies
-    transact.exec0(R"crwebsesstab(
----- TABLE tb_web_session
-CREATE TABLE IF NOT EXISTS tb_web_session (
-  webs_id SERIAL PRIMARY  KEY NOT NULL, -- unique key in this table
-  passw_userid INT NOT NULL,            -- the user id whose password we store
-  passw_encr VARCHAR(62) NOT NULL,      -- the encrypted password
-  passw_mtime  TIMESTAMP NOT NULL       -- the last time that password was modified
-); --- end TABLE tb_web_session
-)crwebsesstab");
+    ////================ web cookie table, related to web cookies
+    // see https://www.postgresql.org/docs/current/datatype-net-types.html
+    // read https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+    // see http://man7.org/linux/man-pages/man2/getsockname.2.html
+    // see http://man7.org/linux/man-pages/man7/ip.7.html
+    // and http://man7.org/linux/man-pages/man7/ipv6.7.html
+    transact.exec0(R"crwebcookietab(
+---- TABLE tb_web_cookie
+CREATE TABLE IF NOT EXISTS tb_web_cookie (
+  wcookie_id SERIAL PRIMARY  KEY NOT NULL, -- unique key in this table
+  wcookie_random CHAR(24) NOT NULL,        -- a random key, hopefully usually unique
+  wcookie_exptime TIMESTAMP NOT NULL,      -- the cookie expiration time
+  wcookie_webagenthash INT NOT NULL,       -- a quick hashcode of the browser's User-Agent:
+  wcookie_ipaddr INET NOT NULL,            -- the browser IP address (beware of NAT)
+); --- end TABLE tb_web_cookie
+)crwebcookietab");
     transact.commit();
   }
   HCV_DEBUGOUT("hcv_initialize_database before preparing statements in " << connstr);

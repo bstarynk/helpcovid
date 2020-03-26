@@ -39,6 +39,8 @@ double hcv_monotonic_start_time;
 unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
 
+thread_local Hcv_Random Hcv_Random::_rand_thr_;
+
 
 extern "C" void hcv_load_config_file(const char*);
 ////////////////////////////////////////////////////////////////
@@ -646,6 +648,44 @@ hcv_get_hostname(void)
   return hcv_hostname;
 } // end hcv_get_hostname
 
+
+
+
+////////////////////////////////////////////////////////////////
+std::atomic<unsigned> Hcv_Random::_rand_threadcount;
+bool Hcv_Random::_rand_is_deterministic_;
+std::ranlux48 Hcv_Random::_rand_gen_deterministic_;
+std::mutex Hcv_Random::_rand_mtx_deterministic_;
+
+
+// static method called once by main
+void
+Hcv_Random::start_deterministic(long seed)
+{
+  std::lock_guard<std::mutex> guard(_rand_mtx_deterministic_);
+  _rand_gen_deterministic_.seed (seed);
+  _rand_is_deterministic_ = true;
+} // end of Hcv_Random::start_deterministic
+
+
+// private initializer, thread specific
+void
+Hcv_Random::init_deterministic(void)
+{
+  std::lock_guard<std::mutex> guard(_rand_mtx_deterministic_);
+  HCV_ASSERT(_rand_is_deterministic_);
+  _rand_generator.seed(_rand_gen_deterministic_());
+} // end of  Hcv_Random::init_deterministic
+
+void
+Hcv_Random::deterministic_reseed(void)
+{
+  std::lock_guard<std::mutex> guard(_rand_mtx_deterministic_);
+  HCV_ASSERT(_rand_is_deterministic_);
+  _rand_generator.seed(_rand_gen_deterministic_());
+} // end of Hcv_Random::deterministic_reseed
+
+////////////////////////////////////////////////////////////////
 int
 main(int argc, char**argv)
 {
