@@ -432,6 +432,14 @@ hcv_thread_cpu_time(void)
  *******/
 extern "C" void hcv_start_background_thread(void);
 
+
+// register a closure and some data to be executed in the background
+// thread postponed by some delay (at least 0.01 seconds, at most 1000
+// seconds).
+#define HCV_POSTPONE_MINIMAL_DELAY 0.01
+#define HCV_POSTPONE_MAXIMAL_DELAY 1000.0
+extern "C" void hcv_do_postpone_background(double delay, const std::string&name, void*data,
+    const std::function<void(void*)>& todofun);
 ///////////////////////////////////////////////////////////////////////////////
 
 

@@ -209,4 +209,24 @@ hcv_bg_do_event(int64_t ev)
        manage a short TODO list, so that any thread could add closures into it.
   ****/
 } // end hcv_bg_do_event
+
+
+
+void
+hcv_do_postpone_background(double delay,  const std::string&name, void*data,
+                           const std::function<void(void*)>& todofun)
+{
+  if (delay<HCV_POSTPONE_MINIMAL_DELAY)
+    delay = HCV_POSTPONE_MINIMAL_DELAY;
+  else if (delay > HCV_POSTPONE_MAXIMAL_DELAY)
+    delay = HCV_POSTPONE_MAXIMAL_DELAY;
+  if (!todofun)
+    HCV_FATALOUT("hcv_do_postpone_background missing todo: delay="  << delay
+                 << ", name=" << name << ", data=" << data);
+  HCV_FATALOUT("hcv_do_postpone_background unimplemented: delay="  << delay
+               << ", name=" << name << ", data=" << data);
+#warning unimplemented hcv_do_postpone_background
+} // end hcv_do_postpone_background
+
+
 /************************ end of file hcv_background.cc in github.com/bstarynk/helpcovid ***/
