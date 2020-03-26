@@ -418,5 +418,13 @@ extern "C" std::string hcv_login_view_get(const httplib::Request& req,
 }
 
 
+extern "C" std::string hcv_login_view_post(const httplib::Request& req,
+        const httplib::Response& resp)
+{
+    Hcv_LoginView vw(req, resp);
+    return vw.post();
+}
+
+
 
 //////////////////// end of file hcv_web.cc of github.com/bstarynk/helpcovid
