@@ -41,6 +41,7 @@ int hcv_bg_signal_fd;
 void hcv_process_SIGTERM_signal(void);
 void hcv_process_SIGXCPU_signal(void);
 void hcv_process_SIGHUP_signal(void);
+void hcv_bg_do_event(int64_t); // handle one event on hcv_bg_event_fd
 
 #define HCV_BACKGROUND_TICK_TIMEOUT 8192 /*milliseconds*/
 void hcv_background_thread_body(void)
@@ -70,6 +71,17 @@ void hcv_background_thread_body(void)
           HCV_DEBUGOUT("hcv_background_thread_body: after poll nbfd:" << nbfd);
           if ((polltab[0].revents & POLL_IN) && polltab[0].fd == hcv_bg_event_fd)
             {
+              int64_t evrk=0;
+              int byrd = read (hcv_bg_event_fd, &evrk, sizeof(evrk));
+              if (byrd==sizeof(evrk))
+                {
+                  HCV_DEBUGOUT("hcv_background_thread_body: got " << evrk
+                               << " from hcv_bg_event_fd");
+                  hcv_bg_do_event(evrk);
+                }
+              else
+                HCV_SYSLOGOUT(LOG_WARNING,
+                              "hcv_background_thread_body read hcv_bg_event_fd#" <<hcv_bg_event_fd << " failed, byrd=" << byrd);
             };
           if ((polltab[1].revents & POLL_IN) && polltab[1].fd == hcv_bg_signal_fd)
             {
@@ -188,4 +200,13 @@ hcv_process_SIGHUP_signal(void)
 } // end hcv_process_SIGHUP_signal
 
 
+void
+hcv_bg_do_event(int64_t ev)
+{
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_bg_do_event unimplemented " << ev);
+#warning hcv_bg_do_event unimplemented
+  /*** we probably want to use some std::condition_variable etc, to
+       manage a short TODO list, so that any thread could add closures into it.
+  ****/
+} // end hcv_bg_do_event
 /************************ end of file hcv_background.cc in github.com/bstarynk/helpcovid ***/
