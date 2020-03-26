@@ -445,6 +445,36 @@ extern "C" void hcv_do_postpone_background(double delay, const std::string&name,
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// Database models
+///////////////////////////////////////////////////////////////////////////////
+
+
+struct hcv_user_model {
+    std::string user_first_name;
+    std::string user_family_name;
+    std::string user_email;
+    std::string user_gender; 
+};
+
+
+extern "C" void
+hcv_user_model_create(const hcv_user_model& model);
+
+extern "C" void
+hcv_user_model_authenticate(const std::string& email, 
+                            const std::string& passwd);
+
+extern "C" std::int64_t
+hcv_user_model_find_by_email(const std::string& email);
+
+extern "C" void
+hcv_user_model_update(std::int64_t id, const hcv_user_model& model);
+
+extern "C" void
+hcv_user_model_update_password(const std::string& email,
+                               const std::stirng& password);
+
+///////////////////////////////////////////////////////////////////////////////
 // LoginView class
 ///////////////////////////////////////////////////////////////////////////////
 
