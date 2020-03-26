@@ -1,5 +1,5 @@
 /****************************************************************
- * file hcv_views.cc of https://github.com/bstarynk/helpcovid
+ * file hcv_views.cc
  *
  * Description:
  *      Implementation of views processing HTTP requests.
@@ -29,8 +29,10 @@
 #include "hcv_header.hh"
 
 
+
 extern "C" const char hcv_views_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_views_date[] = __DATE__;
+
 
 class Hcv_LoginView
 {
@@ -68,20 +70,20 @@ private:
 
 
 
-extern "C" std::string
+std::string 
 hcv_login_view_get(const httplib::Request& req, const httplib::Response& resp)
 {
-  Hcv_LoginView vw(req, resp);
-  return vw.get();
-}
+    Hcv_LoginView vw(req, resp);
+    return vw.get();
+} // end hcv_login_view_get
 
 
-extern "C" std::string
+std::string 
 hcv_login_view_post(const httplib::Request& req, const httplib::Response& resp)
 {
-  Hcv_LoginView vw(req, resp);
-  return vw.post();
-}
+    Hcv_LoginView vw(req, resp);
+    return vw.post();
+} // end hcv_login_view_post
 
 
 //////////////////// end of file hcv_views.cc of github.com/bstarynk/helpcovid
