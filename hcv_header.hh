@@ -119,6 +119,20 @@ extern "C" std::recursive_mutex hcv_fatalmtx;
 
 extern "C" const char*hcv_get_hostname(void);
 
+// mark unlikely conditions to help optimization
+#ifdef __GNUC__
+#define HCV_UNLIKELY(P) __builtin_expect(!!(P),0)
+#define HCV_LIKELY(P) !__builtin_expect(!(P),0)
+#define HCV_UNUSED __attribute__((unused))
+#else
+#define HCV_UNLIKELY(P) (P)
+#define HCV_LIKELY(P) (P)
+#define HCV_UNUSED
+#endif
+
+
+////////////////////////////////////////////////////////////////
+// fatal error
 #define HCV_FATALOUT_AT_BIS(Fil,Lin,...) do {		\
   int err##Lin = errno;					\
   std::lock_guard<std::recursive_mutex>			\
@@ -134,7 +148,33 @@ extern "C" const char*hcv_get_hostname(void);
 #define HCV_FATALOUT(...) HCV_FATALOUT_AT(__FILE__,__LINE__,##__VA_ARGS__)
 
 
+//////////////// assert
+#ifndef NDEBUG
+#define HCV_ASSERT_AT_BIS(Fil,Lin,Func,Cond) do {		\
+    if (HCV_UNLIKELY(!(Cond))) {				\
+    HCV_FATALOUT("*** RefPerSys ASSERT failed:" << #Cond	\
+<< " @" << Func); }} while(0)
 
+#define HCV_ASSERT_AT(Fil,Lin,Func,Cond) HCV_ASSERT_AT_BIS(Fil,Lin,Func,Cond)
+#define HCV_ASSERT(Cond) HCV_ASSERT_AT(__FILE__,__LINE__,__PRETTY_FUNCTION__,(Cond))
+
+
+#define HCV_ASSERT_OUT_AT_BIS(Fil,Lin,Func,Cond,Out) do {	\
+    if (HCV_UNLIKELY(!(Cond))) {				\
+    HCV_FATALOUT("*** RefPerSys ASSERT_OUT failed: "		\
+		 << #Cond << std::endl				\
+		 << " @" << Func << "::" << Out); }} while(0)
+
+#define HCV_ASSERT_OUT_AT(Fil,Lin,Func,Cond,Out) HCV_ASSERT_OUT_AT_BIS(Fil,Lin,Func,Cond,Out)
+#define HCV_ASSERT_OUT(Cond,Fmt,Out) HCV_ASSERT_OUT_AT(__FILE__,__LINE__,__PRETTY_FUNCTION__,(Cond),Out)
+#else
+#define HCV_ASSERT(Cond) do { if (false && (Cond)) hcv_fatal_stop_at(__FILE_,__LINE__); } while(0)
+#define HCV_ASSERT_OUT(Cond,Fmt,Out)  do { if (false && (Cond)) \
+      std::clog << Out; } while(0)
+#endif /*NDEBUG*/
+
+
+////////////////////////////////////////////////////////////////
 // syslog facility
 
 extern "C" std::recursive_mutex hcv_syslogmtx;
@@ -421,6 +461,120 @@ hcv_thread_cpu_time(void)
     return NAN;
   return 1.0*ts.tv_sec + 1.0e-9*ts.tv_nsec;
 } // end hcv_thread_cpu_time
+
+///////////////////////////////////////////////////////////////////////////////
+// random numbers - shameless copied from code of http://refpersys.org/
+
+class Hcv_Random
+{
+  static thread_local Hcv_Random _rand_thr_;
+  static bool _rand_is_deterministic_;
+  static std::ranlux48 _rand_gen_deterministic_;
+  static std::mutex _rand_mtx_deterministic_;
+  /// the thread local random state
+  unsigned long _rand_count;
+  std::mt19937 _rand_generator;
+  /// we could need very quick and poor small random numbers on just 4
+  /// bits. For these, we care less about the random quality, but even
+  /// more about speed. So we keep one 32 bits of random number in
+  /// advance, and a count of the remaining random bits in it.
+  uint32_t _rand_advance;
+  uint8_t _rand_remainbits;
+  unsigned _rand_threadrank;
+  static std::atomic<unsigned> _rand_threadcount;
+  static constexpr const unsigned _rand_reseed_period_ = 65536;
+  /// private initializer
+  void init_deterministic (void);
+  /// private deterministic reseeder
+  void deterministic_reseed (void);
+  /// private constructor
+  Hcv_Random () :
+    _rand_count(0), _rand_generator(), _rand_advance(0), _rand_remainbits(0),
+    _rand_threadrank(std::atomic_fetch_add(&_rand_threadcount,1U))
+  {
+    if (_rand_is_deterministic_)
+      init_deterministic();
+  };
+  ///
+  uint32_t generate_32u(void)
+  {
+    if (HCV_UNLIKELY(_rand_count++ % _rand_reseed_period_ == 0))
+      {
+        if (HCV_UNLIKELY(_rand_is_deterministic_))
+          deterministic_reseed();
+        else
+          {
+            std::random_device randev;
+            auto s1=randev(), s2=randev(), s3=randev(), s4=randev(),
+                 s5=randev(), s6=randev(), s7=randev();
+            std::seed_seq seq {s1,s2,s3,s4,s5,s6,s7};
+            _rand_generator.seed(seq);
+          }
+      }
+    return _rand_generator();
+  };
+  uint32_t generate_nonzero_32u(void)
+  {
+    uint32_t r = 0;
+    do
+      {
+        r = generate_32u();
+      }
+    while (HCV_UNLIKELY(r==0));
+    return r;
+  };
+  uint64_t generate_64u(void)
+  {
+    return (static_cast<uint64_t>(generate_32u())<<32) | static_cast<uint64_t>(generate_32u());
+  };
+  uint8_t generate_quickly_4bits()
+  {
+    if (HCV_UNLIKELY(_rand_remainbits < 4))
+      {
+        _rand_advance = generate_32u();
+        _rand_remainbits = 32;
+      }
+    uint8_t res = _rand_advance & 0xf;
+    _rand_remainbits -= 4;
+    _rand_advance = _rand_advance>>4;
+    return res;
+  };
+  uint8_t generate_quickly_8bits()
+  {
+    if (HCV_UNLIKELY(_rand_remainbits < 8))
+      {
+        _rand_advance = generate_32u();
+        _rand_remainbits = 32;
+      }
+    uint8_t res = _rand_advance & 0xff;
+    _rand_advance = _rand_advance>>8;
+    _rand_remainbits -= 8;
+    return res;
+  };
+public:
+  static void start_deterministic(long seed); // to be called from main
+  static uint32_t random_32u(void)
+  {
+    return _rand_thr_.generate_32u();
+  };
+  static uint64_t random_64u(void)
+  {
+    return _rand_thr_.generate_64u();
+  };
+  static uint32_t random_nonzero_32u(void)
+  {
+    return _rand_thr_.generate_nonzero_32u();
+  };
+  static uint8_t random_quickly_4bits()
+  {
+    return _rand_thr_.generate_quickly_4bits();
+  };
+  static uint8_t random_quickly_8bits()
+  {
+    return _rand_thr_.generate_quickly_8bits();
+  };
+};				// end class Hcv_Random
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
