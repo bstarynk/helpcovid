@@ -410,6 +410,13 @@ hcv_webserver_run(void)
 } // end hcv_webserver_run
 
 
+extern "C" std::string hcv_login_view_get(const httplib::Request& req, 
+        const httplib::Response& resp)
+{
+    Hcv_LoginView vw(req, resp);
+    return vw.get();
+}
+
 
 
 //////////////////// end of file hcv_web.cc of github.com/bstarynk/helpcovid
