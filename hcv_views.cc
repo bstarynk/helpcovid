@@ -70,19 +70,19 @@ private:
 
 
 
-std::string 
+std::string
 hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
 {
-    Hcv_LoginView vw(req, resp);
-    return vw.get();
+  Hcv_LoginView vw(req, resp);
+  return vw.get();
 } // end hcv_login_view_get
 
 
-std::string 
+std::string
 hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 {
-    Hcv_LoginView vw(req, resp);
-    return vw.post();
+  Hcv_LoginView vw(req, resp);
+  return vw.post();
 } // end hcv_login_view_post
 
 

@@ -66,6 +66,8 @@
 #include <sys/stat.h>
 #include <sys/syscall.h>
 #include <sys/syslog.h>
+#include <sys/eventfd.h>
+#include <sys/signalfd.h>
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
@@ -423,11 +425,11 @@ extern "C" void hcv_start_background_thread(void);
 // LoginView class
 ///////////////////////////////////////////////////////////////////////////////
 
-extern "C" std::string 
+extern "C" std::string
 hcv_login_view_get(const httplib::Request& req, httplib::Response& resp);
 
 
-extern "C" std::string 
+extern "C" std::string
 hcv_login_view_post(const httplib::Request& req, httplib::Response& resp);
 
 
