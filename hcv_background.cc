@@ -37,6 +37,16 @@ std::thread hcv_bgthread;
 std::atomic<bool> hcv_should_stop_bg_thread;
 int hcv_bg_event_fd;
 int hcv_bg_signal_fd;
+int hcv_bg_timer_fd;
+
+struct hcv_todo_st
+{
+  double hcvtodo_time;		// elapsed monotonic time
+  void* hcvtodo_data;		// data pointer
+  std::function<void(void*)> hcvtodo_func;
+};
+std::map<double, hcv_todo_st> hcv_todo_map;
+std::recursive_mutex hcv_todo_mtx;
 
 void hcv_process_SIGTERM_signal(void);
 void hcv_process_SIGXCPU_signal(void);
@@ -61,7 +71,9 @@ void hcv_background_thread_body(void)
       polltab[0].events = POLL_IN;
       polltab[1].fd = hcv_bg_signal_fd;
       polltab[1].events = POLL_IN;
-      int nbfd = poll(polltab, 1, HCV_BACKGROUND_TICK_TIMEOUT);
+      polltab[1].fd = hcv_bg_timer_fd;
+      polltab[1].events = POLL_IN;
+      int nbfd = poll(polltab, 3, HCV_BACKGROUND_TICK_TIMEOUT);
       if (nbfd==0)   /* timedout */
         {
           HCV_SYSLOGOUT(LOG_INFO, "hcv_background_thread_body timed-out");
@@ -121,6 +133,9 @@ void hcv_background_thread_body(void)
               else
                 HCV_FATALOUT("hcv_background_thread_body: unexpected signal #" << signalinfo.ssi_signo);
             };
+          if ((polltab[2].revents & POLL_IN) && polltab[2].fd == hcv_bg_timer_fd)
+            {
+            }
         }
       else
         {
@@ -147,6 +162,9 @@ hcv_start_background_thread(void)
     hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK|SFD_CLOEXEC);
     if (hcv_bg_signal_fd < 0)
       HCV_FATALOUT("hcv_start_background_thread: signalfd failure");
+    hcv_bg_timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK|TFD_CLOEXEC);
+    if (hcv_bg_timer_fd < 0)
+      HCV_FATALOUT("hcv_start_background_thread:timerfd_create  failure");
   }
   hcv_bgthread = std::thread([]()
   {

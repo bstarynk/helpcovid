@@ -68,6 +68,7 @@
 #include <sys/syslog.h>
 #include <sys/eventfd.h>
 #include <sys/signalfd.h>
+#include <sys/timerfd.h>
 #include <signal.h>
 #include <errno.h>
 #include <time.h>
