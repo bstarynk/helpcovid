@@ -133,6 +133,16 @@ CREATE TABLE IF NOT EXISTS tb_password (
   passw_mtime  TIMESTAMP NOT NULL       -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");
+    ////================ web session table, related to web cookies
+    transact.exec0(R"crwebsesstab(
+---- TABLE tb_web_session
+CREATE TABLE IF NOT EXISTS tb_web_session (
+  webs_id SERIAL PRIMARY  KEY NOT NULL, -- unique key in this table
+  passw_userid INT NOT NULL,            -- the user id whose password we store
+  passw_encr VARCHAR(62) NOT NULL,      -- the encrypted password
+  passw_mtime  TIMESTAMP NOT NULL       -- the last time that password was modified
+); --- end TABLE tb_web_session
+)crwebsesstab");
     transact.commit();
   }
   HCV_DEBUGOUT("hcv_initialize_database before preparing statements in " << connstr);
