@@ -218,6 +218,11 @@ It can provide the following keys (for [libpqxx](http://pqxx.org/development/lib
 
 ------------------------------------------------
 
+## Customising the logo
+
+The logo for the application can be changed by replacing the default 
+`helpcovid-logo.svg` icon found in the `webroot/images` directory.
+
 
 ## simple tests
 
