@@ -238,9 +238,39 @@ hcv_web_error_handler(const httplib::Request& req,
 } // end hcv_web_error_handler
 
 
+
+/// register a fresh cookie in the database and return it.
 std::string
-hcv_web_register_fresh_cookie(Hcv_http_template_data*)
+hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 {
+  static constexpr unsigned randomwidth = 24; // also width of wcookie_random in hcv_database.cc
+  static constexpr const char alphanumchars[]=
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  static constexpr unsigned nbalphanum=62;
+  static_assert(sizeof(alphanumchars)==nbalphanum+1);
+  if (!htpl) {
+    HCV_SYSLOGOUT(LOG_WARNING, "hcv_web_register_fresh_cookie: missing htpl");
+    return "";
+  }
+  auto hreq = htpl->request();
+  if (!hreq) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_web_register_fresh_cookie: missing web request, reqnum#"
+		  << htpl->serial());
+    return "";
+  };
+  char randombuf[randomwidth+4];
+  memset (randombuf, 0, sizeof(randombuf));
+  for (unsigned ix=0; ix<randomwidth; ix++) {
+    char uc=0;
+    uc = alphanumchars[Hcv_Random::random_quickly_8bits() % nbalphanum];
+    // we don't want too much O digits, so ....
+    if (ix%2) {
+      while (uc=='0')
+      uc = alphanumchars[Hcv_Random::random_quickly_8bits() % nbalphanum];
+    }
+    randombuf[ix] = uc;
+  };
 #warning hcv_web_register_fresh_cookie unimplemented
     HCV_FATALOUT("hcv_web_register_fresh_cookie not implemented");
 } // end hcv_web_register_fresh_cookie
