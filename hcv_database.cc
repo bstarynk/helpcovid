@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_familyname VARCHAR(62) NOT NULL, -- family name, in capitals, UTF8
   user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
   user_gender CHAR(1) NOT NULL,         -- 'F' | 'M' | '?'
-  user_crtime DATE NOT NULL             -- user entry creation time
+  user_crtime TIMESTAMP DEFAULT current_timestamp -- user entry creation time
 ); --- end TABLE tb_user
 )crusertab");
     transact.exec0(R"cruserfamix(
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS tb_password (
   passw_id SERIAL PRIMARY KEY NOT NULL, -- unique key in this table
   passw_userid INT NOT NULL,            -- the user id whose password we store
   passw_encr VARCHAR(62) NOT NULL,      -- the encrypted password
-  passw_mtime  TIMESTAMP NOT NULL       -- the last time that password was modified
+  passw_mtime  TIMESTAMP DEFAULT current_timestamp  -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");
     ////================ web cookie table, related to web cookies
