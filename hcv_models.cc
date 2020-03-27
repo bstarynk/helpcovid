@@ -56,11 +56,16 @@ hcv_user_model_verify(const hcv_user_model& model, std::string& msg)
         return false;
     }
 
-    // TODO: add e-mail checking
+    const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+    if (!std::regex_match(model.user_email, pattern)) {
+        msg = "The e-mail address is invalid";
+        return false;
+    }
 
     msg = "OK";
     return true;
 }
+
 
 extern "C" void
 hcv_user_model_create(const hcv_user_model& model)

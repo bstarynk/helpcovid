@@ -77,6 +77,7 @@
 #include <pthread.h>
 #include <pwd.h>
 #include <poll.h>
+#include <regex>
 
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
