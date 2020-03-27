@@ -243,9 +243,9 @@ extern "C" void hcv_initialize_database(const std::string&uri);
 extern "C" const std::string hcv_postgresql_version(void);
 
 // register a prepared statement with the database
-extern "C" void 
+extern "C" void
 hcv_database_register_prepared_statement(const std::string& name,
-                                         const std::string& sql);
+    const std::string& sql);
 
 
 
@@ -255,6 +255,7 @@ extern "C" bool hcv_database_with_known_email(const std::string&emailstr);
 ////////////////////////////////////////////////////////////////
 
 //// Web service
+class Hcv_http_template_data; /// forward declaration
 
 // the first bytes of every HTML5 file
 #define HCV_HTML5_START "<!DOCTYPE html"
@@ -277,6 +278,8 @@ extern "C" std::string hcv_get_web_root(void);
 
 extern "C" long hcv_get_web_request_counter(void);
 
+/// return a string, perhaps 0123-9wI1QOXiH0M03Pf1ef14ab69-1abc4, for a fresh web cookie.
+extern "C" std::string hcv_web_register_fresh_cookie(Hcv_http_template_data*);
 ////////////////////////////////////////////////////////////////
 
 //// template machinery: in some quasi HTML file starting with

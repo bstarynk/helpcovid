@@ -37,13 +37,14 @@ extern "C" bool
 hcv_model_validator_required(const std::string& field, const std::string& tag,
                              std::string& msg)
 {
-    if (field.empty()) {
-        msg = "The " + tag + " is required";
-        return false;
+  if (field.empty())
+    {
+      msg = "The " + tag + " is required";
+      return false;
     }
 
-    msg = "OK";
-    return true;
+  msg = "OK";
+  return true;
 }
 
 
@@ -51,27 +52,28 @@ extern "C" bool
 hcv_model_validator_email(const std::string& field, const std::string& tag,
                           std::string& msg)
 {
-    const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+  const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
 
-    if (!std::regex_match(field, pattern)) {
-        msg = "The " + tag + " is invalid";
-        return false;
+  if (!std::regex_match(field, pattern))
+    {
+      msg = "The " + tag + " is invalid";
+      return false;
     }
 
-    msg = "OK";
-    return true;
+  msg = "OK";
+  return true;
 }
 
 
 extern "C" void
 hcv_user_model_prepare_statements(void)
 {
-    // user_crtime is updated by default
-    hcv_database_register_prepared_statement("user_create",
-        "INSERT INTO tb_user (user_firstname, user_familyname, user_email,"
-        " user_gender VALUES ($1, $2, $3, $4);");
+  // user_crtime is updated by default
+  hcv_database_register_prepared_statement("user_create",
+      "INSERT INTO tb_user (user_firstname, user_familyname, user_email,"
+      " user_gender VALUES ($1, $2, $3, $4);");
 
-    hcv_database_register_prepared_statement("user_get_password_by_email",
+  hcv_database_register_prepared_statement("user_get_password_by_email",
       "SELECT passwd_encr FROM tb_password WHERE passw_userid = "
       "(SELECT user_id WHERE user_email = $1) ORDER BY passw_mtime DESC"
       " LIMIT 1;");
@@ -81,45 +83,46 @@ hcv_user_model_prepare_statements(void)
 extern "C" bool
 hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status)
 {
-    bool check = true;
+  bool check = true;
 
-    check &= hcv_model_validator_required(model.user_first_name, "first name",
-                                          status.user_first_name);
+  check &= hcv_model_validator_required(model.user_first_name, "first name",
+                                        status.user_first_name);
 
-    check &= hcv_model_validator_required(model.user_family_name, "family name",
-                                          status.user_family_name);
+  check &= hcv_model_validator_required(model.user_family_name, "family name",
+                                        status.user_family_name);
 
-    check &= hcv_model_validator_required(model.user_email, "e-mail address",
-                                         status.user_email);
+  check &= hcv_model_validator_required(model.user_email, "e-mail address",
+                                        status.user_email);
 
-    check &= hcv_model_validator_required(model.user_gender, "gender",
-                                          status.user_gender);
+  check &= hcv_model_validator_required(model.user_gender, "gender",
+                                        status.user_gender);
 
-    if (check) {
-        return hcv_model_validator_email(model.user_email, "e-mail address",
-                                         status.user_email);
+  if (check)
+    {
+      return hcv_model_validator_email(model.user_email, "e-mail address",
+                                       status.user_email);
     }
 
-    return true;
+  return true;
 }
 
 
 extern "C" bool
 hcv_user_model_create(const hcv_user_model& model, hcv_user_model& status)
 {
-    if (!hcv_user_model_validate(model, status))
-        return false;
+  if (!hcv_user_model_validate(model, status))
+    return false;
 
-    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-    pqxx::work txn(*hcv_dbconn);
+  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+  pqxx::work txn(*hcv_dbconn);
 
-    pqxx::result res = txn.exec_prepared("user_create", model.user_first_name,
-                                         model.user_family_name, 
-                                         model.user_email,
-                                         model.user_gender);
+  pqxx::result res = txn.exec_prepared("user_create", model.user_first_name,
+                                       model.user_family_name,
+                                       model.user_email,
+                                       model.user_gender);
 
-    txn.commit();
-    return true;
+  txn.commit();
+  return true;
 }
 
 
@@ -127,12 +130,12 @@ extern "C" bool
 hcv_user_model_authenticate(const std::string& email,
                             const std::string& passwd)
 {
-    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-    pqxx::work txn(*hcv_dbconn);
+  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+  pqxx::work txn(*hcv_dbconn);
 
-    auto res = txn.exec_prepared("user_get_password_by_email", email);
-    auto row = res.begin();
+  auto res = txn.exec_prepared("user_get_password_by_email", email);
+  auto row = res.begin();
 
-    return row[0].as<std::string>() == passwd;
+  return row[0].as<std::string>() == passwd;
 }
 

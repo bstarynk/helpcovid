@@ -238,6 +238,13 @@ hcv_web_error_handler(const httplib::Request& req,
 } // end hcv_web_error_handler
 
 
+std::string
+hcv_web_register_fresh_cookie(Hcv_http_template_data*)
+{
+#warning hcv_web_register_fresh_cookie unimplemented
+    HCV_FATALOUT("hcv_web_register_fresh_cookie not implemented");
+} // end hcv_web_register_fresh_cookie
+
 ////////////////////////////////////////////////////////////////
 void
 hcv_webserver_run(void)
