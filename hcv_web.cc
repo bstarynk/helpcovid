@@ -381,18 +381,14 @@ hcv_webserver_run(void)
   });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving
-  hcv_webserver->Get("/login", [](const httplib::Request& req,
+  hcv_webserver->Get("/images/", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
-    resp.set_content(hcv_login_view_get(req, resp), "text/html");
-  });
-  
-  hcv_webserver->Get("/images", [](const httplib::Request& req,
-                                  httplib::Response& resp)
-  {
-		       HCV_SYSLOGOUT(LOG_WARNING,
-				     "hcv_webserver_run GET /images request unimplemented path="
-				     << req.path);
+#warning hcv_webserver->Get("/images/"...) dont work
+    /* we probably need a hcv_webserver->GetPrefixed function */
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_webserver_run GET /images request unimplemented path="
+		  << req.path);
   });
   ////////////////////////////////////////////////////////////////
   hcv_webserver->listen(webhost, webport);
