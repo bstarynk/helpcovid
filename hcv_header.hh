@@ -252,6 +252,10 @@ hcv_database_register_prepared_statement(const std::string& name,
 // query if an email is known or not
 extern "C" bool hcv_database_with_known_email(const std::string&emailstr);
 
+// INSERT some web cookie in the database, returning its serial
+extern "C" long
+hcv_database_get_id_of_added_web_cookie(const std::string& randomstr,
+                                        time_t exptime, int webagenthash);
 ////////////////////////////////////////////////////////////////
 
 //// Web service

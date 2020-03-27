@@ -26,7 +26,7 @@
  ******************************************************************************/
 
 #include "hcv_header.hh"
-#include <pqxx/prepared_statement.hxx>
+//NOT NEEDED: #include <pqxx/prepared_statement.hxx>
 
 extern "C" const char hcv_database_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_database_date[] = __DATE__;
@@ -223,7 +223,6 @@ hcv_database_register_prepared_statement(const std::string& name,
 
 // https://www.postgresqltutorial.com/postgresql-where/
 // https://www.postgresql.org/docs/current/sql-prepare.html
-#warning we need to use PostGreSQL prepared statements 
 bool
 hcv_database_with_known_email (const std::string& emailstr)
 {
@@ -244,6 +243,26 @@ hcv_database_with_known_email (const std::string& emailstr)
   return id>0;
 } // end hcv_database_with_known_email
 
+long
+hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exptime, int webagenthash)
+{
+  HCV_ASSERT(!randomstr.empty());
+  std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
+  pqxx::work transact(*hcv_dbconn);
+  pqxx::result res =
+    transact.exec_prepared("add_web_cookie_pstm",
+			   randomstr, exptime, webagenthash);
+  long id = -1;
+  for (auto rowit : res) {
+    id = rowit[0].as<long>();
+  }
+  transact.commit();
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie randomstr='"
+	       << randomstr << "', exptime=" << exptime
+	       << ", webagenthash=" << webagenthash
+	       << " => id=" << id);
+  return id;
+} // end hcv_database_get_id_of_added_web_cookie
 
 
 /////////// end of file hcv_database.cc in github.com/bstarynk/helpcovid
