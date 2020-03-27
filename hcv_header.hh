@@ -632,6 +632,9 @@ struct hcv_user_model
 };
 
 
+extern "C" void
+hcv_user_model_prepare_statements(void);
+
 extern "C" bool
 hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status);
 

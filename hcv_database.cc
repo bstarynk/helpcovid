@@ -170,6 +170,8 @@ hcv_prepare_statements_in_database(void)
      R"finduseremail(
 SELECT user_id FROM tb_user WHERE user_email=$1
 )finduseremail");
+
+    hcv_user_model_prepare_statements();
 } // end hcv_prepare_statements_in_database
 
 
