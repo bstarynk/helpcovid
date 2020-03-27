@@ -34,35 +34,57 @@ extern "C" const char hcv_models_date[] = __DATE__;
 
 
 extern "C" bool
-hcv_user_model_verify(const hcv_user_model& model, std::string& msg)
+hcv_model_validator_required(const std::string& field, const std::string& tag,
+                             std::string& msg)
 {
-    if (model.user_first_name.empty()) {
-        msg = "The first name is required";
-        return false;
-    }
-
-    if (model.user_family_name.empty()) {
-        msg = "The family name is required";
-        return false;
-    }
-
-    if (model.user_email.empty()) {
-        msg = "The e-mail address is required";
-        return false;
-    }
-
-    if (model.user_gender.empty()) {
-        msg = "The gender is required.";
-        return false;
-    }
-
-    const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
-    if (!std::regex_match(model.user_email, pattern)) {
-        msg = "The e-mail address is invalid";
+    if (field.empty()) {
+        msg = "The " + tag + " is required";
         return false;
     }
 
     msg = "OK";
+    return true;
+}
+
+
+extern "C" bool
+hcv_model_validator_email(const std::string& field, const std::string& tag,
+                          std::string& msg)
+{
+    const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+
+    if (!std::regex_match(field, pattern)) {
+        msg = "The " + tag + " is invalid";
+        return false;
+    }
+
+    msg = "OK";
+    return true;
+}
+
+
+extern "C" bool
+hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status)
+{
+    bool check = true;
+
+    check &= hcv_model_validator_required(model.user_first_name, "first name",
+                                          status.user_first_name);
+
+    check &= hcv_model_validator_required(model.user_family_name, "family name",
+                                          status.user_family_name);
+
+    check &= hcv_model_validator_required(model.user_email, "e-mail address",
+                                         status.user_email);
+
+    check &= hcv_model_validator_required(model.user_gender, "gender",
+                                          status.user_gender);
+
+    if (check) {
+        return hcv_model_validator_email(model.user_email, "e-mail address",
+                                         status.user_email);
+    }
+
     return true;
 }
 

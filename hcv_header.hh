@@ -604,6 +604,20 @@ extern "C" void hcv_do_postpone_background(double delay, const std::string&name,
 ///////////////////////////////////////////////////////////////////////////////
 
 
+extern "C" bool
+hcv_model_validator_required(const std::string& field, const std::string& tag,
+                             std::string& msg);
+
+
+extern "C" bool
+hcv_model_validator_email(const std::string& field, const std::string& tag,
+                          std::string& msg);
+
+///////////////////////////////////////////////////////////////////////////////
+// Database models
+///////////////////////////////////////////////////////////////////////////////
+
+
 struct hcv_user_model
 {
   std::string user_first_name;
@@ -614,7 +628,7 @@ struct hcv_user_model
 
 
 extern "C" bool
-hcv_user_model_verify(const hcv_user_model& model, std::string& msg);
+hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status);
 
 extern "C" void
 hcv_user_model_create(const hcv_user_model& model);
