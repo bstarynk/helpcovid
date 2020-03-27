@@ -150,6 +150,24 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
   wcookie_ipaddr INET NOT NULL             -- the browser IP address (beware of NAT)
 ); --- end TABLE tb_web_cookie
 )crwebcookietab");
+    transact.exec0(R"crcookierandomix(
+---- INDEX ix_cookie_random
+  CREATE INDEX IF NOT EXISTS ix_cookie_random
+    ON tb_web_cookie(wcookie_random);
+--- end INDEX ix_cookie_random
+)crcookierandomix");
+    transact.exec0(R"crcookietimeix(
+---- INDEX ix_cookie_exptime
+  CREATE INDEX IF NOT EXISTS ix_cookie_exptime
+    ON tb_web_cookie(wcookie_exptime);
+--- end INDEX ix_cookie_exptime
+)crcookietimeix");
+    transact.exec0(R"crcookieipadix(
+---- INDEX ix_cookie_ipaddr
+  CREATE INDEX IF NOT EXISTS ix_cookie_ipaddr
+    ON tb_web_cookie(wcookie_ipaddr);
+--- end INDEX ix_cookie_ipaddr
+)crcookieipadix");
     transact.commit();
   }
   HCV_DEBUGOUT("hcv_initialize_database before preparing statements in " << connstr);
@@ -171,9 +189,21 @@ hcv_prepare_statements_in_database(void)
      R"finduseremail(
 SELECT user_id FROM tb_user WHERE user_email=$1
 )finduseremail");
-
+  ///// insert a fresh web cookie; see also for LASTVAL
+  ///// https://www.postgresql.org/docs/current/functions-sequence.html
+  hcv_dbconn->prepare
+    ("add_web_cookie_pstm",
+     R"addwebcookie(
+INSERT INTO tb_web_cookie
+     (wcookie_random, wcookie_exptime, wcookie_webagenthash)
+VALUES ($1, $2, $3);
+SELECT LASTVAL()
+)addwebcookie");
+  /// FIXME: the prepared statements should go here.
     hcv_user_model_prepare_statements();
 } // end hcv_prepare_statements_in_database
+
+
 
 
 void
@@ -184,7 +214,9 @@ hcv_database_register_prepared_statement(const std::string& name,
 
     std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
     hcv_dbconn->prepare(name, sql);
-}
+} // end hcv_database_register_prepared_statement
+
+
 
 
 
