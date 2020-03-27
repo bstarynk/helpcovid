@@ -70,7 +70,9 @@ world-readable.
 In some HTML-like files, template expansion occurs. These are
 SGML-like [processing
 instructions](https://en.wikipedia.org/wiki/Processing_Instruction)
-starting with `<?hcv ` in lower-case. See our source file `hcv_template.cc`.
+starting with `<?hcv ` in lower-case. See our source file
+`hcv_template.cc`. For example `<?hcv now?>` should be expanded into the
+current date and time.
 
 ### web conventions
 
