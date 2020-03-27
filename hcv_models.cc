@@ -122,3 +122,17 @@ hcv_user_model_create(const hcv_user_model& model, hcv_user_model& status)
     return true;
 }
 
+
+extern "C" bool
+hcv_user_model_authenticate(const std::string& email,
+                            const std::string& passwd)
+{
+    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+    pqxx::work txn(*hcv_dbconn);
+
+    auto res = txn.exec_prepared("user_get_password_by_email", email);
+    auto row = res.begin();
+
+    return row[0].as<std::string>() == passwd;
+}
+

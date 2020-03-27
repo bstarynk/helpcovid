@@ -643,7 +643,7 @@ hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status);
 extern "C" bool
 hcv_user_model_create(const hcv_user_model& model, hcv_user_model& status);
 
-extern "C" void
+extern "C" bool
 hcv_user_model_authenticate(const std::string& email,
                             const std::string& passwd);
 
