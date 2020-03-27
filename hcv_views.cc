@@ -87,5 +87,14 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 } // end hcv_login_view_post
 
 
+std::string
+hcv_home_view_get(const httplib::Request& req, httplib::Response& resp)
+{
+  // for now, redirect to the login view by default
+  // TODO: implement conditional redirection based on session checks
+  hcv_login_view_get(req, resp);
+}
+
+
 //////////////////// end of file hcv_views.cc of github.com/bstarynk/helpcovid
 

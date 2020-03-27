@@ -367,6 +367,13 @@ hcv_webserver_run(void)
 		     });
 		     
   ////////////////////////////////////////////////////////////////
+  
+  hcv_webserver->Get("", [](const httplib::Request& req,
+                             httplib::Response& resp)
+  {
+    resp.set_content(hcv_home_view_get(req, resp), "text/html");
+  });
+
   //////////////// /login/ serving
   hcv_webserver->Get("/login", [](const httplib::Request& req,
                                   httplib::Response& resp)
