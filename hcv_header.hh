@@ -612,6 +612,9 @@ struct hcv_user_model
 };
 
 
+extern "C" bool
+hcv_user_model_verify(const hcv_user_model& model, std::string& msg);
+
 extern "C" void
 hcv_user_model_create(const hcv_user_model& model);
 
