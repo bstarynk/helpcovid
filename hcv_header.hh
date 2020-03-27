@@ -242,6 +242,11 @@ extern "C" void hcv_initialize_database(const std::string&uri);
 
 extern "C" const std::string hcv_postgresql_version(void);
 
+// register a prepared statement with the database
+extern "C" void 
+hcv_database_register_prepared_statement(const std::string& name,
+                                         const std::string& sql);
+
 // query if an email is known or not
 extern "C" bool hcv_database_with_known_email(const std::string&emailstr);
 

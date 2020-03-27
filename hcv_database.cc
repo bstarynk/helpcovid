@@ -173,6 +173,17 @@ SELECT user_id FROM tb_user WHERE user_email=$1
 } // end hcv_prepare_statements_in_database
 
 
+void
+hcv_database_register_prepared_statement(const std::string& name, 
+                                         const std::string& sql)
+{
+    HCV_DEBUGOUT("Registering prepared SQL statement " << name);
+
+    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+    hcv_dbconn->prepare(name, sql);
+}
+
+
 // https://www.postgresqltutorial.com/postgresql-where/
 // https://www.postgresql.org/docs/current/sql-prepare.html
 #warning we need to use PostGreSQL prepared statements 
