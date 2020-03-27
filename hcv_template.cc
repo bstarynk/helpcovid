@@ -47,6 +47,14 @@ Hcv_http_template_data::~Hcv_http_template_data()
   _hcvhttp_reqnum = 0;
 } // end Hcv_http_template_data::~Hcv_http_template_data
 
+void
+Hcv_http_template_data::get_request_socket_ip(struct sockaddr *addr, socklen_t *addrlen)
+{
+#warning unimplemented Hcv_http_template_data::get_request_socket_ip
+  HCV_SYSLOGOUT(LOG_WARNING, "Hcv_http_template_data::get_request_socket_ip unimplemented request#" <<  request_number()
+                << " to " <<  request_method()
+                << " path " << request_path());
+} /*end of Hcv_http_template_data::get_request_socket_ip*/
 
 Hcv_https_template_data::~Hcv_https_template_data()
 {

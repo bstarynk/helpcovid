@@ -280,6 +280,8 @@ extern "C" long hcv_get_web_request_counter(void);
 
 /// return a string, perhaps 0123-9wI1QOXiH0M03Pf1ef14ab69-1abc4, for a fresh web cookie.
 extern "C" std::string hcv_web_register_fresh_cookie(Hcv_http_template_data*);
+
+
 ////////////////////////////////////////////////////////////////
 
 //// template machinery: in some quasi HTML file starting with
@@ -345,10 +347,17 @@ protected:
   {
   };
 public:
+
+
+/// this reaches the getsockname call in httplib.h
+/// http://man7.org/linux/man-pages/man2/getsockname.2.html
+  void get_request_socket_ip(struct sockaddr *addr, socklen_t *addrlen);
+  //
   long request_number() const
   {
     return _hcvhttp_reqnum;
   };
+  //
   std::string request_method() const
   {
     if (_hcvhttp_request)
