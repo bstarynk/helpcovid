@@ -247,6 +247,8 @@ extern "C" void
 hcv_database_register_prepared_statement(const std::string& name,
                                          const std::string& sql);
 
+
+
 // query if an email is known or not
 extern "C" bool hcv_database_with_known_email(const std::string&emailstr);
 
@@ -638,8 +640,8 @@ hcv_user_model_prepare_statements(void);
 extern "C" bool
 hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status);
 
-extern "C" void
-hcv_user_model_create(const hcv_user_model& model);
+extern "C" bool
+hcv_user_model_create(const hcv_user_model& model, hcv_user_model& status);
 
 extern "C" void
 hcv_user_model_authenticate(const std::string& email,

@@ -26,6 +26,7 @@
  ******************************************************************************/
 
 #include "hcv_header.hh"
+#include <pqxx/prepared_statement.hxx>
 
 extern "C" const char hcv_database_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_database_date[] = __DATE__;
@@ -184,6 +185,8 @@ hcv_database_register_prepared_statement(const std::string& name,
     std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
     hcv_dbconn->prepare(name, sql);
 }
+
+
 
 
 // https://www.postgresqltutorial.com/postgresql-where/
