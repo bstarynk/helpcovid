@@ -73,7 +73,8 @@ hcv_user_model_prepare_statements(void)
 
     hcv_database_register_prepared_statement("user_get_password_by_email",
       "SELECT passwd_encr FROM tb_password WHERE passw_userid = "
-      "(SELECT user_id WHERE user_email = $1)");
+      "(SELECT user_id WHERE user_email = $1) ORDER BY passw_mtime DESC"
+      " LIMIT 1;");
 }
 
 
