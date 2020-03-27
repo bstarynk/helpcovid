@@ -12,6 +12,10 @@ Of course that application stores personal data in some
 If [RefPerSys](http://refpersys.org/) was ready, it should have been
 used instead.
 
+In France, see also [enpremiereligne.fr](https://enpremiereligne.fr/)
+and [covid19-que-lire.fr](https://www.covid19-que-lire.fr); look also
+into
+[covid19-floss-initiatives](https://github.com/bzg/covid19-floss-initatives)
 
 ## license
 
