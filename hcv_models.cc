@@ -70,6 +70,10 @@ hcv_user_model_prepare_statements(void)
     hcv_database_register_prepared_statement("user_create",
         "INSERT INTO tb_user (user_firstname, user_familyname, user_email,"
         " user_gender VALUES ($1, $2, $3, $4);");
+
+    hcv_database_register_prepared_statement("user_get_password_by_email",
+      "SELECT passwd_encr FROM tb_password WHERE passw_userid = "
+      "(SELECT user_id WHERE user_email = $1)");
 }
 
 
