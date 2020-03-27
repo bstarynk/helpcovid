@@ -66,6 +66,10 @@ hcv_model_validator_email(const std::string& field, const std::string& tag,
 extern "C" void
 hcv_user_model_prepare_statements(void)
 {
+    // user_crtime should be determined by a trigger in the database
+    hcv_database_register_prepared_statement("user_create",
+        "INSERT INTO tb_user (user_firstname, user_familyname, user_email,"
+        " user_gender VALUES ($1, $2, $3, $4);");
 }
 
 

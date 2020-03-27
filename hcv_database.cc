@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
   wcookie_random CHAR(24) NOT NULL,        -- a random key, hopefully usually unique
   wcookie_exptime TIMESTAMP NOT NULL,      -- the cookie expiration time
   wcookie_webagenthash INT NOT NULL,       -- a quick hashcode of the browser's User-Agent:
-  wcookie_ipaddr INET NOT NULL,            -- the browser IP address (beware of NAT)
+  wcookie_ipaddr INET NOT NULL             -- the browser IP address (beware of NAT)
 ); --- end TABLE tb_web_cookie
 )crwebcookietab");
     transact.commit();
