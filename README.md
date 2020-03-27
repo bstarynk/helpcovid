@@ -21,7 +21,10 @@ into
 
 Of course [GPLv3+](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-You take the responsability about personal data issues.
+Notice that you take the responsability about personal data and
+privacy issues when *deploying* this free software
+(e.g. [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
+in Europe).
 
 ## contributors
 
