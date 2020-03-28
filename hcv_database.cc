@@ -26,6 +26,7 @@
  ******************************************************************************/
 
 #include "hcv_header.hh"
+#include <pqxx/prepared_statement.hxx>
 //NOT NEEDED: #include <pqxx/prepared_statement.hxx>
 
 extern "C" const char hcv_database_gitid[] = HELPCOVID_GITID;
@@ -41,6 +42,61 @@ std::string hcv_our_postgresql_server_version;
 std::recursive_mutex hcv_dbmtx;
 
 extern "C" void hcv_prepare_statements_in_database(void);
+
+
+Hcv_PreparedStatement::Hcv_PreparedStatement(const std::string& name)
+  : m_name(name), m_inv(nullptr)
+{
+}
+
+
+Hcv_PreparedStatement::~Hcv_PreparedStatement()
+{
+    //delete m_inv;
+}
+
+
+void
+Hcv_PreparedStatement::save(const std::string& sql)
+{
+    HCV_DEBUGOUT("Registering prepared SQL statement " << m_name);
+
+    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+    hcv_dbconn->prepare(m_name, sql);
+}
+
+
+void
+Hcv_PreparedStatement::load()
+{
+    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx); 
+    pqxx::work txn(*hcv_dbconn);
+    m_inv = new pqxx::prepare::invocation(txn.prepared(m_name));
+}
+
+
+void
+Hcv_PreparedStatement::bind(const std::string& arg)
+{
+    if (m_inv)
+        (*m_inv)(arg);
+}
+
+
+void
+Hcv_PreparedStatement::bind(std::int64_t arg)
+{
+    if (m_inv)
+        (*m_inv)(arg);
+}
+
+pqxx::result
+Hcv_PreparedStatement::run()
+{
+    if (m_inv)
+        return m_inv->exec();
+}
+
 
 const std::string
 hcv_postgresql_version(void)
