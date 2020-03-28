@@ -53,6 +53,12 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
   if (req.method != "POST")
     HCV_FATALOUT("hcv_login_view_post() called with not POST request");
 
+  auto email = req.get_param_value("email");
+  auto passwd = req.get_param_value("password");
+
+  HCV_DEBUGOUT("email=" << email);
+  HCV_DEBUGOUT("passwd=" << passwd);
+
 #warning user authentication and cookie setting needs to be implemented.
   Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
   std::string thtml = hcv_get_web_root() + "html/index.html";
