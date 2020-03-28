@@ -480,7 +480,7 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp), "text/html");
+    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
   });
   hcv_webserver->Get("/", [](const httplib::Request& req,
                              httplib::Response& resp)
@@ -488,7 +488,7 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp), "text/html");
+    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
   });
   hcv_webserver->Get("^/?$", [](const httplib::Request& req,
                              httplib::Response& resp)
@@ -496,7 +496,7 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp), "text/html");
+    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
   });
 
   //////////////// /login/ serving
@@ -506,7 +506,7 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     HCV_DEBUGOUT("login URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_login_view_get(req, resp), "text/html");
+    resp.set_content(hcv_login_view_get(req, resp, reqcnt), "text/html");
   });
   ///////
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
@@ -515,7 +515,7 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     HCV_DEBUGOUT("login URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_login_view_post(req, resp), "application/json");
+    resp.set_content(hcv_login_view_post(req, resp, reqcnt), "application/json");
   });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving

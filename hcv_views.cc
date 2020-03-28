@@ -89,15 +89,21 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 
 
 std::string
-hcv_home_view_get(const httplib::Request& req, httplib::Response& resp)
+hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long reqcnt)
 {
   if (req.method != "GET")
     HCV_FATALOUT("hcv_home_view_get() called with non GET request");
+  HCV_DEBUGOUT("hcv_home_view_get '" << req.path << "' req#" << reqcnt);
+  Hcv_http_template_data webdata(req, resp, reqcnt);
 
+
+#if 0 && old_code
   // for now, redirect to the login view by default
   hcv_login_view_get(req, resp);
 #warning implement conditional redirection based on session checks
-}
+#endif /*0 && old_code*/
+
+} // end of hcv_home_view_get
 
 
 //////////////////// end of file hcv_views.cc of github.com/bstarynk/helpcovid

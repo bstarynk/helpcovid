@@ -692,11 +692,11 @@ hcv_user_model_update_password(const std::string& email,
 ///////////////////////////////////////////////////////////////////////////////
 
 extern "C" std::string
-hcv_login_view_get(const httplib::Request& req, httplib::Response& resp);
+hcv_login_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum);
 
 
 extern "C" std::string
-hcv_login_view_post(const httplib::Request& req, httplib::Response& resp);
+hcv_login_view_post(const httplib::Request& req, httplib::Response& resp, long reqnum);
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -704,7 +704,7 @@ hcv_login_view_post(const httplib::Request& req, httplib::Response& resp);
 ///////////////////////////////////////////////////////////////////////////////
 
 extern "C" std::string
-hcv_home_view_get(const httplib::Request& req, httplib::Response& resp);
+hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum);
 
 
 #endif /*HELPCOVID_HEADER*/
