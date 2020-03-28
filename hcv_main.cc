@@ -261,6 +261,10 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 
   switch (key)
     {
+    case HCVPROGOPT_DEBUG:
+      hcv_debugging.store(true);
+      return 0;
+      
     case HCVPROGOPT_WEBURL:
       progargs->hcvprog_weburl = std::string(arg);
       return 0;

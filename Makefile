@@ -73,5 +73,5 @@ indent:
 
 localtest0: helpcovid
 #	./generate-config.py
-	./helpcovid --threads=3
+	./helpcovid --debug --threads=3
 

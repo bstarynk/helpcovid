@@ -131,6 +131,13 @@ void hcv_background_thread_body(void)
                   hcv_process_SIGXCPU_signal();
                   hcv_should_stop_bg_thread.store (true);
                 }
+              else if  (signalinfo.ssi_signo == SIGPIPE)
+                {
+                  HCV_SYSLOGOUT(LOG_NOTICE, "hcv_background_thread_body got SIGPIPE at "
+                                << (hcv_monotonic_real_time() - hcv_monotonic_start_time)
+                                << " elapsed seconds");
+                  hcv_bg_do_event(0);
+                }
               else
                 HCV_FATALOUT("hcv_background_thread_body: unexpected signal #" << signalinfo.ssi_signo);
             };
@@ -162,6 +169,7 @@ hcv_start_background_thread(void)
     sigaddset(&sigmaskbits, SIGTERM);
     sigaddset(&sigmaskbits, SIGHUP);
     sigaddset(&sigmaskbits, SIGXCPU);
+    sigaddset(&sigmaskbits, SIGPIPE);
     hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK|SFD_CLOEXEC);
     if (hcv_bg_signal_fd < 0)
       HCV_FATALOUT("hcv_start_background_thread: signalfd failure");
@@ -223,9 +231,11 @@ hcv_process_SIGHUP_signal(void)
 } // end hcv_process_SIGHUP_signal
 
 
+// process eventfd, and also SIGPIPE
 void
 hcv_bg_do_event(int64_t ev)
 {
+  HCV_DEBUGOUT("hcv_bg_do_event ev=" << ev);
   std::lock_guard<std::recursive_mutex> gu(hcv_todo_mtx);
   auto beg = hcv_todo_map.begin();
   if (beg == hcv_todo_map.end())
