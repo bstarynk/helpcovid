@@ -245,7 +245,7 @@ public:
   void load();
   void bind(const std::string& arg);
   void bind(std::int64_t arg);
-  pqxx::result run();
+  pqxx::result query();
 
 private:
   std::string m_name;

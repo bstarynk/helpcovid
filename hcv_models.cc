@@ -119,7 +119,7 @@ hcv_user_model_authenticate(const std::string& email,
   stmt.load();
   stmt.bind(email);
 
-  auto res = stmt.run();
+  auto res = stmt.query();
   auto row = res.begin();
 
   return row[0].as<std::string>() == passwd;
