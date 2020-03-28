@@ -36,12 +36,12 @@ extern "C" const char hcv_views_date[] = __DATE__;
 
 
 std::string
-hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
+hcv_login_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum)
 {
   if (req.method != "GET")
     HCV_FATALOUT("hcv_login_view_get() called with non GET request");
 
-  Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
+  Hcv_http_template_data data(req, resp, reqnum);
   std::string thtml = hcv_get_web_root() + "html/signin.html";
 
   return hcv_expand_template_file(thtml, &data);
@@ -49,14 +49,20 @@ hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
 
 
 std::string
-hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
+hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp, long reqnum)
 {
   if (req.method != "POST")
     HCV_FATALOUT("hcv_login_view_post() called with not POST request");
+  Hcv_http_template_data data(req, resp, reqnum);
 
   auto email = req.get_param_value("email");
   auto passwd = req.get_param_value("password");
   bool status = hcv_user_model_authenticate(email, passwd);
+  HCV_DEBUGOUT("hcv_login_view_post reqpath:" << req.path
+               << " req#" << reqnum
+               << " email=" << email
+               << " passwd=" << passwd
+               << " status=" << status);
 
   std::string msg_en = status ? "OK" : "Your e-mail address and password do not"
                        " match. Please try again.";
@@ -73,7 +79,6 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
   return Json::writeString(jstr, jsob);
 
 #if 0
-  Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
   std::string thtml;
 
 #warning we should return a JSON response
