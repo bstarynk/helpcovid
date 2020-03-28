@@ -59,9 +59,9 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
   bool status = hcv_user_model_authenticate(email, passwd);
 
   std::string msg_en = status ? "OK" : "Your e-mail address and password do not"
-    " match. Please try again.";
+                       " match. Please try again.";
   std::string msg_fr = status ? "OK" : "Votre adresse e-mail et votre mot de"
-    "  passe ne correspondent pas. Veuillez réessayer.";
+                       "  passe ne correspondent pas. Veuillez réessayer.";
 
   Json::StreamWriterBuilder jstr;
   Json::Value jsob(Json::objectValue);
