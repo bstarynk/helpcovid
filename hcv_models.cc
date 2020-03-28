@@ -115,10 +115,11 @@ extern "C" bool
 hcv_user_model_authenticate(const std::string& email,
                             const std::string& passwd)
 {
-  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-  pqxx::work txn(*hcv_dbconn);
+  Hcv_PreparedStatement stmt("user_get_password_by_email");
+  stmt.load();
+  stmt.bind(email);
 
-  auto res = txn.exec_prepared("user_get_password_by_email", email);
+  auto res = stmt.run();
   auto row = res.begin();
 
   return row[0].as<std::string>() == passwd;
