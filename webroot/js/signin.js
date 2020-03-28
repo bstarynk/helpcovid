@@ -15,6 +15,11 @@ $(document).ready(function () {
 
         .done(function(resp) {
             console.log(resp);
+        })
+
+        .fail(function(resp) {
+            console.log('Internal server error!');
+            console.log(resp);
         });
 
         ev.preventDefault();
