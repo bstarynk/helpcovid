@@ -1,9 +1,10 @@
 //
 //  httplib.h
+//  from https://github.com/yhirose/cpp-httplib
 //
 //  Copyright (c) 2020 Yuji Hirose. All rights reserved.
+//
 //  MIT License
-//  from https://github.com/yhirose/cpp-httplib
 //
 
 #ifndef CPPHTTPLIB_HTTPLIB_H
@@ -859,7 +860,7 @@ private:
 
 class SSLClient : public Client {
 public:
-  SSLClient(const std::string &host, int port = 443,
+  explicit SSLClient(const std::string &host, int port = 443,
             const std::string &client_cert_path = std::string(),
             const std::string &client_key_path = std::string());
 
@@ -1599,24 +1600,67 @@ find_content_type(const std::string &path,
 inline const char *status_message(int status) {
   switch (status) {
   case 100: return "Continue";
+  case 101: return "Switching Protocol";
+  case 102: return "Processing";
+  case 103: return "Early Hints";
   case 200: return "OK";
+  case 201: return "Created";
   case 202: return "Accepted";
+  case 203: return "Non-Authoritative Information";
   case 204: return "No Content";
+  case 205: return "Reset Content";
   case 206: return "Partial Content";
+  case 207: return "Multi-Status";
+  case 208: return "Already Reported";
+  case 226: return "IM Used";
+  case 300: return "Multiple Choice";
   case 301: return "Moved Permanently";
   case 302: return "Found";
   case 303: return "See Other";
   case 304: return "Not Modified";
+  case 305: return "Use Proxy";
+  case 306: return "unused";
+  case 307: return "Temporary Redirect";
+  case 308: return "Permanent Redirect";
   case 400: return "Bad Request";
   case 401: return "Unauthorized";
+  case 402: return "Payment Required";
   case 403: return "Forbidden";
   case 404: return "Not Found";
+  case 405: return "Method Not Allowed";
+  case 406: return "Not Acceptable";
+  case 407: return "Proxy Authentication Required";
+  case 408: return "Request Timeout";
+  case 409: return "Conflict";
+  case 410: return "Gone";
+  case 411: return "Length Required";
+  case 412: return "Precondition Failed";
   case 413: return "Payload Too Large";
-  case 414: return "Request-URI Too Long";
+  case 414: return "URI Too Long";
   case 415: return "Unsupported Media Type";
   case 416: return "Range Not Satisfiable";
   case 417: return "Expectation Failed";
+  case 418: return "I'm a teapot";
+  case 421: return "Misdirected Request";
+  case 422: return "Unprocessable Entity";
+  case 423: return "Locked";
+  case 424: return "Failed Dependency";
+  case 425: return "Too Early";
+  case 426: return "Upgrade Required";
+  case 428: return "Precondition Required";
+  case 429: return "Too Many Requests";
+  case 431: return "Request Header Fields Too Large";
+  case 451: return "Unavailable For Legal Reasons";
+  case 501: return "Not Implemented";
+  case 502: return "Bad Gateway";
   case 503: return "Service Unavailable";
+  case 504: return "Gateway Timeout";
+  case 505: return "HTTP Version Not Supported";
+  case 506: return "Variant Also Negotiates";
+  case 507: return "Insufficient Storage";
+  case 508: return "Loop Detected";
+  case 510: return "Not Extended";
+  case 511: return "Network Authentication Required";
 
   default:
   case 500: return "Internal Server Error";
@@ -2151,9 +2195,9 @@ inline bool parse_range_header(const std::string &s, Ranges &ranges) {
 
 class MultipartFormDataParser {
 public:
-  MultipartFormDataParser() {}
+  MultipartFormDataParser() = default;
 
-  void set_boundary(const std::string &boundary) { boundary_ = boundary; }
+  void set_boundary(std::string boundary) { boundary_ = std::move(boundary); }
 
   bool is_valid() const { return is_valid_; }
 
@@ -2166,6 +2210,8 @@ public:
         "^Content-Disposition:\\s*form-data;\\s*name=\"(.*?)\"(?:;\\s*filename="
         "\"(.*?)\")?\\s*$",
         std::regex_constants::icase);
+    static const std::string dash_ = "--";
+    static const std::string crlf_ = "\r\n";
 
     buf_.append(buf, n); // TODO: performance improvement
 
@@ -2305,8 +2351,6 @@ private:
     file_.content_type.clear();
   }
 
-  const std::string dash_ = "--";
-  const std::string crlf_ = "\r\n";
   std::string boundary_;
 
   std::string buf_;
@@ -3257,7 +3301,7 @@ inline bool Server::read_content_core(Stream &strm, bool last_connection,
       return write_response(strm, last_connection, req, res);
     }
 
-    multipart_form_data_parser.set_boundary(boundary);
+    multipart_form_data_parser.set_boundary(std::move(boundary));
     out = [&](const char *buf, size_t n) {
       return multipart_form_data_parser.parse(buf, n, multipart_receiver,
                                               mulitpart_header);
