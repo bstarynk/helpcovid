@@ -463,6 +463,19 @@ hcv_webserver_run(void)
   hcv_webserver->Get("", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
+    HCV_DEBUGOUT("root URL handling GET path '" << req.path << "'");
+    resp.set_content(hcv_home_view_get(req, resp), "text/html");
+  });
+  hcv_webserver->Get("/", [](const httplib::Request& req,
+                             httplib::Response& resp)
+  {
+    HCV_DEBUGOUT("root URL handling GET path '" << req.path << "'");
+    resp.set_content(hcv_home_view_get(req, resp), "text/html");
+  });
+  hcv_webserver->Get("^/?$", [](const httplib::Request& req,
+                             httplib::Response& resp)
+  {
+    HCV_DEBUGOUT("root URL handling GET path '" << req.path << "'");
     resp.set_content(hcv_home_view_get(req, resp), "text/html");
   });
 
@@ -470,12 +483,14 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/login", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
+    HCV_DEBUGOUT("login URL handling GET path '" << req.path << "'");
     resp.set_content(hcv_login_view_get(req, resp), "text/html");
   });
   ///////
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
                                    httplib::Response& resp)
   {
+    HCV_DEBUGOUT("login URL handling POST path '" << req.path << "'");
     resp.set_content(hcv_login_view_post(req, resp), "text/html");
   });
   ////////////////////////////////////////////////////////////////
