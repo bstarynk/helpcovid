@@ -255,7 +255,7 @@ hcv_web_extract_cookie_string(const std::string&str, long *id, char randomstr[HC
   int xhash=0;
   if (str.size() < HCV_WEBCOOKIE_RANDOMSTR_WIDTH+8)
     return false;
-  char xrandombuf[HCV_WEBCOOKIE_RANDOMSTR_WIDTH];
+  char xrandombuf[HCV_WEBCOOKIE_RANDOMSTR_WIDTH+4];
   memset (xrandombuf, 0, sizeof(xrandombuf));
   if (sscanf(str.c_str(), "HCV%lx-%24[A-Za-z0-9]-A%x", &xid,xrandombuf, &xhash) < 3)
     return false;
