@@ -37,6 +37,9 @@ extern "C" const char hcv_views_date[] = __DATE__;
 std::string
 hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
 {
+  if (req.method != "GET")
+      HCV_FATALOUT("hcv_login_view_get() called with non GET request");
+
   Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
   std::string thtml = hcv_get_web_root() + "html/signin.html";
 
@@ -47,6 +50,9 @@ hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
 std::string
 hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 {
+    if (req.method != "POST")
+        HCV_FATALOUT("hcv_login_view_post() called with not POST request");
+
 #warning user authentication and cookie setting needs to be implemented.
   Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
   std::string thtml = hcv_get_web_root() + "html/index.html";
@@ -58,6 +64,9 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 std::string
 hcv_home_view_get(const httplib::Request& req, httplib::Response& resp)
 {
+  if (req.method != "GET")
+      HCV_FATALOUT("hcv_home_view_get() called with non GET request");
+
   // for now, redirect to the login view by default
   hcv_login_view_get(req, resp);
 #warning implement conditional redirection based on session checks
