@@ -93,8 +93,10 @@ Hcv_PreparedStatement::bind(std::int64_t arg)
 pqxx::result
 Hcv_PreparedStatement::run()
 {
-  if (m_inv)
-    return m_inv->exec();
+  if (!m_inv)
+    HCV_FATALOUT("Invcation not initialised!");
+
+  return m_inv->exec();
 }
 
 
