@@ -65,21 +65,6 @@ hcv_model_validator_email(const std::string& field, const std::string& tag,
 }
 
 
-extern "C" void
-hcv_user_model_prepare_statements(void)
-{
-  // user_crtime is updated by default
-  hcv_database_register_prepared_statement("user_create",
-      "INSERT INTO tb_user (user_firstname, user_familyname, user_email,"
-      " user_gender VALUES ($1, $2, $3, $4);");
-
-  hcv_database_register_prepared_statement("user_get_password_by_email",
-      "SELECT passwd_encr FROM tb_password WHERE passw_userid = "
-      "(SELECT user_id WHERE user_email = $1) ORDER BY passw_mtime DESC"
-      " LIMIT 1;");
-}
-
-
 extern "C" bool
 hcv_user_model_validate(const hcv_user_model& model, hcv_user_model& status)
 {

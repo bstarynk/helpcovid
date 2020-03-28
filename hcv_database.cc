@@ -176,6 +176,21 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
 } // end hcv_initialize_database
 
 
+static void
+prepare_user_model_statements(void)
+{
+  // user_crtime is updated by default
+  hcv_database_register_prepared_statement("user_create_pstm",
+      "INSERT INTO tb_user (user_firstname, user_familyname, user_email,"
+      " user_gender VALUES ($1, $2, $3, $4);");
+
+  hcv_database_register_prepared_statement("user_get_password_by_email_pstm",
+      "SELECT passwd_encr FROM tb_password WHERE passw_userid = "
+      "(SELECT user_id WHERE user_email = $1) ORDER BY passw_mtime DESC"
+      " LIMIT 1;");
+}
+
+
 /// https://libpqxx.readthedocs.io/en/stable/a01331.html
 /// https://www.tutorialspoint.com/postgresql/postgresql_c_cpp.htm
 void
@@ -199,8 +214,7 @@ INSERT INTO tb_web_cookie
 VALUES ($1, $2, $3);
 SELECT LASTVAL()
 )addwebcookie");
-  /// FIXME: the prepared statements should go here.
-    hcv_user_model_prepare_statements();
+  prepare_user_model_statements();
 } // end hcv_prepare_statements_in_database
 
 
