@@ -56,14 +56,17 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
   auto email = req.get_param_value("email");
   auto passwd = req.get_param_value("password");
 
-  HCV_DEBUGOUT("email=" << email);
-  HCV_DEBUGOUT("passwd=" << passwd);
-
-#warning user authentication and cookie setting needs to be implemented.
   Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
-  std::string thtml = hcv_get_web_root() + "html/index.html";
+  std::string thtml;
+
+#warning we should return a JSON response
+  if (hcv_user_model_authenticate(email, passwd))
+    thtml = hcv_get_web_root() + "html/index.html";
+  else
+    thtml = hcv_get_web_root() + "html/error.html";
 
   return hcv_expand_template_file(thtml, &data);
+#warning cookie setting needs to be implemented.
 } // end hcv_login_view_post
 
 
