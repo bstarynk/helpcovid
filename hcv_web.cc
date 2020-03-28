@@ -375,11 +375,15 @@ hcv_webserver_run(void)
     else
       HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
   }
+  HCV_DEBUGOUT("hcv_webserver_run webport:" << webport
+	       << " weburl" << hcv_weburl);
   hcv_webserver->set_error_handler
   ([](const httplib::Request& req,
       httplib::Response& resp)
   {
     auto n = std::atomic_load(&hcv_web_request_counter);
+    HCV_DEBUGOUT("error web handling '" << req.path
+		 << "' req#" << n);
     hcv_web_error_handler(req, resp, n);
   });
   ////////////////////////////////////////////////////////////////
@@ -390,6 +394,8 @@ hcv_webserver_run(void)
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     if (reqcnt<=0)
       reqcnt=1;
+       HCV_DEBUGOUT("status.json URL handling GET path '" << req.path
+		    << "' req#" << reqcnt);
     long procsize=0, procrss=0, procshared=0;
     {
       FILE* pself = fopen("/proc/self/statm", "r");
@@ -440,21 +446,29 @@ hcv_webserver_run(void)
 
   ////////////////////////////////////////////////////////////////
   //////////////// /ajax/ serving
-  hcv_webserver->Get("/ajax/",
+  hcv_webserver->Get
+    ("/ajax/",
                      [](const httplib::Request&req, httplib::Response& resp)
 		     {
-		       HCV_SYSLOGOUT(LOG_WARNING,
-				     "hcv_webserver_run AJAX GET request unimplemented path="
-				     << req.path);
+       long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+       HCV_DEBUGOUT("ajax URL handling POST path '" << req.path
+		    << "' req#" << reqcnt);
+       HCV_SYSLOGOUT(LOG_WARNING,
+		     "hcv_webserver_run AJAX GET request unimplemented path="
+		     << req.path);
 #warning hcv_webserver_run unimplemented AJAX GET
 		     });
 
-  hcv_webserver->Post("/ajax/",
-                     [](const httplib::Request&req, httplib::Response& resp)
-		     {
-		       HCV_SYSLOGOUT(LOG_WARNING,
-				     "hcv_webserver_run AJAX POST request unimplemented path="
-				     << req.path);
+  hcv_webserver->Post
+    ("/ajax/",
+     [](const httplib::Request&req, httplib::Response& resp)
+     {
+       long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+       HCV_DEBUGOUT("ajax URL handling POST path '" << req.path
+		    << "' req#" << reqcnt);
+       HCV_SYSLOGOUT(LOG_WARNING,
+		     "hcv_webserver_run AJAX POST request unimplemented path="
+		     << req.path);
 #warning hcv_webserver_run unimplemented AJAX POST
 		     });
 		     
@@ -463,19 +477,25 @@ hcv_webserver_run(void)
   hcv_webserver->Get("", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
-    HCV_DEBUGOUT("root URL handling GET path '" << req.path << "'");
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    HCV_DEBUGOUT("root URL handling GET path '" << req.path
+		 << "' req#" << reqcnt);
     resp.set_content(hcv_home_view_get(req, resp), "text/html");
   });
   hcv_webserver->Get("/", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
-    HCV_DEBUGOUT("root URL handling GET path '" << req.path << "'");
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    HCV_DEBUGOUT("root URL handling GET path '" << req.path
+		 << "' req#" << reqcnt);
     resp.set_content(hcv_home_view_get(req, resp), "text/html");
   });
   hcv_webserver->Get("^/?$", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
-    HCV_DEBUGOUT("root URL handling GET path '" << req.path << "'");
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    HCV_DEBUGOUT("root URL handling GET path '" << req.path
+		 << "' req#" << reqcnt);
     resp.set_content(hcv_home_view_get(req, resp), "text/html");
   });
 
@@ -483,14 +503,18 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/login", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
-    HCV_DEBUGOUT("login URL handling GET path '" << req.path << "'");
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    HCV_DEBUGOUT("login URL handling GET path '" << req.path
+		 << "' req#" << reqcnt);
     resp.set_content(hcv_login_view_get(req, resp), "text/html");
   });
   ///////
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
                                    httplib::Response& resp)
   {
-    HCV_DEBUGOUT("login URL handling POST path '" << req.path << "'");
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    HCV_DEBUGOUT("login URL handling POST path '" << req.path
+		 << "' req#" << reqcnt);
     resp.set_content(hcv_login_view_post(req, resp), "application/json");
   });
   ////////////////////////////////////////////////////////////////
@@ -498,6 +522,9 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/images/", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
+    long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
+    HCV_DEBUGOUT("images URL handling GET path '" << req.path
+		 << "' req#" << reqcnt);
 #warning hcv_webserver->Get("/images/"...) dont work
     /* we probably need a hcv_webserver->GetPrefixed function */
     HCV_SYSLOGOUT(LOG_WARNING,
