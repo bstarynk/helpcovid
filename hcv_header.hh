@@ -244,6 +244,7 @@ public:
   void save(const std::string& sql);
   void load();
   void bind(const std::string& arg);
+  void bind(char arg);
   void bind(std::int64_t arg);
   pqxx::result query();
 

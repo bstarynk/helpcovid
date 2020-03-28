@@ -98,15 +98,14 @@ hcv_user_model_create(const hcv_user_model& model, hcv_user_model& status)
   if (!hcv_user_model_validate(model, status))
     return false;
 
-  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-  pqxx::work txn(*hcv_dbconn);
+  Hcv_PreparedStatement stmt("user_create");
+  stmt.load();
+  stmt.bind(model.user_first_name);
+  stmt.bind(model.user_family_name);
+  stmt.bind(model.user_email);
+  stmt.bind(model.user_gender);
 
-  pqxx::result res = txn.exec_prepared("user_create", model.user_first_name,
-                                       model.user_family_name,
-                                       model.user_email,
-                                       model.user_gender);
-
-  txn.commit();
+  stmt.query();
   return true;
 }
 
