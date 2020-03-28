@@ -235,20 +235,21 @@ extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 
 ////////////////////////////////////////////////////////////////
 
-class Hcv_PreparedStatement {
-  public:
-    Hcv_PreparedStatement(const std::string& name);
-    ~Hcv_PreparedStatement();
+class Hcv_PreparedStatement
+{
+public:
+  Hcv_PreparedStatement(const std::string& name);
+  ~Hcv_PreparedStatement();
 
-    void save(const std::string& sql);
-    void load();
-    void bind(const std::string& arg);
-    void bind(std::int64_t arg);
-    pqxx::Result run();
+  void save(const std::string& sql);
+  void load();
+  void bind(const std::string& arg);
+  void bind(std::int64_t arg);
+  pqxx::result run();
 
-  private:
-    std::string m_name;
-    pqxx::prepare::invocation m_inv;
+private:
+  std::string m_name;
+  pqxx::prepare::invocation m_inv;
 };
 
 
