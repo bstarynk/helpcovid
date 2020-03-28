@@ -235,6 +235,23 @@ extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 
 ////////////////////////////////////////////////////////////////
 
+class Hcv_PreparedStatement {
+  public:
+    Hcv_PreparedStatement(const string& name);
+    ~Hcv_PreparedStatement();
+
+    void save(const std::string& sql);
+    void load();
+    void bind(const std::string& arg);
+    void bind(std::int64_t arg);
+    pqxx::Result run();
+
+  private:
+    std::string m_name;
+    pqxx::prepare::invocation m_inv;
+};
+
+
 //// PostGreSQL database
 extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
 extern "C" std::recursive_mutex hcv_dbmtx;
@@ -246,7 +263,6 @@ extern "C" const std::string hcv_postgresql_version(void);
 extern "C" void
 hcv_database_register_prepared_statement(const std::string& name,
     const std::string& sql);
-
 
 
 // query if an email is known or not
