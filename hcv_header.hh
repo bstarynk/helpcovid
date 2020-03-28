@@ -241,7 +241,6 @@ public:
   Hcv_PreparedStatement(const std::string& name);
   ~Hcv_PreparedStatement();
 
-  void save(const std::string& sql);
   void load();
   void bind(const std::string& arg);
   void bind(char arg);

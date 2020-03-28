@@ -58,16 +58,6 @@ Hcv_PreparedStatement::~Hcv_PreparedStatement()
 
 
 void
-Hcv_PreparedStatement::save(const std::string& sql)
-{
-  HCV_DEBUGOUT("Registering prepared SQL statement " << m_name);
-
-  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-  hcv_dbconn->prepare(m_name, sql);
-}
-
-
-void
 Hcv_PreparedStatement::load()
 {
   std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
