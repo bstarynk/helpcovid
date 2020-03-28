@@ -99,7 +99,6 @@ hcv_user_model_create(const hcv_user_model& model, hcv_user_model& status)
     return false;
 
   Hcv_PreparedStatement stmt("user_create");
-  stmt.load();
   stmt.bind(model.user_first_name);
   stmt.bind(model.user_family_name);
   stmt.bind(model.user_email);
@@ -115,7 +114,6 @@ hcv_user_model_authenticate(const std::string& email,
                             const std::string& passwd)
 {
   Hcv_PreparedStatement stmt("user_get_password_by_email");
-  stmt.load();
   stmt.bind(email);
 
   auto res = stmt.query();

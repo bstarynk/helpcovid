@@ -241,7 +241,6 @@ public:
   Hcv_PreparedStatement(const std::string& name);
   ~Hcv_PreparedStatement();
 
-  void load();
   void bind(const std::string& arg);
   void bind(char arg);
   void bind(std::int64_t arg);
