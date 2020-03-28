@@ -250,6 +250,7 @@ public:
 private:
   std::string m_name;
   pqxx::prepare::invocation* m_inv;
+  pqxx::work* m_txn;
 };
 
 

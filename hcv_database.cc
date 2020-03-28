@@ -45,14 +45,15 @@ extern "C" void hcv_prepare_statements_in_database(void);
 
 
 Hcv_PreparedStatement::Hcv_PreparedStatement(const std::string& name)
-  : m_name(name), m_inv(nullptr)
+  : m_name(name), m_inv(nullptr), m_txn(nullptr)
 {
 }
 
 
 Hcv_PreparedStatement::~Hcv_PreparedStatement()
 {
-  //delete m_inv;
+  delete m_inv;
+  delete m_txn;
 }
 
 
@@ -70,8 +71,8 @@ void
 Hcv_PreparedStatement::load()
 {
   std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-  pqxx::work txn(*hcv_dbconn);
-  m_inv = new pqxx::prepare::invocation(txn.prepared(m_name));
+  m_txn = new pqxx::work(*hcv_dbconn);
+  m_inv = new pqxx::prepare::invocation(m_txn->prepared(m_name));
 }
 
 
@@ -90,13 +91,17 @@ Hcv_PreparedStatement::bind(std::int64_t arg)
     (*m_inv)(arg);
 }
 
+
 pqxx::result
 Hcv_PreparedStatement::query()
 {
   if (!m_inv)
     HCV_FATALOUT("Invcation not initialised!");
 
-  return m_inv->exec();
+  pqxx::result res = m_inv->exec();
+  m_txn->commit();
+
+  return res;
 }
 
 
