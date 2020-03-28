@@ -237,7 +237,7 @@ extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 
 class Hcv_PreparedStatement {
   public:
-    Hcv_PreparedStatement(const string& name);
+    Hcv_PreparedStatement(const std::string& name);
     ~Hcv_PreparedStatement();
 
     void save(const std::string& sql);
