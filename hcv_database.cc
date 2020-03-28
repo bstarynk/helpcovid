@@ -52,49 +52,49 @@ Hcv_PreparedStatement::Hcv_PreparedStatement(const std::string& name)
 
 Hcv_PreparedStatement::~Hcv_PreparedStatement()
 {
-    //delete m_inv;
+  //delete m_inv;
 }
 
 
 void
 Hcv_PreparedStatement::save(const std::string& sql)
 {
-    HCV_DEBUGOUT("Registering prepared SQL statement " << m_name);
+  HCV_DEBUGOUT("Registering prepared SQL statement " << m_name);
 
-    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
-    hcv_dbconn->prepare(m_name, sql);
+  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+  hcv_dbconn->prepare(m_name, sql);
 }
 
 
 void
 Hcv_PreparedStatement::load()
 {
-    std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx); 
-    pqxx::work txn(*hcv_dbconn);
-    m_inv = new pqxx::prepare::invocation(txn.prepared(m_name));
+  std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
+  pqxx::work txn(*hcv_dbconn);
+  m_inv = new pqxx::prepare::invocation(txn.prepared(m_name));
 }
 
 
 void
 Hcv_PreparedStatement::bind(const std::string& arg)
 {
-    if (m_inv)
-        (*m_inv)(arg);
+  if (m_inv)
+    (*m_inv)(arg);
 }
 
 
 void
 Hcv_PreparedStatement::bind(std::int64_t arg)
 {
-    if (m_inv)
-        (*m_inv)(arg);
+  if (m_inv)
+    (*m_inv)(arg);
 }
 
 pqxx::result
 Hcv_PreparedStatement::run()
 {
-    if (m_inv)
-        return m_inv->exec();
+  if (m_inv)
+    return m_inv->exec();
 }
 
 
