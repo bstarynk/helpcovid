@@ -27,6 +27,7 @@
 
 
 #include "hcv_header.hh"
+#include <json/writer.h>
 
 
 
@@ -55,7 +56,23 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 
   auto email = req.get_param_value("email");
   auto passwd = req.get_param_value("password");
+  bool status = hcv_user_model_authenticate(email, passwd);
 
+  std::string msg_en = status ? "OK" : "Your e-mail address and password do not"
+    " match. Please try again.";
+  std::string msg_fr = status ? "OK" : "Votre adresse e-mail et votre mot de"
+    "  passe ne correspondent pas. Veuillez réessayer.";
+
+  Json::StreamWriterBuilder jstr;
+  Json::Value jsob(Json::objectValue);
+  jsob["status"] = status;
+  jsob["msg_en"] = msg_en;
+  jsob["msg_fr"] = msg_fr;
+
+#warning cookie setting needs to be implemented.
+  return Json::writeString(jstr, jsob);
+
+#if 0
   Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
   std::string thtml;
 
@@ -67,6 +84,7 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 
   return hcv_expand_template_file(thtml, &data);
 #warning cookie setting needs to be implemented.
+#endif
 } // end hcv_login_view_post
 
 

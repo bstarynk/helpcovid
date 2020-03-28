@@ -491,7 +491,7 @@ hcv_webserver_run(void)
                                    httplib::Response& resp)
   {
     HCV_DEBUGOUT("login URL handling POST path '" << req.path << "'");
-    resp.set_content(hcv_login_view_post(req, resp), "text/html");
+    resp.set_content(hcv_login_view_post(req, resp), "application/json");
   });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving
