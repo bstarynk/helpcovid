@@ -237,13 +237,43 @@ hcv_web_error_handler(const httplib::Request& req,
   resp.set_content(outhtmlstr.c_str(), "text/html");
 } // end hcv_web_error_handler
 
+#define HCV_WEBCOOKIE_RANDOMSTR_WIDTH 24 /* also width of wcookie_random in hcv_database.cc */
+static std::string
+hcv_web_make_cookie_string(long id, const char*randomstr, int webhash)
+{
+  char buf[64];
+  memset (buf, 0, sizeof(buf));
+  snprintf(buf, sizeof(buf), "HCV%06lx-%24s-A%08x",
+	   id, randomstr, webhash);
+  return std::string(buf);
+} // end hcv_web_make_cookie_string
+
+bool
+hcv_web_extract_cookie_string(const std::string&str, long *id, char randomstr[HCV_WEBCOOKIE_RANDOMSTR_WIDTH+4], int*phash)
+{
+  long xid=0;
+  int xhash=0;
+  if (str.size() < HCV_WEBCOOKIE_RANDOMSTR_WIDTH+8)
+    return false;
+  char xrandombuf[HCV_WEBCOOKIE_RANDOMSTR_WIDTH];
+  memset (xrandombuf, 0, sizeof(xrandombuf));
+  if (sscanf(str.c_str(), "HCV%lx-%24[A-Za-z0-9]-A%x", &xid,xrandombuf, &xhash) < 3)
+    return false;
+  if (id)
+    *id = xid;
+  if (randomstr)
+    strncpy(randomstr, xrandombuf, HCV_WEBCOOKIE_RANDOMSTR_WIDTH);
+  if (phash)
+    *phash = xhash;
+  return true;
+} // end hcv_web_extract_cookie_string
 
 
+static constexpr unsigned hcv_web_cookie_duration = 5400; // in seconds, so one hour and a half
 /// register a fresh cookie in the database and return it.
 std::string
 hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 {
-  static constexpr unsigned randomwidth = 24; // also width of wcookie_random in hcv_database.cc
   static constexpr const char alphanumchars[]=
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   static constexpr unsigned nbalphanum=62;
@@ -259,9 +289,16 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 		  << htpl->serial());
     return "";
   };
-  char randombuf[randomwidth+4];
+  std::string webagentstr;
+  {
+    auto webagendit = hreq->headers.find("User-Agent");
+    if (webagendit != hreq->headers.end())
+      webagentstr = webagendit->second;
+  }
+  auto reqnum = htpl->request_number();
+  char randombuf[HCV_WEBCOOKIE_RANDOMSTR_WIDTH+4];
   memset (randombuf, 0, sizeof(randombuf));
-  for (unsigned ix=0; ix<randomwidth; ix++) {
+  for (unsigned ix=0; ix<HCV_WEBCOOKIE_RANDOMSTR_WIDTH; ix++) {
     char uc=0;
     uc = alphanumchars[Hcv_Random::random_quickly_8bits() % nbalphanum];
     // we don't want too much O digits, so ....
@@ -271,8 +308,26 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
     }
     randombuf[ix] = uc;
   };
-#warning hcv_web_register_fresh_cookie unimplemented
-    HCV_FATALOUT("hcv_web_register_fresh_cookie not implemented");
+  time_t expiret = 0;
+  if (time(&expiret)<0)
+    HCV_FATALOUT("hcv_web_register_fresh_cookie time(2) failed");
+  expiret += hcv_web_cookie_duration;
+  int webagenthash = 0;
+  if (!webagentstr.empty()) {
+    webagenthash = std::hash<std::string>{}(webagentstr);
+    if (webagenthash == 0)
+      webagenthash = webagentstr.size();
+  }
+  HCV_DEBUGOUT("hcv_web_register_fresh_cookie reqnum#" << reqnum << " randombuf=" << randombuf
+	       << " expiret=" << expiret << " webagentstr='" << webagentstr
+	       << "', webagenthash=" << webagenthash);
+  long id = hcv_database_get_id_of_added_web_cookie(std::string(randombuf), expiret, webagenthash);
+  HCV_DEBUGOUT("hcv_web_register_fresh_cookie reqnum#" << reqnum << " randombuf=" << randombuf
+	       << " webagenthash=" << webagenthash
+	       << " id=" << id);
+  std::string res = hcv_web_make_cookie_string(id, randombuf, webagenthash);
+  HCV_DEBUGOUT("hcv_web_register_fresh_cookie reqnum#" << reqnum << " gives " << res);
+  return res;
 } // end hcv_web_register_fresh_cookie
 
 ////////////////////////////////////////////////////////////////
