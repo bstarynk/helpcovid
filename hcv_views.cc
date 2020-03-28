@@ -47,8 +47,7 @@ hcv_login_view_get(const httplib::Request& req, httplib::Response& resp)
 std::string
 hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp)
 {
-  // TODO: user authentication and cookie setting needs to be implemented.
-  //
+#warning user authentication and cookie setting needs to be implemented.
   Hcv_http_template_data data(req, resp, hcv_get_web_request_counter());
   std::string thtml = hcv_get_web_root() + "html/index.html";
   
@@ -60,8 +59,8 @@ std::string
 hcv_home_view_get(const httplib::Request& req, httplib::Response& resp)
 {
   // for now, redirect to the login view by default
-  // TODO: implement conditional redirection based on session checks
   hcv_login_view_get(req, resp);
+#warning implement conditional redirection based on session checks
 }
 
 
