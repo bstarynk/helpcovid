@@ -385,6 +385,10 @@ reported by `ip addr` -see
 Linux commands). Then from a browser (maybe your mobile phone) access
 http://192.168.0.1:8083/ or http://192.168.0.1:8083/status.json
 
+We use the [address
+sanitizer](https://en.wikipedia.org/wiki/AddressSanitizer). See the
+`Makefile` and build with `make sanitized-helpcovid`.
+
 You can also do `make localtest0`; see the `Makefile`
 
 In March 2020 `./helpcovid` is often crashing.
