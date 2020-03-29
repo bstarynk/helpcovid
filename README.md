@@ -373,3 +373,19 @@ Et nous espérons pouvoir fournir une liste de proches voisins (à moins de 2 km
 ## important notice
 
 We provide the software, not the data.
+
+## testing
+
+Once you run `make` you might try something like `./helpcovid -W
+http://192.168.0.1:8083/ -R $PWD/webroot/ -T 3 -D` for debugging
+purposes (where `192.168.0.1` is an IPv4 address of your Linux computer, as
+reported by `ip addr` -see
+[ip(8)](http://man7.org/linux/man-pages/man8/ip.8.html)- or
+[`ifconfig(8)`](http://man7.org/linux/man-pages/man8/ifconfig.8.html)
+Linux commands). Then from a browser (maybe your mobile phone) access
+http://192.168.0.1:8083/ or http://192.168.0.1:8083/status.json
+
+You can also do `make localtest0`; see the `Makefile`
+
+In March 2020 `./helpcovid` is often crashing.
+
