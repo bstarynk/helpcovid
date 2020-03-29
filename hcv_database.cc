@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
   wcookie_id SERIAL PRIMARY  KEY NOT NULL, -- unique key in this table
   wcookie_random CHAR(24) NOT NULL,        -- a random key, hopefully usually unique
   wcookie_exptime TIMESTAMP NOT NULL,      -- the cookie expiration time
-  wcookie_webagenthash INT NOT NULL,       -- a quick hashcode of the browser's User-Agent:
+  wcookie_webagenthash INT NOT NULL        -- a quick hashcode of the browser's User-Agent:
 ); --- end TABLE tb_web_cookie
 )crwebcookietab");
     transact.exec0(R"crcookierandomix(
