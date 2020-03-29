@@ -73,6 +73,7 @@ __timestamp.c:
 	$(MV) --backup $@-tmp $@
 
 ## the address-sanitized variant
+## https://en.wikipedia.org/wiki/AddressSanitizer
 sanitized-helpcovid: $(HELPCOVID_SANITIZED_OBJECTS) __timestamp.o
 	$(LINK.cc) $(HELPCOVID_SANITIZE_CXXFLAGS) \
            $(HELPCOVID_SANITIZED_OBJECTS)  __timestamp.o \
