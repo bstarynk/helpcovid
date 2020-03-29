@@ -344,6 +344,39 @@ hcv_initialize_templates(void)
                     << filename << ":" << lineno<< " @" << offset);
   });
   ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv html_config configname?>
+  hcv_register_template_expander_closure
+  ("html_config",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv html_config ...?>' processing instruction "
+                   << procinstr <<" in "
+                   << filename << ":" << lineno);
+    HCV_DEBUGOUT("html_config procinstr='" << procinstr
+                 << "' at " << filename << ":" << lineno);
+    char confname[HCV_CONFIG_HTML_NAME_MAXLEN+4];
+    memset (confname, 0, sizeof(confname));
+    int endpos = -1;
+    if (sscanf(procinstr.c_str(),
+               "<?hcv html_config %60[A-Za-z0-9_] ?>%n",
+               &confname, &endpos) <= 1
+        || endpos<procinstr.size())
+      {
+        HCV_SYSLOGOUT(LOG_WARNING,
+                      "invalid html_config PI " << procinstr
+                      << " at " << filename << ":" << lineno);
+        return;
+      }
+    if (auto pouts = templdata->output_stream())
+      *pouts << hcv_get_config_html(std::string(confname));
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv now?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  });
+  ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv request_number?>
   hcv_register_template_expander_closure
   ("request_number",

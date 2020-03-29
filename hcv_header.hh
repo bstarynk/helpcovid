@@ -288,7 +288,9 @@ class Hcv_http_template_data; /// forward declaration
 // the first bytes of every HTML5 file
 #define HCV_HTML5_START "<!DOCTYPE html"
 
-// if the first 8 lines of some HTML file contain the following string, it should be expanded for <?hcv ...?> processing instructions
+// if the first 8 lines of some HTML file contain the following
+// string, it should be expanded for <?hcv ...?> processing
+// instructions
 #define HCV_HTML_DYNAMIC_MAGIC "!HelpCoVidDynamic!"
 
 /// this could be run with root privilege if we need to serve the :80
