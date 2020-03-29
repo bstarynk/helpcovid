@@ -187,6 +187,8 @@ CREATE TABLE IF NOT EXISTS tb_password (
     // see http://man7.org/linux/man-pages/man2/getsockname.2.html
     // see http://man7.org/linux/man-pages/man7/ip.7.html
     // and http://man7.org/linux/man-pages/man7/ipv6.7.html
+    /// we are aware that the browser IP is unreliable information
+    /// see https://stackoverflow.com/q/527638/841108
     transact.exec0(R"crwebcookietab(
 ---- TABLE tb_web_cookie
 CREATE TABLE IF NOT EXISTS tb_web_cookie (
@@ -194,7 +196,6 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
   wcookie_random CHAR(24) NOT NULL,        -- a random key, hopefully usually unique
   wcookie_exptime TIMESTAMP NOT NULL,      -- the cookie expiration time
   wcookie_webagenthash INT NOT NULL,       -- a quick hashcode of the browser's User-Agent:
-  wcookie_ipaddr INET NOT NULL             -- the browser IP address (beware of NAT)
 ); --- end TABLE tb_web_cookie
 )crwebcookietab");
     transact.exec0(R"crcookierandomix(
@@ -209,12 +210,6 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
     ON tb_web_cookie(wcookie_exptime);
 --- end INDEX ix_cookie_exptime
 )crcookietimeix");
-    transact.exec0(R"crcookieipadix(
----- INDEX ix_cookie_ipaddr
-  CREATE INDEX IF NOT EXISTS ix_cookie_ipaddr
-    ON tb_web_cookie(wcookie_ipaddr);
---- end INDEX ix_cookie_ipaddr
-)crcookieipadix");
     transact.commit();
   }
   HCV_DEBUGOUT("hcv_initialize_database before preparing statements in " << connstr);
