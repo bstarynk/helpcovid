@@ -304,7 +304,7 @@ extern "C" void hcv_output_cstr_encoded_html(std::ostream&out, const char*cstr);
 
 extern "C" std::string hcv_get_web_root(void);
 
-extern "C" long hcv_get_web_request_counter(void);
+
 
 /// return a string, perhaps 0123-9wI1QOXiH0M03Pf1ef14ab69-1abc4, for a fresh web cookie.
 extern "C" std::string hcv_web_register_fresh_cookie(Hcv_http_template_data*);
