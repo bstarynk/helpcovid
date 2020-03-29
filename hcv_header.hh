@@ -82,7 +82,7 @@
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
 #include <pqxx/pqxx>
-
+ #include <pqxx/prepared_statement.hxx>
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
 #define CPPHTTPLIB_OPENSSL_SUPPORT 1
