@@ -427,7 +427,7 @@ hcv_webserver_run(void)
       << "<p>"
       "<a href='https://github.com/bstarynk/helpcovid/'>HelpCovid</a>"
       " (a GPLv3+ <a href='https://www.gnu.org/philosophy/free-sw.en.html>'>free software</a>"
-      " <b>without warranty</b>" << std::endl
+      " <b>without warranty</b>)" << std::endl
       << "running on <a href='" << hcv_weburl << "'>"
       << hcv_weburl << "</a>.</p>" << std::endl;
     outstatus << "<ul>" <<std::endl;
@@ -484,7 +484,7 @@ hcv_webserver_run(void)
       outstatus << "</ul>" << std::endl;
       outstatus << "<hr/>" << std::endl;
       outstatus << "<p><small>Use <tt>" << "<a href='" << hcv_weburl
-		<< "/status.json'><tt>status.json</tt> to get "
+		<< "/status.json'>status.json</a></tt> to get "
 	" programmatically the same information.</small></p>"
 		<< std::endl;
       outstatus << std::endl;

@@ -100,8 +100,8 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
     HCV_FATALOUT("hcv_home_view_get() called with non GET request");
 
   HCV_DEBUGOUT("hcv_home_view_get '" << req.path << "' req#" << reqcnt);
- 
-  // return signin.html for now 
+
+  // return signin.html for now
   Hcv_http_template_data webdata(req, resp, reqcnt);
   std::string thtml = hcv_get_web_root() + "html/signin.html";
   return hcv_expand_template_file(thtml, &webdata);
