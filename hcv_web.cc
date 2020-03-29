@@ -379,6 +379,9 @@ hcv_web_get_json_status(const httplib::Request&req, httplib::Response& resp, lon
   jsob["nowtime"] = (Json::Value::Int64) nowt;
   jsob["pid"] = (Json::Value::Int)getpid();
   jsob["web_request_count"] =  (Json::Value::Int64)reqcnt;
+  jsob["cxx"] = hcv_cxx_compiler;
+  jsob["build_time"] = hcv_timestamp;
+  jsob["build_timestamp"] =  (Json::Value::Int64)hcv_timelong;
   auto str = Json::writeString(hcv_json_builder, jsob);
   resp.set_content(str.c_str(), "application/json");
 } // end hcv_web_get_json_status
@@ -428,6 +431,8 @@ hcv_web_get_html_status(const httplib::Request&req, httplib::Response& resp, lon
 	    << hcv_md5sum << "</tt></li>" << std::endl;
   outstatus << "<li>gitid: <tt>"
 	    << hcv_gitid << "</tt></li>" << std::endl;
+  outstatus << "<li>built: <tt>"
+	    << hcv_timestamp << "</tt></li>" << std::endl;
   outstatus << "<li>total CPU time: <tt>"
 	    <<  (hcv_process_cpu_time() - startcputime)
 	    << "</tt> (seconds)</li>" << std::endl;
@@ -472,6 +477,7 @@ hcv_web_get_html_status(const httplib::Request&req, httplib::Response& resp, lon
   }
   outstatus << "<li>pid: <tt>" << ((long)getpid()) << "</tt></li>" << std::endl;
   outstatus << "<li>web request count: <tt>" << reqcnt  << "</tt></li>" << std::endl;
+  outstatus << "<li>compiled with: <tt>" << hcv_cxx_compiler << "</tt></li>" << std::endl;
   outstatus << "</ul>" << std::endl;
   outstatus << "<hr/>" << std::endl;
   outstatus << "<p><small>Use <tt>" << "<a href='" << hcv_weburl
