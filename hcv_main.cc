@@ -699,7 +699,7 @@ main(int argc, char**argv)
   HCV_SYSLOGOUT(LOG_NOTICE, "start of " << argv[0] << std::endl
                 <<  " version:" << hcv_versionmsg << std::endl
 #ifdef HELPCOVID_SANITIZE
-		<< " **sanitizing for " << HELPCOVID_SANITIZE "**" << std::endl
+                << " **sanitizing for " << HELPCOVID_SANITIZE "**" << std::endl
 #endif /*HELPCOVID_SANITIZE*/
                 << " at " << hcv_startimbuf
                 << " on " << hcv_hostname);

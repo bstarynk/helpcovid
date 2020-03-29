@@ -82,7 +82,7 @@
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
 #include <pqxx/pqxx>
- #include <pqxx/prepared_statement.hxx>
+#include <pqxx/prepared_statement.hxx>
 
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
 #define CPPHTTPLIB_OPENSSL_SUPPORT 1
@@ -374,13 +374,13 @@ public:
 /// this reaches the getsockname call in httplib.h
 /// http://man7.org/linux/man-pages/man2/getsockname.2.html
   void get_request_socket_ip(struct sockaddr *addr, socklen_t *addrlen);
-  
+
   long request_number() const
   {
     return _hcvhttp_reqnum;
   };
   //
-  
+
   std::string remote_address() const
   {
     if (_hcvhttp_request)

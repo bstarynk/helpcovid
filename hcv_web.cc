@@ -387,15 +387,30 @@ hcv_webserver_run(void)
     hcv_web_error_handler(req, resp, n);
   });
   ////////////////////////////////////////////////////////////////
-  //////////////// /status.json serving
-  hcv_webserver->Get("/status.json",
+  //////////////// /status.html serving
+  hcv_webserver->Get("/status.html",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
     long reqcnt = std::atomic_fetch_add(&hcv_web_request_counter, 1);
     if (reqcnt<=0)
       reqcnt=1;
-       HCV_DEBUGOUT("status.json URL handling GET path '" << req.path
+       HCV_DEBUGOUT("status.html URL handling GET path '" << req.path
 		    << "' req#" << reqcnt);
+       Hcv_http_template_data statusdata(req, resp, reqcnt);
+       /// sleep a tiny bit against abusive usage...
+    usleep (500+Hcv_Random::random_quickly_8bits());
+    std::ostringstream outstatus;
+    outstatus << 
+        R"statusprefix(<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <title>HelpCovid builtin status</title>
+</head>
+<body>
+<h1><i>HelpCovid</i> status</h1>
+)statusprefix" <<std::endl;
+
     long procsize=0, procrss=0, procshared=0;
     {
       FILE* pself = fopen("/proc/self/statm", "r");
@@ -407,23 +422,47 @@ hcv_webserver_run(void)
           usleep(1000*(1+(reqcnt%8)) + (reqcnt&0xff));
         }
     }
-    Json::Value jsob(Json::objectValue);
-    jsob["helpcovid"] = "github.com/bstarynk/helpcovid";
-    jsob["license"] = "GPLv3+";
-    jsob["lastgitcommit"] = hcv_lastgitcommit;
-    jsob["md5sum"] = hcv_md5sum;
-    jsob["gitid"] = hcv_gitid;
-    jsob["total_cpu_time"] = hcv_process_cpu_time() - startcputime;
-    jsob["total_elapsed_time"] = hcv_monotonic_real_time() - startmonotonictime;
-    jsob["cpu_time_per_request"] = (hcv_process_cpu_time() - startcputime) / reqcnt;
-    jsob["elapsed_time_per_request"] = (hcv_monotonic_real_time() - startmonotonictime) / reqcnt;
+
+    outstatus
+      << "<p>"
+      "<a href='https://github.com/bstarynk/helpcovid/'>HelpCovid</a>"
+      " (a GPLv3+ <a href='https://www.gnu.org/philosophy/free-sw.en.html>'>free software</a>"
+      " <b>without warranty</b>" << std::endl
+      << "running on <a href='" << hcv_weburl << "'>"
+      << hcv_weburl << "</a>.</p>" << std::endl;
+    outstatus << "<ul>" <<std::endl;
+    outstatus << "<li>lastgitcommit: <tt>"
+	      <<  hcv_lastgitcommit << "</tt></li>" << std::endl;
+    outstatus << "<li>md5sum: <tt>"
+	      << hcv_md5sum << "</tt></li>" << std::endl;
+    outstatus << "<li>gitid: <tt>"
+	      << hcv_gitid << "</tt></li>" << std::endl;
+    outstatus << "<li>total CPU time: <tt>"
+	      <<  (hcv_process_cpu_time() - startcputime)
+	      << "</tt> (seconds)</li>" << std::endl;
+    outstatus << "<li>total elapsed time: <tt>"
+	      <<  (hcv_monotonic_real_time() - startmonotonictime) 
+	      << "</tt> (seconds)</li>" << std::endl;
+    outstatus << "<li>CPU time per request: <tt>"
+	      <<   (1.0e6
+		    *(hcv_process_cpu_time() - startcputime) / reqcnt)
+	      << "</tt> (µs)</li>" << std::endl;
+    outstatus << "<li>elapsed time per request: <tt>"
+	      <<   (1.0e3
+		    *(hcv_process_cpu_time() - startcputime) / reqcnt)
+	      << "</tt> (ms)</li>" << std::endl;
     if (procsize>0)
-      jsob["process_size"] = (Json::Value::Int)procsize;
+      outstatus << "<li>process size: <tt>"
+		<< (procsize*4) << "</tt> kilobytes.</li>" << std::endl;
     if (procrss>0)
-      jsob["process_rss"] = (Json::Value::Int)procrss;
+      outstatus << "<li>process RSS: <tt>"
+		<< (procrss*4) << "</tt> kilobytes.</li>" << std::endl;
     if (procshared>0)
-      jsob["process_shared"] = (Json::Value::Int)procshared;
-    jsob["postgresql_version"] = hcv_postgresql_version();
+      outstatus << "<li>process shared: <tt>"
+		<< (procshared*4) << "</tt> kilobytes.</li>" << std::endl;
+      outstatus << "<li><a href='https://postgresql.org/'>PostGreSQL</a> version: <tt>"
+		<< hcv_postgresql_version() << "</tt>.</li>"  << std::endl;
+      {
     time_t nowt = 0;
     time(&nowt);
     struct tm nowtm;
@@ -432,16 +471,27 @@ hcv_webserver_run(void)
     memset (nowbuf, 0, sizeof(nowbuf));
     localtime_r (&nowt, &nowtm);
     strftime(nowbuf, sizeof(nowbuf), "%c %Z", &nowtm);
+    outstatus << "<li>current time: <tt>" << nowbuf << "</tt></li>" << std::endl;
+      }
+      {
     char hostbuf[64];
     memset(hostbuf, 0, sizeof(hostbuf));
     gethostname(hostbuf, sizeof(hostbuf));
-    jsob["ctime"] = nowbuf;
-    jsob["hostname"] = hostbuf;
-    jsob["nowtime"] = (Json::Value::Int64) nowt;
-    jsob["pid"] = (Json::Value::Int)getpid();
-    jsob["web_request_count"] =  (Json::Value::Int64)reqcnt;
-    auto str = Json::writeString(hcv_json_builder, jsob);
-    resp.set_content(str.c_str(), "application/json");
+    outstatus << "<li>host: <tt>" << hostbuf << "</tt></li>" << std::endl;
+      }
+      outstatus << "<li>pid: <tt>" << ((long)getpid()) << "</tt></li>" << std::endl;
+      outstatus << "<li>web request count: <tt>" << reqcnt  << "</tt></li>" << std::endl;
+      outstatus << "</ul>" << std::endl;
+      outstatus << "<hr/>" << std::endl;
+      outstatus << "<p><small>Use <tt>" << "<a href='" << hcv_weburl
+		<< "/status.json'><tt>status.json</tt> to get "
+	" programmatically the same information.</small></p>"
+		<< std::endl;
+      outstatus << std::endl;
+      outstatus << "</body>\n</html>" << std::endl;
+      outstatus << std::flush;
+    usleep (1000+Hcv_Random::random_quickly_8bits());
+    resp.set_content(outstatus.str().c_str(), "text/html");
   });
 
   ////////////////////////////////////////////////////////////////
