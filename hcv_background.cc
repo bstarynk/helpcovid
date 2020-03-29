@@ -54,7 +54,7 @@ void hcv_process_SIGXCPU_signal(void);
 void hcv_process_SIGHUP_signal(void);
 void hcv_bg_do_event(int64_t); // handle one event on hcv_bg_event_fd
 
-#define HCV_BACKGROUND_TICK_TIMEOUT 8192 /*milliseconds*/
+#define HCV_BACKGROUND_TICK_TIMEOUT 16384 /*milliseconds*/
 void hcv_background_thread_body(void)
 {
   char thnambuf[16];
@@ -77,7 +77,21 @@ void hcv_background_thread_body(void)
       int nbfd = poll(polltab, 3, HCV_BACKGROUND_TICK_TIMEOUT);
       if (nbfd==0)   /* timedout */
         {
-          HCV_SYSLOGOUT(LOG_INFO, "hcv_background_thread_body timed-out");
+          static long cnt;
+          cnt++;
+          time_t nowt=0;
+          time(&nowt);
+          struct tm nowtm= {};
+          memset(&nowtm, 0, sizeof(nowtm));
+          localtime_r(&nowt, &nowtm);
+          char nowbuf[80];
+          memset(nowbuf,0, sizeof(nowbuf));
+          strftime(nowbuf, sizeof(nowbuf), "%Y/%b/%d %H:%M:%S %Z", &nowtm);
+          if (cnt % 8 == 0)
+            HCV_SYSLOGOUT(LOG_INFO,
+                          "hcv_background_thread_body timed-out #" << cnt << " at " << nowbuf);
+          else
+            HCV_DEBUGOUT("hcv_background_thread_body:! timed-out #" << cnt << " at " << nowbuf);
         }
       else if (nbfd>0)   /* some file descriptor is readable */
         {
