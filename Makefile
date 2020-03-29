@@ -16,10 +16,14 @@
 
 .PHONY: all clean indent deploy localtest0
 
+
+.SUFFIXES: .sanit.o
 HELPCOVID_SOURCES := $(wildcard hcv*.cc)
 HELPCOVID_OBJECTS := $(patsubst %.cc, %.o, $(HELPCOVID_SOURCES))
 HELPCOVID_HEADERS := $(wildcard hcv*.hh)
 HELPCOVID_GIT_ID := $(shell ./generate-gitid.sh)
+
+HELPCOVID_SANITIZED_OBJECTS := $(patsubst %.cc, %.sanit.o, $(HELPCOVID_SOURCES))
 
 HELPCOVID_BUILD_CCACHE = ccache
 HELPCOVID_BUILD_CC = gcc
@@ -32,6 +36,10 @@ HELPCOVID_PKG_NAMES = glibmm-2.4 giomm-2.4 jsoncpp libpqxx openssl
 HELPCOVID_PKG_CFLAGS:= $(shell $(HELPCOVID_PKG_CONFIG) --cflags $(HELPCOVID_PKG_NAMES))
 HELPCOVID_PKG_LIBS:= $(shell $(HELPCOVID_PKG_CONFIG) --libs $(HELPCOVID_PKG_NAMES))
 
+## for GCC address sanitizer
+## https://stackoverflow.com/q/37970758/841108
+## https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html
+HELPCOVID_SANITIZE_CXXFLAGS= -fsanitize=address -DHELPCOVID_SANITIZE
 
 ## it is not reasonable to link libraries statically
 LIBES=  $(HELPCOVID_PKG_LIBS) -rdynamic -ldl
@@ -52,8 +60,7 @@ all:
 
 
 
-## we prefer to link the C++ library statically, some of them are incompatible
-## the resulting executable might be more portable to various Linux distro.
+## The usual program
 helpcovid: $(HELPCOVID_OBJECTS) __timestamp.o
 	$(LINK.cc) $(HELPCOVID_OBJECTS)  __timestamp.o \
            $(LIBES) -o $@-tmp
@@ -65,6 +72,17 @@ __timestamp.c:
 	./generate-timestamp.sh > $@-tmp
 	$(MV) --backup $@-tmp $@
 
+## the address-sanitized variant
+sanitized-helpcovid: $(HELPCOVID_SANITIZED_OBJECTS) __timestamp.o
+	$(LINK.cc) $(HELPCOVID_SANITIZE_CXXFLAGS) \
+           $(HELPCOVID_SANITIZED_OBJECTS)  __timestamp.o \
+           $(LIBES) -o $@-tmp
+	$(MV) --backup $@-tmp $@
+	$(MV) --backup __timestamp.c __timestamp.c~
+	$(RM) __timestamp.o
+
+%.sanit.o: %.cc
+	$(COMPILE.cc) $^ $(HELPCOVID_SANITIZE_CXXFLAGS) -o $@
 clean:
 	$(RM) *~ *% *.orig *.o helpcovid *tmp core*
 
