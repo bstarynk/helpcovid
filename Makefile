@@ -39,7 +39,7 @@ HELPCOVID_PKG_LIBS:= $(shell $(HELPCOVID_PKG_CONFIG) --libs $(HELPCOVID_PKG_NAME
 ## for GCC address sanitizer
 ## https://stackoverflow.com/q/37970758/841108
 ## https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html
-HELPCOVID_SANITIZE_CXXFLAGS= -fsanitize=address -DHELPCOVID_SANITIZE
+HELPCOVID_SANITIZE_CXXFLAGS= -fsanitize=address -DHELPCOVID_SANITIZE=\"address\"
 
 ## it is not reasonable to link libraries statically
 LIBES=  $(HELPCOVID_PKG_LIBS) -rdynamic -ldl

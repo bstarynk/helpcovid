@@ -698,6 +698,9 @@ main(int argc, char**argv)
   hcv_parse_program_arguments(argc, argv);
   HCV_SYSLOGOUT(LOG_NOTICE, "start of " << argv[0] << std::endl
                 <<  " version:" << hcv_versionmsg << std::endl
+#ifdef HELPCOVID_SANITIZE
+		<< " **sanitizing for " << HELPCOVID_SANITIZE "**" << std::endl
+#endif /*HELPCOVID_SANITIZE*/
                 << " at " << hcv_startimbuf
                 << " on " << hcv_hostname);
   hcv_load_config_file();
