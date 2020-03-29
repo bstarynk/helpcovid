@@ -110,6 +110,7 @@ extern "C" const char hcv_lastgitcommit[];
 extern "C" const char hcv_md5sum[];
 extern "C" const char*const hcv_files[];
 extern "C" const char hcv_makefile[];
+extern "C" const char hcv_cxx_compiler[];
 
 // start time.
 extern "C" char hcv_startimbuf[];

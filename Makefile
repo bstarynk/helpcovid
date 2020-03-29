@@ -70,6 +70,7 @@ helpcovid: $(HELPCOVID_OBJECTS) __timestamp.o
 
 __timestamp.c:
 	./generate-timestamp.sh > $@-tmp
+	printf "const char hcv_cxx_compiler[]=\"%s\";\n" "$$($(CXX) --version | head -1)" >> $@-tmp
 	$(MV) --backup $@-tmp $@
 
 ## the address-sanitized variant
