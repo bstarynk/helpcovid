@@ -582,6 +582,38 @@ hcv_config_do(const std::function<void(const Glib::KeyFile*)>&dofun)
 } // end hcv_config_do
 
 
+std::string
+hcv_get_config_html(const std::string &name)
+{
+  std::string restr;
+  if (name.empty() || !isalpha(name[0]))
+    return "";
+  char nambuf[HCV_CONFIG_HTML_NAME_MAXLEN+4];
+  memset(nambuf, 0, sizeof(nambuf));
+  int nbc = 0;
+  for (auto c: name)
+    {
+      if (nbc>=HCV_CONFIG_HTML_NAME_MAXLEN)
+        return "";
+      if (!isalnum(c) && c!='_')
+        return "";
+      nambuf[nbc++] = c;
+    };
+  hcv_config_do([&](const Glib::KeyFile*kf)
+  {
+    HCV_ASSERT(kf != nullptr);
+    if (kf->has_key("html", nambuf))
+      {
+        //restr = std::string(kf->get_string("html", nambuf));
+        const char*ps = kf->get_string("html", nambuf).data();
+        restr = std::string(ps);
+      }
+  });
+  HCV_DEBUGOUT("hcv_get_config_html name='" << name << "' -> '"
+               << restr << "'");
+  return restr;
+} // end hcv_get_config_html
+
 void
 hcv_config_handle_helpcovid_config_group(void)
 {

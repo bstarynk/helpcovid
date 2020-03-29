@@ -235,6 +235,11 @@ extern "C" void hcv_config_do(const std::function<void(const Glib::KeyFile*)>&do
 
 extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 
+
+//// get a string in [html] section of configuration file.
+//// if missing, return an empty string.
+#define HCV_CONFIG_HTML_NAME_MAXLEN 60
+extern "C" std::string hcv_get_config_html(const std::string &name);
 ////////////////////////////////////////////////////////////////
 
 class Hcv_PreparedStatement
