@@ -375,8 +375,8 @@ hcv_webserver_run(void)
     else
       HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
   }
-  HCV_DEBUGOUT("hcv_webserver_run webport:" << webport
-	       << " weburl" << hcv_weburl);
+  HCV_DEBUGOUT("hcv_webserver_run webport=" << webport
+	       << " weburl= " << hcv_weburl);
   hcv_webserver->set_error_handler
   ([](const httplib::Request& req,
       httplib::Response& resp)
