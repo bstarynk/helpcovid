@@ -50,7 +50,12 @@ void hcv_load_plugin(const char*plugin)
   for (const char*pc = plugin; *pc; pc++)
     if (!isalnum(*pc) && *pc != '_')
       HCV_FATALOUT("invalid plugin name " << plugin);
+  std::lock_guard<std::recursive_mutex> guplug(hcv_plugin_mtx);
   HCV_DEBUGOUT("hcv_load_plugin " << plugin << " starting");
+  std::string pluginstr(plugin);
+  for (auto& pl : hcv_plugin_vect)
+    if (pl.hcvpl_name == pluginstr)
+      HCV_FATALOUT("hcv_load_plugin duplicate plugin " << plugin);
   char sobuf[HCV_PLUGIN_NAME_MAXLEN + 48];
   memset(sobuf, 0, sizeof(sobuf));
   snprintf(sobuf, sizeof(sobuf), HCV_PLUGIN_PREFIX "%s" HCV_PLUGIN_SUFFIX,
@@ -63,7 +68,7 @@ void hcv_load_plugin(const char*plugin)
                  << " : " << dlerror());
   HCV_DEBUGOUT("hcv_load_plugin dlopened " << sobuf);
   const char* plgname
-    = reinterpret_cast<const char*>(dlsym(sobuf,
+    = reinterpret_cast<const char*>(dlsym(dlh,
                                           "hcvplugin_name"));
   if (!plgname)
     HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
@@ -71,18 +76,18 @@ void hcv_load_plugin(const char*plugin)
   if (strcmp(plgname, plugin))
     HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin has unexpected hcvplugin_name " << plgname);
   const char* plglicense
-    = reinterpret_cast<const char*>(dlsym(sobuf,
+    = reinterpret_cast<const char*>(dlsym(dlh,
                                           "hcvplugin_gpl_compatible_license"));
   if (!plglicense)
     HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
                  << " has no symbol hcvplugin_gpl_compatible_license: " << dlerror());
   const char* plgapi
-    = reinterpret_cast<const char*>(dlsym(sobuf, "hcvplugin_gitapi"));
+    = reinterpret_cast<const char*>(dlsym(dlh, "hcvplugin_gitapi"));
   if (!plgapi)
     HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
                  << " has no symbol hcvplugin_gitapi: " << dlerror());
   const char* plgversion
-    = reinterpret_cast<const char*>( dlsym(sobuf, "hcvplugin_version"));
+    = reinterpret_cast<const char*>( dlsym(dlh, "hcvplugin_version"));
   if (!plgversion)
     HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
                  << " has no symbol hcvplugin_version: " << dlerror());
@@ -94,9 +99,14 @@ void hcv_load_plugin(const char*plugin)
                   << " dlopened " << sobuf
                   << " with gitapi mismatch - expected " << hcv_gitid
                   << " but got " << plgapi);
+  hcv_plugin_vect.emplace_back(Hcv_plugin{ .hcvpl_name = pluginstr,
+                               .hcvpl_handle= dlh,
+                               .hcvpl_gitid= std::string(plgapi),
+                               .hcvpl_license = std::string(plglicense)
+                                         });
   ////
-  HCV_SYSLOGOUT(LOG_WARNING, "hcv_load_plugin " << plugin << " not implemented");
-#warning hcv_load_plugin not implemented
+  HCV_SYSLOGOUT(LOG_WARNING, "hcv_load_plugin " << plugin << " incompletely implemented");
+#warning hcv_load_plugin incompletely implemented
 } // end hcv_load_plugin
 
 /****************** end of file hcv_plugins.cc of github.com/bstarynk/helpcovid **/
