@@ -26,6 +26,11 @@ privacy issues when *deploying* this free software
 (e.g. [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
 in Europe).
 
+
+## plugins
+
+See [PLUGINS.md](PLUGINS.md) for more.
+
 ## contributors
 
 * [Basile Starynkevitch](http://starynkevitch.net/Basile/), near [Paris](https://en.wikipedia.org/wiki/Paris), France; email `basile-freelance@starynkevitch.net` 

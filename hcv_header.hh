@@ -712,4 +712,9 @@ extern "C" std::string
 hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum);
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Plugins. See files hcv_plugins.cc and PLUGINS.md
+///////////////////////////////////////////////////////////////////////////////
+extern "C" void hcv_load_plugin(const char*plugin);
+
 #endif /*HELPCOVID_HEADER*/
