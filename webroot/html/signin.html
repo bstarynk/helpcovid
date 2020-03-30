@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
+  <!-- !HelpCoVidDynamic! file helpcovid/webroot/signin.html -->
+  <!--  of github.com/bstarynk/helpcovid -->
   <head>
 
     <meta charset="utf-8">
@@ -16,7 +17,7 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="/css/style.css">
 
-    <title>HelpCovid | Sign In</title>
+    <title>HelpCovid | Sign In <?hcv half_gitid?></title>
 
   </head>
 
@@ -75,6 +76,8 @@
                   <h3 class="h3 mb-3 font-weight-normal">
                     Please sign in with your e-mail address and password
                   </h3>
+		  <?hcv half_gitid?> at <?hcv filename?> line
+		<?hcv lineno?>. 
                 </div>
 
                 <div class="form-label-group">
@@ -133,12 +136,16 @@
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
                     <li>
-                      <a href="#">Sign Up</a>
+                      <a href="#">Sign Up</a> at <?hcv filename?> line
+		<?hcv lineno?>. 
                     </li>
                     <li>
-                      <a href="home.html">Home</a>
+                      <a href="home.html">Home</a> at <?hcv filename?> line
+		<?hcv lineno?>. 
                     </li>
                   </ul>
+		  <?hcv half_gitid?> at <?hcv filename?> line
+		<?hcv lineno?>. 
                 </div>
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
@@ -158,6 +165,8 @@
           <div class="card my-4">
             <h5 class="card-header">Side Widget</h5>
             <div class="card-body">
+		<?hcv half_gitid?> at <?hcv filename?> line
+		<?hcv lineno?>. <br/>
               You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
             </div>
           </div>
@@ -173,6 +182,8 @@
     <!-- Footer -->
     <!-- START Bootstrap-Cookie-Alert -->
     <div class="alert text-center cookiealert" role="alert">
+		<?hcv half_gitid?> at <?hcv filename?> line
+		<?hcv lineno?>. <br/>
       We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.
       <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>
       <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
@@ -189,6 +200,8 @@
       <div class="container">
         <p class="m-0 text-center text-white">
         Copyright &copy; 2020 HelpCovid
+		<?hcv half_gitid?> at <?hcv filename?> line
+		<?hcv lineno?>. <br/>
         </p>
       </div>
       <!-- /.container -->
@@ -208,4 +221,5 @@
 
   </body>
 
+  <!-- end file helpcovid/webroot/signin.html of github.com/bstarynk/helpcovid -->
 </html>
