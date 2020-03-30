@@ -55,7 +55,10 @@ hcv_incremented_request_counter(void)
 #if __GNUC__ >= 9
   return std::atomic_fetch_add(&hcv_web_request_counter, 1);
 #else
-  return __sync_fetch_and_add(&hcv_web_request_counter, 1);
+  //return __sync_fetch_and_add(&hcv_web_request_counter, 1);
+  return __sync_fetch_and_add(reinterpret_cast<long*>(&hcv_web_request_counter),
+                              1L);
+
 #endif /* __GNUC__ >= 9 */
 } // end hcv_incremented_request_counter
 
