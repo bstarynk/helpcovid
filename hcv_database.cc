@@ -50,7 +50,8 @@ Hcv_PreparedStatement::Hcv_PreparedStatement(const std::string& name)
   std::lock_guard<std::recursive_mutex> guard(hcv_dbmtx);
   m_txn = new pqxx::work(*hcv_dbconn);
   m_inv = new pqxx::prepare::invocation(m_txn->prepared(m_name));
-}
+#warning TODO: pqxx::transaction_base::prepared is deprecated and should not be used.
+} // end Hcv_PreparedStatement::Hcv_PreparedStatement
 
 
 Hcv_PreparedStatement::~Hcv_PreparedStatement()
