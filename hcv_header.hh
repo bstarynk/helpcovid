@@ -377,26 +377,12 @@ protected:
   {
   };
 public:
-
-
-/// this reaches the getsockname call in httplib.h
-/// http://man7.org/linux/man-pages/man2/getsockname.2.html
-  void get_request_socket_ip(struct sockaddr *addr, socklen_t *addrlen);
-
+  //
   long request_number() const
   {
     return _hcvhttp_reqnum;
   };
   //
-
-  std::string remote_address() const
-  {
-    if (_hcvhttp_request)
-      return _hcvhttp_request->get_header_value("REMOTE_ADDR");
-    else
-      return "";
-  }
-
   std::string request_method() const
   {
     if (_hcvhttp_request)
@@ -404,6 +390,7 @@ public:
     else
       return "";
   };
+  //
   std::string request_path() const
   {
     if (_hcvhttp_request)
