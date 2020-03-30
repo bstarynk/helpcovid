@@ -340,6 +340,7 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 void
 hcv_web_get_json_status(const httplib::Request&req, httplib::Response& resp, long reqcnt, double startcputime, double startmonotonictime)
 {
+  HCV_DEBUGOUT("hcv_web_get_json_status start path=" << req.path << " req#" << reqcnt);
   long procsize=0, procrss=0, procshared=0;
   {
     FILE* pself = fopen("/proc/self/statm", "r");
@@ -395,6 +396,7 @@ hcv_web_get_json_status(const httplib::Request&req, httplib::Response& resp, lon
 void
 hcv_web_get_html_status(const httplib::Request&req, httplib::Response& resp, long reqcnt, double startcputime, double startmonotonictime)
 {
+  HCV_DEBUGOUT("hcv_web_get_html_status start path=" << req.path << " req#" << reqcnt);
   Hcv_http_template_data statusdata(req, resp, reqcnt);
   /// sleep a tiny bit against abusive usage...
   usleep (500+Hcv_Random::random_quickly_8bits());
@@ -521,21 +523,29 @@ hcv_webserver_run(void)
   {
     int endpos= -1;
     memset(webhost,0,sizeof(webhost));
-    if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2 && endpos>0 && webport>0)
+    if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
+	&& endpos>0 && webport>0)
       {
-        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " webport=" << webport);
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
+		      << webhost << " webport=" << webport);
       }
-    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2 && endpos>0 && webport>0)
+    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
+	     && endpos>0 && webport>0)
       {
-        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " webport=" << webport);
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
+		      << webhost << " webport=" << webport);
       }
-    else if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1 && endpos>0)
+    else if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+	     && endpos>0)
       {
-        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " default webport=" << webport);
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
+		      << webhost << " default webport=" << webport);
       }
-    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1 && endpos>0)
+    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+	     && endpos>0)
       {
-        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" << webhost << " default webport=" << webport);
+        HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
+		      << webhost << " default webport=" << webport);
       }
     else
       HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
@@ -579,7 +589,7 @@ hcv_webserver_run(void)
   //////////////// /ajax/ serving
   hcv_webserver->Get
     ("/ajax/",
-                     [](const httplib::Request&req, httplib::Response& resp)
+                     [](const httplib::Request&req, httplib::Response&)
 		     {
        long reqcnt = hcv_incremented_request_counter();
        HCV_DEBUGOUT("ajax URL handling POST path '" << req.path
@@ -592,7 +602,7 @@ hcv_webserver_run(void)
 
   hcv_webserver->Post
     ("/ajax/",
-     [](const httplib::Request&req, httplib::Response& resp)
+     [](const httplib::Request&req, httplib::Response&)
      {
        long reqcnt = hcv_incremented_request_counter();
        HCV_DEBUGOUT("ajax URL handling POST path '" << req.path
@@ -651,7 +661,7 @@ hcv_webserver_run(void)
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving
   hcv_webserver->Get("/images/", [](const httplib::Request& req,
-                                  httplib::Response& resp)
+                                  httplib::Response&)
   {
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("images URL handling GET path '" << req.path
