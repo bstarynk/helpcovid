@@ -47,14 +47,6 @@ Hcv_http_template_data::~Hcv_http_template_data()
   _hcvhttp_reqnum = 0;
 } // end Hcv_http_template_data::~Hcv_http_template_data
 
-void
-Hcv_http_template_data::get_request_socket_ip(struct sockaddr *addr, socklen_t *addrlen)
-{
-#warning unimplemented Hcv_http_template_data::get_request_socket_ip
-  HCV_SYSLOGOUT(LOG_WARNING, "Hcv_http_template_data::get_request_socket_ip unimplemented request#" <<  request_number()
-                << " to " <<  request_method()
-                << " path " << request_path());
-} /*end of Hcv_http_template_data::get_request_socket_ip*/
 
 Hcv_https_template_data::~Hcv_https_template_data()
 {
@@ -362,8 +354,8 @@ hcv_initialize_templates(void)
     int endpos = -1;
     if (sscanf(procinstr.c_str(),
                "<?hcv html_config %60[A-Za-z0-9_] ?>%n",
-               &confname, &endpos) <= 1
-        || endpos<procinstr.size())
+               confname, &endpos) <= 1
+        || endpos<(int)procinstr.size())
       {
         HCV_SYSLOGOUT(LOG_WARNING,
                       "invalid html_config PI " << procinstr
@@ -433,6 +425,7 @@ hcv_initialize_templates(void)
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv lastgitcommit?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   });
+  ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv timestamp?>
   hcv_register_template_expander_closure
   ("timestamp",
@@ -450,6 +443,7 @@ hcv_initialize_templates(void)
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv timestamp?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   });
+  ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv pid?>
   hcv_register_template_expander_closure
   ("pid",
@@ -467,6 +461,7 @@ hcv_initialize_templates(void)
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv pid?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   });
+  ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv hostname?>
   hcv_register_template_expander_closure
   ("hostname",
@@ -483,7 +478,8 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv hostname?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  });			   // end  <?hcv hostname?>
+  ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv request_method?>
   hcv_register_template_expander_closure
   ("request_method",
@@ -505,7 +501,8 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_method?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  });			     // end <?hcv request_method?>
+  ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv request_path?>
   hcv_register_template_expander_closure
   ("request_path",
@@ -527,7 +524,7 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_path?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  });				// end <?hcv request_path?>
 
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv webroot?>
@@ -545,9 +542,92 @@ hcv_initialize_templates(void)
       hcv_output_cstr_encoded_html(*pouts, hcv_get_web_root().c_str());
 
     else
-      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_number?>' processing instruction in "
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv webroot?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
-} // end hcv_initialize_templates
+  }); /// end <?hcv webroot?>
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv filename?>
+  hcv_register_template_expander_closure
+  ("filename",
+   [](Hcv_template_data* templdata, const std::string& procinstr,
+      const char* filename, int lineno, long offset)
+  {
+    if (!templdata
+        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv filename?>' processing instruction  "
+                   << procinstr << " in " << filename << ":" << lineno);
+
+    if (auto pouts = templdata->output_stream())
+      hcv_output_cstr_encoded_html(*pouts, filename);
+
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv filename?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  }); /// end <?hcv filename?>
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv lineno?>
+  hcv_register_template_expander_closure
+  ("lineno",
+   [](Hcv_template_data* templdata, const std::string& procinstr,
+      const char* filename, int lineno, long offset)
+  {
+    if (!templdata
+        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv lineno?>' processing instruction  "
+                   << procinstr << " in " << filename << ":" << lineno);
+
+    if (auto pouts = templdata->output_stream())
+      *pouts << lineno;
+
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv lineno?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  }); /// end <?hcv lineno?>
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv offset?>
+  hcv_register_template_expander_closure
+  ("offset",
+   [](Hcv_template_data* templdata, const std::string& procinstr,
+      const char* filename, int lineno, long offset)
+  {
+    if (!templdata
+        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv offset?>' processing instruction  "
+                   << procinstr << " in " << filename << ":" << lineno);
+
+    if (auto pouts = templdata->output_stream())
+      *pouts << offset;
+
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv offset?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  }); /// end <?hcv offset?>
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv basefilepos?>
+  hcv_register_template_expander_closure
+  ("basefilepos",
+   [](Hcv_template_data* templdata, const std::string& procinstr,
+      const char* filename, int lineno, long offset)
+  {
+    if (!templdata
+        || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv basefilepos?>' processing instruction  "
+                   << procinstr << " in " << filename << ":" << lineno);
+
+    if (auto pouts = templdata->output_stream())
+      {
+        const char*lastslash = strchr(filename?:"??", '/');
+        if (lastslash && lastslash[1])
+          hcv_output_cstr_encoded_html(*pouts, lastslash+1);
+        else
+          hcv_output_cstr_encoded_html(*pouts, filename);
+        *pouts << ":" << lineno;
+      }
+
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv basefilepos?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  }); /// end <?hcv basefilepos?>
+} // end hcv_initialize_templates =======================================
 
 /************* end of file hcv_template.cc in github.com/bstarynk/helpcovid *********/
