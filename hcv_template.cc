@@ -406,11 +406,11 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv gitid?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  }); // end of <?hcv gitid?>
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv half_gitid?>
   hcv_register_template_expander_closure
-  ("gitid",
+  ("half_gitid",
    [](Hcv_template_data*templdata, const std::string &procinstr,
       const char*filename, int lineno,
       long offset)
