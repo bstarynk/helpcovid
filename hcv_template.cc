@@ -388,7 +388,7 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_number?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  }); // end <?hcv request_number?>
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv gitid?>
   hcv_register_template_expander_closure
@@ -404,9 +404,40 @@ hcv_initialize_templates(void)
     if (auto pouts = templdata->output_stream())
       hcv_output_cstr_encoded_html(*pouts, hcv_gitid);
     else
-      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv request_number?>' processing instruction in "
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv gitid?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   });
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv half_gitid?>
+  hcv_register_template_expander_closure
+  ("gitid",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv half_gitid?>' processing instruction  "
+                   << procinstr << " in "
+                   << filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      {
+        std::string gidstr(hcv_gitid);
+        auto gidsiz = gidstr.size();
+        HCV_ASSERT(gidsiz>4);
+        bool withplus = gidstr[gidsiz-1] == '+';
+        if (withplus)
+          gidstr.erase(gidsiz/3, gidsiz-gidsiz/3-1);
+        else
+          gidstr.erase(gidsiz/3,gidsiz);
+        HCV_DEBUGOUT("<?hcv half_gitid?> hcv_gitid=" << hcv_gitid
+                     << " gidstr=" << gidstr);
+        *pouts << gidstr;
+      }
+    else
+      HCV_SYSLOGOUT(LOG_WARNING,
+                    "no output stream for '<?hcv half_gitid?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  }); // end <?hcv half_gitid?>
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv lastgitcommit?>
   hcv_register_template_expander_closure
