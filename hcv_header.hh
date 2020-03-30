@@ -693,7 +693,7 @@ hcv_user_model_update_password(const std::string& email,
                                const std::string& password);
 
 ///////////////////////////////////////////////////////////////////////////////
-// Login views
+// Login views - to login for existing users
 ///////////////////////////////////////////////////////////////////////////////
 
 extern "C" std::string
@@ -702,6 +702,18 @@ hcv_login_view_get(const httplib::Request& req, httplib::Response& resp, long re
 
 extern "C" std::string
 hcv_login_view_post(const httplib::Request& req, httplib::Response& resp, long reqnum);
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Register views - to register a new user
+///////////////////////////////////////////////////////////////////////////////
+
+extern "C" std::string
+hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum);
+
+
+extern "C" std::string
+hcv_register_view_post(const httplib::Request& req, httplib::Response& resp, long reqnum);
 
 
 ///////////////////////////////////////////////////////////////////////////////

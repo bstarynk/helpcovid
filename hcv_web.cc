@@ -661,6 +661,24 @@ hcv_webserver_run(void)
 		 << "' req#" << reqcnt);
     resp.set_content(hcv_login_view_post(req, resp, reqcnt), "application/json");
   });
+  //////////////// /register/ serving
+  hcv_webserver->Get("/register", [](const httplib::Request& req,
+                                  httplib::Response& resp)
+  {
+    long reqcnt = hcv_incremented_request_counter();
+    HCV_DEBUGOUT("register URL handling GET path '" << req.path
+		 << "' req#" << reqcnt);
+    resp.set_content(hcv_register_view_get(req, resp, reqcnt), "text/html");
+  });
+  ///////
+  hcv_webserver->Post("/register", [](const httplib::Request& req, 
+                                   httplib::Response& resp)
+  {
+    long reqcnt = hcv_incremented_request_counter();
+    HCV_DEBUGOUT("register URL handling POST path '" << req.path
+		 << "' req#" << reqcnt);
+    resp.set_content(hcv_register_view_post(req, resp, reqcnt), "application/json");
+  });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving
   hcv_webserver->Get("/images/", [](const httplib::Request& req,

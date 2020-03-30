@@ -115,5 +115,44 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
 } // end of hcv_home_view_get
 
 
+
+
+
+//////////////////////////////////////////////// registering a new user
+
+std::string
+hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum)
+{
+  if (req.method != "GET")
+    HCV_FATALOUT("hcv_register_view_get() called with non GET request");
+
+  Hcv_http_template_data data(req, resp, reqnum);
+  std::string thtml = hcv_get_web_root() + "html/register.html";
+
+  HCV_DEBUGOUT("hcv_register_view_get reqpath:" << req.path
+               << " req#" << reqnum);
+#warning hcv_register_view_get incomplete
+  HCV_SYSLOGOUT(LOG_WARNING,
+                "hcv_register_view_get incomplete "
+                << req.path << " req#" << reqnum);
+  return hcv_expand_template_file(thtml, &data);
+} // end hcv_register_view_get
+
+
+std::string
+hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, long reqnum)
+{
+  if (req.method != "POST")
+    HCV_FATALOUT("hcv_register_view_post() called with not POST request");
+  Hcv_http_template_data data(req, resp, reqnum);
+#warning hcv_register_view_post incomplete
+  HCV_SYSLOGOUT(LOG_WARNING,
+                "hcv_register_view_post incomplete "
+                << req.path << " req#" << reqnum);
+  return hcv_expand_template_file(thtml, &data);
+
+} // end hcv_register_view_post
+
+
 //////////////////// end of file hcv_views.cc of github.com/bstarynk/helpcovid
 
