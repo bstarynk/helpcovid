@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
+  <!-- !HelpCoVidDynamic! file helpcovid/webroot/index.html -->
+  <!-- github.com/bstarynk/helpcovid -->
   <head>
 
     <meta charset="utf-8">
@@ -16,7 +17,7 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="../css/style.css">
 
-    <title>HelpCovid</title>
+    <title>HelpCovid <?hcv half_gitid?></title>
 
   </head>
 
@@ -70,7 +71,14 @@
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
               <h2 class="card-title">Post Title</h2>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+              <p class="card-text">
+		<?hcv half_gitid?> at <?hcv filename?> line
+		<?hcv lineno?>. <br/> Lorem ipsum dolor sit amet,
+		consectetur adipisicing elit. Reiciendis aliquid
+		atque, nulla? Quos cum ex quis soluta, a
+		laboriosam. Dicta expedita corporis animi vero
+		voluptate voluptatibus possimus, veniam magni
+		quis!</p>
               <a href="#" class="btn btn-primary">Read More &rarr;</a>
             </div>
             <div class="card-footer text-muted">
@@ -84,7 +92,11 @@
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
               <h2 class="card-title">Post Title</h2>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+              <p class="card-text"><?hcv basefilepos?> Lorem ipsum
+              dolor sit amet, consectetur adipisicing elit. Reiciendis
+              aliquid atque, nulla? Quos cum ex quis soluta, a
+              laboriosam. Dicta expedita corporis animi vero voluptate
+              voluptatibus possimus, veniam magni quis!</p>
               <a href="#" class="btn btn-primary">Read More &rarr;</a>
             </div>
             <div class="card-footer text-muted">
@@ -98,7 +110,11 @@
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
               <h2 class="card-title">Post Title</h2>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+              <p class="card-text"><?hcv basefilepos?> Lorem ipsum
+              dolor sit amet, consectetur adipisicing elit. Reiciendis
+              aliquid atque, nulla? Quos cum ex quis soluta, a
+              laboriosam. Dicta expedita corporis animi vero voluptate
+              voluptatibus possimus, veniam magni quis!</p>
               <a href="#" class="btn btn-primary">Read More &rarr;</a>
             </div>
             <div class="card-footer text-muted">
@@ -147,6 +163,7 @@
                     </li>
                     <li>
                       <a href="home.html">Home</a>
+		      <?hcv basefilepos?> 
                     </li>
                   </ul>
                 </div>
@@ -154,9 +171,11 @@
                   <ul class="list-unstyled mb-0">
                     <li>
                       <a href="signin.html">Sign In</a> (login)
+		      <?hcv basefilepos?> 
                     </li>
                     <li>
                       <a href="privacy.html">Privacy</a>
+		      <?hcv basefilepos?> 
                     </li>
                   </ul>
                 </div>
@@ -168,7 +187,10 @@
           <div class="card my-4">
             <h5 class="card-header">Side Widget</h5>
             <div class="card-body">
-              You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+		      <?hcv basefilepos?> You can put anything you
+		      want inside of these side widgets. They are easy
+		      to use, and feature the new Bootstrap 4 card
+		      containers!
             </div>
           </div>
 
@@ -183,7 +205,9 @@
     <!-- Footer -->
     <!-- START Bootstrap-Cookie-Alert -->
     <div class="alert text-center cookiealert" role="alert">
-      We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.
+      <?hcv basefilepos?> We use cookies to ensure that we give you
+      the best experience on our website. If you continue to use this
+      site we will assume that you are happy with it.
       <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>
       <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
         I agree
@@ -191,15 +215,15 @@
       <a class="btn btn-primary btn-sm acceptcookies" 
          href="privacy.html"
          aria-label="Close">
-        Privacy Policy
+        Privacy Policy <?hcv basefilepos?> 
       </a>
     </div>
     <!-- END Bootstrap-Cookie-Alert -->
     <footer class="py-5 bg-dark">
       <div class="container">
         <p class="m-0 text-center text-white">
-          Copyright &copy; 2020 HelpCovid
-        </p>
+          Copyright &copy; 2020 HelpCovid <?hcv basefilepos?> 
+        </p> 
       </div>
       <!-- /.container -->
     </footer>
@@ -216,5 +240,5 @@
     <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
 
   </body>
-
+  <!-- end file helpcovid/webroot/index.html of github.com/bstarynk/helpcovid -->
 </html>
