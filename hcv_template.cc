@@ -429,8 +429,8 @@ hcv_initialize_templates(void)
           gidstr.erase(gidsiz/3, gidsiz-gidsiz/3-1);
         else
           gidstr.erase(gidsiz/3,gidsiz);
-        HCV_DEBUGOUT("<?hcv half_gitid?> hcv_gitid=" << hcv_gitid
-                     << " gidstr=" << gidstr);
+        HCV_DEBUGOUT("<?hcv half_gitid?> hcv_gitid='" << hcv_gitid
+                     << "' gidstr='" << gidstr << "'");
         *pouts << gidstr;
       }
     else
@@ -473,7 +473,7 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv timestamp?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  }); // end <?hcv timestamp?>
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv pid?>
   hcv_register_template_expander_closure
@@ -491,7 +491,7 @@ hcv_initialize_templates(void)
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv pid?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  });
+  }); // end  <?hcv pid?>
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv hostname?>
   hcv_register_template_expander_closure
@@ -647,7 +647,7 @@ hcv_initialize_templates(void)
 
     if (auto pouts = templdata->output_stream())
       {
-        const char*lastslash = strchr(filename?:"??", '/');
+        const char*lastslash = strrchr(filename?:"??", '/');
         if (lastslash && lastslash[1])
           hcv_output_cstr_encoded_html(*pouts, lastslash+1);
         else
