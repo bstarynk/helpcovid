@@ -42,7 +42,7 @@ hcv_login_view_get(const httplib::Request& req, httplib::Response& resp, long re
     HCV_FATALOUT("hcv_login_view_get() called with non GET request");
 
   Hcv_http_template_data data(req, resp, reqnum);
-  std::string thtml = hcv_get_web_root() + "html/signin.html";
+  std::string thtml = hcv_get_web_root() + "html/login.html";
 
   return hcv_expand_template_file(thtml, &data);
 } // end hcv_login_view_get
@@ -101,9 +101,9 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
 
   HCV_DEBUGOUT("hcv_home_view_get '" << req.path << "' req#" << reqcnt);
 
-  // return signin.html for now
+  // return login .html for now
   Hcv_http_template_data webdata(req, resp, reqcnt);
-  std::string thtml = hcv_get_web_root() + "html/signin.html";
+  std::string thtml = hcv_get_web_root() + "html/login.html";
   return hcv_expand_template_file(thtml, &webdata);
 
 #if 0 && old_code
