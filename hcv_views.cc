@@ -149,7 +149,7 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_post incomplete "
                 << req.path << " req#" << reqnum);
-  return hcv_expand_template_file(thtml, &data);
+  ///  return hcv_expand_template_file(thtml, &data);
 
 } // end hcv_register_view_post
 
