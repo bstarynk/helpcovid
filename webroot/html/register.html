@@ -74,6 +74,7 @@
           <div class="card mb-4">
             <div class="card-body">
               <form class="form-signin">
+		<input type="hidden" id="registerToken" value="<?hcv register_form_token?>"/>
                 <div class="text-center mb-4">
                   <img class="mb-4" 
                        src="../images/helpcovid-logo.svg" 
@@ -97,7 +98,7 @@
                   <input type="text" 
                          id="inputLastName" 
                          class="form-control"
-                         placeholder="Last Name" 
+                         placeholder="Last or Family Name" 
                          required>
                   <label for="inputLastName">Last Name</label>
                 </div>

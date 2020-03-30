@@ -121,6 +121,26 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
 //////////////////////////////////////////////// registering a new user
 
 std::string
+hcv_view_register_form_token(Hcv_http_template_data*httpdata)
+{
+  if (!httpdata)
+    HCV_FATALOUT("no httpdata in hcv_view_register_form_token");
+  long reqnum = httpdata->request_number();
+  HCV_DEBUGOUT("hcv_view_register_form_token req#" << reqnum);
+  char buf[48];
+  memset (buf, 0, sizeof(buf));
+  unsigned ur= Hcv_Random::random_32u();
+  snprintf(buf, sizeof(buf), "r%ld/%u", reqnum, ur);
+  HCV_SYSLOGOUT(LOG_WARNING, "incomplete hcv_view_register_form_token buf=" << buf);
+#warning hcv_view_register_form_token incomplete
+  /* TODO: we need to keep that buf in some data structure and clean
+     it up later using hcv_do_postpone_background */
+  return std::string(buf);  
+} // end hcv_view_register_form_token
+
+
+
+std::string
 hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum)
 {
   if (req.method != "GET")

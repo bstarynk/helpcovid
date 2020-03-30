@@ -358,6 +358,7 @@ protected:
   httplib::Response* _hcvhttp_response;
   long _hcvhttp_reqnum;
   mutable std::ostringstream _hcvhttp_outs;
+  std::string _hcvhttp_cookie_header;
 public:
   Hcv_http_template_data(const httplib::Request& req, httplib::Response&resp, long reqnum)
     : Hcv_template_data(TmplKind_en::hcvtk_http),
@@ -391,6 +392,11 @@ public:
       return "";
   };
   //
+  std::string cookie_header() const
+  {
+    return  _hcvhttp_cookie_header;
+  }
+  //
   std::string request_path() const
   {
     if (_hcvhttp_request)
@@ -423,6 +429,14 @@ public:
                      << " val=" << val);
         _hcvhttp_response->set_header(key, val);
       }
+  };
+  void maybe_set_response_cookie() {
+    if ( _hcvhttp_response && !cookie_header().empty())  {
+        HCV_DEBUGOUT("Hcv_http_template_data #" << request_number()
+		     << " maybe_set_response_cookie '" << cookie_header()
+		     << "'");
+	_hcvhttp_response->set_header("Set-cookie", cookie_header());
+    }
   };
   virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
@@ -695,6 +709,10 @@ hcv_user_model_update_password(const std::string& email,
 ///////////////////////////////////////////////////////////////////////////////
 // Login views - to login for existing users
 ///////////////////////////////////////////////////////////////////////////////
+
+// register a token carrying a short-lived transient state
+std::string
+hcv_view_register_form_token(Hcv_http_template_data*httpdata);
 
 extern "C" std::string
 hcv_login_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum);

@@ -659,6 +659,25 @@ hcv_initialize_templates(void)
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv basefilepos?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
   }); /// end <?hcv basefilepos?>
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv register_form_token?>
+  hcv_register_template_expander_closure
+  ("register_form_token",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv register_form_token?>' processing instruction "
+                   << procinstr <<" in "
+                   << filename << ":" << lineno);
+    HCV_DEBUGOUT("<?hcv register_form_token?> at "<< filename << ":" << lineno);
+    if (auto pouts = templdata->output_stream())
+      *pouts << hcv_view_register_form_token(dynamic_cast<Hcv_http_template_data*>(templdata));
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv register_form_token?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset);
+  }); // end  <?hcv register_form_token?>
 } // end hcv_initialize_templates =======================================
 
 /************* end of file hcv_template.cc in github.com/bstarynk/helpcovid *********/
