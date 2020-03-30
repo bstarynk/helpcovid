@@ -165,7 +165,7 @@ def create_temp_sql():
     sql_file.write(';\n')
 
     sql_file.close
-    os.system('sudo /usr/bin/chown postgres:postgres ' + sql_path)
+    os.system('sudo /bin/chown postgres:postgres ' + sql_path)
     return sql_path
 
 
@@ -173,7 +173,7 @@ def create_temp_sql():
 def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres /usr/bin/psql -f ' + sql_path)
-    os.system('sudo /usr/bin/rm -v ' + sql_path)
+    os.system('sudo /bin/rm -v ' + sql_path)
     # os.remove(sql_path) <-- encounters permission error
 
 
