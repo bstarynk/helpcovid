@@ -41,6 +41,10 @@ unsigned hcv_http_payload_max = 16*1024*1024;
 
 thread_local Hcv_Random Hcv_Random::_rand_thr_;
 
+static int hcv_main_argc;
+static char** hcv_main_argv;
+
+static void hcv_syslog_program_arguments(void);
 
 extern "C" void hcv_load_config_file(const char*);
 ////////////////////////////////////////////////////////////////
@@ -301,6 +305,7 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       if (lev >= 0 && lev <= 7)
         {
           openlog(progargs->hcvprog_progname.c_str(), LOG_PID, LOG_LOCAL0+lev);
+          hcv_syslog_program_arguments ();
           HCV_SYSLOGOUT(LOG_NOTICE, " logging " << progargs->hcvprog_progname << std::endl
                         <<  " version:" << hcv_versionmsg<< std::endl
                         << " at " << hcv_startimbuf
@@ -329,6 +334,21 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 } // end hcv_parse1opt
 
 
+void
+hcv_syslog_program_arguments(void)
+{
+  if (hcv_main_argc == 0 || !hcv_main_argv)
+    return;
+  std::ostringstream os;
+  for (int ix=0; ix<hcv_main_argc; ix++)
+    {
+      if (ix>0) os << ' ';
+      os << hcv_main_argv[0];
+    };
+  os << std::endl;
+  syslog (LOG_NOTICE, "HelpCovid %30s program arguments:\n... %s",
+          hcv_lastgitcommit, os.str().c_str());
+} // end hcv_syslog_program_arguments
 
 void
 hcv_early_initialize(const char*progname)
@@ -362,6 +382,7 @@ hcv_early_initialize(const char*progname)
     strftime(hcv_startimbuf, sizeof(hcv_startimbuf), "%c %Z", &nowtm);
   }
   openlog(progname, LOG_PID|LOG_PERROR, LOG_LOCAL0);
+  hcv_syslog_program_arguments ();
 } // end hcv_early_initialize
 
 
@@ -725,6 +746,8 @@ Hcv_Random::deterministic_reseed(void)
 int
 main(int argc, char**argv)
 {
+  hcv_main_argc = argc;
+  hcv_main_argv = argv;
   std::string seteuid;
   hcv_early_initialize(argv[0]);
   hcv_parse_program_arguments(argc, argv);
@@ -867,6 +890,8 @@ main(int argc, char**argv)
   hcv_webserver_run();
 
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
+  hcv_main_argc = 0;
+  hcv_main_argv = nullptr;
   return 0;
 } // end of main
 
