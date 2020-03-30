@@ -72,8 +72,8 @@
             <div class="card-body">
               <h2 class="card-title">Post Title</h2>
               <p class="card-text">
-		<?hcv half_gitid?> at <?hcv filename?> line
-		<?hcv lineno?>. <br/> Lorem ipsum dolor sit amet,
+		<small><?hcv half_gitid?> at <?hcv filename?> line
+		  <?hcv lineno?>.</small> <br/> Lorem ipsum dolor sit amet,
 		consectetur adipisicing elit. Reiciendis aliquid
 		atque, nulla? Quos cum ex quis soluta, a
 		laboriosam. Dicta expedita corporis animi vero
@@ -92,7 +92,7 @@
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
               <h2 class="card-title">Post Title</h2>
-              <p class="card-text"><?hcv basefilepos?> Lorem ipsum
+              <p class="card-text"><small><?hcv basefilepos?></small> Lorem ipsum
               dolor sit amet, consectetur adipisicing elit. Reiciendis
               aliquid atque, nulla? Quos cum ex quis soluta, a
               laboriosam. Dicta expedita corporis animi vero voluptate
@@ -110,7 +110,7 @@
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
               <h2 class="card-title">Post Title</h2>
-              <p class="card-text"><?hcv basefilepos?> Lorem ipsum
+              <p class="card-text"><small><?hcv basefilepos?></small> Lorem ipsum
               dolor sit amet, consectetur adipisicing elit. Reiciendis
               aliquid atque, nulla? Quos cum ex quis soluta, a
               laboriosam. Dicta expedita corporis animi vero voluptate
@@ -163,7 +163,7 @@
                     </li>
                     <li>
                       <a href="home.html">Home</a>
-		      <?hcv basefilepos?> 
+		      <small><?hcv basefilepos?></small>
                     </li>
                   </ul>
                 </div>
@@ -171,11 +171,11 @@
                   <ul class="list-unstyled mb-0">
                     <li>
                       <a href="signin.html">Sign In</a> (login)
-		      <?hcv basefilepos?> 
+		      <small><?hcv basefilepos?></small>
                     </li>
                     <li>
                       <a href="privacy.html">Privacy</a>
-		      <?hcv basefilepos?> 
+		      <small><?hcv basefilepos?></small>
                     </li>
                   </ul>
                 </div>
@@ -187,10 +187,10 @@
           <div class="card my-4">
             <h5 class="card-header">Side Widget</h5>
             <div class="card-body">
-		      <?hcv basefilepos?> You can put anything you
-		      want inside of these side widgets. They are easy
-		      to use, and feature the new Bootstrap 4 card
-		      containers!
+	      <small><?hcv basefilepos?></small> You can put anything
+		      you want inside of these side widgets. They are
+		      easy to use, and feature the new Bootstrap 4
+		      card containers!
             </div>
           </div>
 
@@ -205,7 +205,7 @@
     <!-- Footer -->
     <!-- START Bootstrap-Cookie-Alert -->
     <div class="alert text-center cookiealert" role="alert">
-      <?hcv basefilepos?> We use cookies to ensure that we give you
+      <small><?hcv basefilepos?></small> We use cookies to ensure that we give you
       the best experience on our website. If you continue to use this
       site we will assume that you are happy with it.
       <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>
@@ -215,14 +215,15 @@
       <a class="btn btn-primary btn-sm acceptcookies" 
          href="privacy.html"
          aria-label="Close">
-        Privacy Policy <?hcv basefilepos?> 
+        Privacy Policy <small><?hcv basefilepos?></small>
       </a>
     </div>
     <!-- END Bootstrap-Cookie-Alert -->
     <footer class="py-5 bg-dark">
       <div class="container">
         <p class="m-0 text-center text-white">
-          Copyright &copy; 2020 HelpCovid <?hcv basefilepos?> 
+          Copyright &copy; 2020 HelpCovid <small><?hcv basefilepos?> /
+	    <?hcv half_gitid?></small>
         </p> 
       </div>
       <!-- /.container -->
