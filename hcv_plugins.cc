@@ -45,10 +45,55 @@ void hcv_load_plugin(const char*plugin)
 {
   if (!plugin || !plugin[0])
     HCV_FATALOUT("missing plugin name");
+  if (strlen(plugin) > HCV_PLUGIN_NAME_MAXLEN)
+    HCV_FATALOUT("too long plugin name: " << plugin);
   for (const char*pc = plugin; *pc; pc++)
     if (!isalnum(*pc) && *pc != '_')
       HCV_FATALOUT("invalid plugin name " << plugin);
   HCV_DEBUGOUT("hcv_load_plugin " << plugin << " starting");
+  char sobuf[HCV_PLUGIN_NAME_MAXLEN + 48];
+  memset(sobuf, 0, sizeof(sobuf));
+  snprintf(sobuf, sizeof(sobuf), HCV_PLUGIN_PREFIX "%s" HCV_PLUGIN_SUFFIX,
+           plugin);
+  HCV_ASSERT(sobuf[sizeof(sobuf)-1]==(char)0);
+  HCV_ASSERT(strstr(sobuf, ".so") != nullptr);
+  void* dlh = dlopen(sobuf, RTLD_NOW | RTLD_DEEPBIND);
+  if (!dlh)
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " failed to dlopen " << sobuf
+                 << " : " << dlerror());
+  HCV_DEBUGOUT("hcv_load_plugin dlopened " << sobuf);
+  const char* plgname
+    = reinterpret_cast<const char*>(dlsym(sobuf,
+                                          "hcvplugin_name"));
+  if (!plgname)
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
+                 << " has no symbol hcvplugin_name: " << dlerror());
+  if (strcmp(plgname, plugin))
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin has unexpected hcvplugin_name " << plgname);
+  const char* plglicense
+    = reinterpret_cast<const char*>(dlsym(sobuf,
+                                          "hcvplugin_gpl_compatible_license"));
+  if (!plglicense)
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
+                 << " has no symbol hcvplugin_gpl_compatible_license: " << dlerror());
+  const char* plgapi
+    = reinterpret_cast<const char*>(dlsym(sobuf, "hcvplugin_gitapi"));
+  if (!plgapi)
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
+                 << " has no symbol hcvplugin_gitapi: " << dlerror());
+  const char* plgversion
+    = reinterpret_cast<const char*>( dlsym(sobuf, "hcvplugin_version"));
+  if (!plgversion)
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
+                 << " has no symbol hcvplugin_version: " << dlerror());
+  HCV_SYSLOGOUT(LOG_NOTICE, "hcv_load_plugin " << plugin
+                << " dlopened " << sobuf << " with license " << plglicense
+                << " gitapi " << plgapi << " and version " << plgversion);
+  if (strncmp(plgapi, hcv_gitid, 24))
+    HCV_SYSLOGOUT(LOG_WARNING, "hcv_load_plugin " << plugin
+                  << " dlopened " << sobuf
+                  << " with gitapi mismatch - expected " << hcv_gitid
+                  << " but got " << plgapi);
   ////
   HCV_SYSLOGOUT(LOG_WARNING, "hcv_load_plugin " << plugin << " not implemented");
 #warning hcv_load_plugin not implemented

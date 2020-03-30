@@ -29,3 +29,20 @@ mini HOWTO](https://www.tldp.org/HOWTO/C++-dlopen/index.html) and
 Drepper's paper [How to write shared
 libraries](https://www.akkadia.org/drepper/dsohowto.pdf) (december,
 2011).
+
+## plugin symbols and calling conventions
+
+A plugin should provide the following symbols (bound to literal strings)
+
+```
+extern "C" const char hcvplugin_name[];
+extern "C" const char hcvplugin_version[];
+extern "C" const char hcvplugin_gpl_compatible_license[];
+extern "C" const char hcvplugin_gitapi[]; // our git id
+```
+
+The `hcvplugin_name` should be the name of the plugin. The
+`hcvplugin_version` could be some version string. The
+`hcvplugin_gpl_compatible_license` describes a GPL compatible
+license. The `hcvplugin_gitapi` should be the GITID (latest `git
+commit` identifier) of the current `./helpcovid` executable.
