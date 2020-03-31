@@ -158,15 +158,29 @@ hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long
   return hcv_expand_template_file(thtml, &data);
 } // end hcv_register_view_get
 
-
+// related to webroot/html/register.html, its <form> of class
+// 'form-signin' near line 76
 std::string
 hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, long reqnum)
 {
   if (req.method != "POST")
     HCV_FATALOUT("hcv_register_view_post() called with not POST request");
   Hcv_http_template_data data(req, resp, reqnum);
+  auto regtokenstr = req.get_param_value("registerToken");
+  auto firstnamestr = req.get_param_value("inputFirstName");
+  auto lastnamestr = req.get_param_value("inputLastName");
+  auto genderstr = req.get_param_value("gender");
+  auto phonestr = req.get_param_value("inputPhone");
+  auto emailstr = req.get_param_value("inputEmail");
+  auto agreestr = req.get_param_value("registerAgree");
   HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path
-               << " req#" << reqnum);
+               << " req#" << reqnum << std::endl
+	       << " .. regtoken=" << regtokenstr << std::endl
+	       << " .. firstname=" << firstnamestr << std::endl
+	       << " .. lastname=" << lastnamestr << std::endl
+	       << " .. phonestr=" << phonestr << std::endl
+	       << " .. emailstr=" << emailstr << std::endl
+	       );
 #warning hcv_register_view_post incomplete
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_post incomplete "
