@@ -148,10 +148,10 @@ hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long
 
   Hcv_http_template_data data(req, resp, reqnum);
   std::string thtml = hcv_get_web_root() + "html/register.html";
-  std::string cookiestr= hcv_web_register_fresh_cookie(data);
+  std::string cookiestr= hcv_web_register_fresh_cookie(&data);
   HCV_DEBUGOUT("hcv_register_view_get reqpath:" << req.path
                << " req#" << reqnum
-               << " cookiestr=" << cookie);
+               << " cookiestr=" << cookiestr);
 #warning hcv_register_view_get incomplete
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_get incomplete "
