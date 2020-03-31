@@ -148,15 +148,20 @@ hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long
 
   Hcv_http_template_data data(req, resp, reqnum);
   std::string thtml = hcv_get_web_root() + "html/register.html";
-
+  std::string cookiestr= hcv_web_register_fresh_cookie(data);
   HCV_DEBUGOUT("hcv_register_view_get reqpath:" << req.path
-               << " req#" << reqnum);
+               << " req#" << reqnum
+               << " cookiestr=" << cookie);
 #warning hcv_register_view_get incomplete
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_get incomplete "
                 << req.path << " req#" << reqnum);
+  /// notice that  <?hcv register_form_token?> is likely to be expanded below
   return hcv_expand_template_file(thtml, &data);
 } // end hcv_register_view_get
+
+
+
 
 // related to webroot/html/register.html, its <form> of class
 // 'form-signin' near line 76
@@ -175,12 +180,12 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   auto agreestr = req.get_param_value("registerAgree");
   HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path
                << " req#" << reqnum << std::endl
-	       << " .. regtoken=" << regtokenstr << std::endl
-	       << " .. firstname=" << firstnamestr << std::endl
-	       << " .. lastname=" << lastnamestr << std::endl
-	       << " .. phonestr=" << phonestr << std::endl
-	       << " .. emailstr=" << emailstr << std::endl
-	       );
+               << " .. regtoken=" << regtokenstr << std::endl
+               << " .. firstname=" << firstnamestr << std::endl
+               << " .. lastname=" << lastnamestr << std::endl
+               << " .. phonestr=" << phonestr << std::endl
+               << " .. emailstr=" << emailstr << std::endl
+              );
 #warning hcv_register_view_post incomplete
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_post incomplete "
