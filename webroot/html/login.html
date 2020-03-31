@@ -3,7 +3,6 @@
   <!-- !HelpCoVidDynamic! file helpcovid/webroot/login.html -->
   <!--  of github.com/bstarynk/helpcovid -->
   <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -17,8 +16,11 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="/css/style.css">
 
-    <title>HelpCovid | Login <?hcv half_gitid?></title>
-
+<!-- NOTE: Edit the following tag to change the title of the page -->
+    <title>
+      HelpCovid | Login 
+      <?hcv half_gitid?>
+    </title>
   </head>
 
   <body>
@@ -26,11 +28,15 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
+        <!-- NOTE: This is HelpCovid brand name on the navbar. -->
+        <!-- Change the name appropriately as required. -->
         <a class="navbar-brand" href="#">HelpCovid</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
+          <!-- NOTE: To add another language flag, copy the enclosed li tag. You need -->
+          <!-- set the the href attributes appropriately -->
           <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
               <a class="nav-link" href="#">
@@ -59,26 +65,35 @@
 
       <div class="row">
 
-        <!-- Blog Entries Column -->
+        <!-- NOTE: This is the beginning of the left pane -->
         <div class="col-md-8">
 
+          <!-- NOTE: This is the login page heading -->
           <h1 class="my-4">Login</h1>
 
-          <!-- Blog Post -->
+          <!-- NOTE: This is the outlined card containing the login form -->
           <div class="card mb-4">
             <div class="card-body">
               <form class="form-signin" method="post" action="/login">
                 <div class="text-center mb-4">
+                  <!-- NOTE: This is the image in the centre of the login -->
+                  <!-- form card. You can change the src attribute as needed  -->
                   <img class="mb-4" 
                        src="/images/helpcovid-logo.svg" 
                        alt="" width="72" 
                        height="72">
+
+                  <!-- NOTE: This is the login page sub-heading giving a -->
+                  <!-- explanation of what has to be done by the user -->
                   <h3 class="h3 mb-3 font-weight-normal">
                     Please sign in with your e-mail address and password
                   </h3>
 		  <small><?hcv half_gitid?> at <?hcv basefilepos small clfilpos?>.</small>
                 </div>
 
+                <!-- NOTE: Every input field in the login form is enclosed -->
+                <!-- within a div of class form-label-group containing the -->
+                <!-- input element and the related label element -->
                 <div class="form-label-group">
                   <input type="email" 
                          id="inputEmail" 
@@ -111,10 +126,11 @@
 
         </div>
 
-        <!-- Sidebar Widgets Column -->
+        <!-- NOTE: This is the right pane -->
         <div class="col-md-4">
 
-          <!-- Search Widget -->
+          <!-- NOTE: This div group contains the serach widget on the right -->
+          <!-- pane -->
           <div class="card my-4">
             <h5 class="card-header">Search</h5>
             <div class="card-body">
@@ -127,7 +143,7 @@
             </div>
           </div>
 
-          <!-- Categories Widget -->
+          <!-- NOTE: This is the Quick Links widget on the right pane -->
           <div class="card my-4">
             <h5 class="card-header">Quick Links</h5>
             <div class="card-body">
@@ -160,7 +176,7 @@
             </div>
           </div>
 
-          <!-- Side Widget -->
+          <!-- NOTE: This is the optional extra widget -->
           <div class="card my-4">
             <h5 class="card-header">Side Widget</h5>
             <div class="card-body">
@@ -177,8 +193,8 @@
     </div>
     <!-- /.container -->
 
-    <!-- Footer -->
-    <!-- START Bootstrap-Cookie-Alert -->
+    <!-- NOTE: This is the start of the footer -->
+    <!-- NOTE: Bootstrap-Cookie-Alert which gives the cookie notice -->
     <div class="alert text-center cookiealert" role="alert">
 		<?hcv half_gitid?> at <?hcv filename?> line
 		<?hcv lineno?>. <br/>
@@ -204,7 +220,6 @@
       <!-- /.container -->
     </footer>
 
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
 			      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
