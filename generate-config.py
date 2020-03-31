@@ -78,6 +78,7 @@ def write_key_value_pair(key, conf_file, suffix_slash = False):
 def create_configuration_file():
     # Create configuration file in $HOME
     rc_path = os.path.expanduser('~') + '/.helpcovidrc'
+    if os.access (rc_path, os.F_OK):  os.rename (rc_path, rc_path + '~')
     rc_file = open(rc_path, 'w')
 
     # Read web keys and save to config file
@@ -86,6 +87,7 @@ def create_configuration_file():
     print("Enter web served URL, e.g. http://localhost:8089/ or https://example.com/\n")
     write_key_value_pair('url', rc_file, True)
     print("Enter web document root, a local directory containing web served resources (e.g. HTML files, CSS stylesheets)\n");
+    print("... e.g. " + os.getcwd() + "/webroot/")
     write_key_value_pair('root', rc_file, True)
     print("Enter the OpenSSL public certificate, for HTTPS - can be left empty; see https://www.openssl.org/\n")
     write_key_value_pair('sslcert', rc_file)
@@ -100,6 +102,7 @@ def create_configuration_file():
             ' password=passwd1234 hostaddr=127.0.0.1 port=5432')
     conn = write_key_value_pair('connection', rc_file)
     print('Enter *full path* of the HelpCovid PostgreSQL password file')
+    print("... e.g. " + os.path.expanduser('~') + "/.helpcovid-pg-password")
     config_dict['passfile'] = write_key_value_pair('passfile', rc_file)
 
     # Read HTML template tag keys
@@ -186,8 +189,11 @@ def create_database(sql_path):
 
 
 def create_password_file():
+    if os.access (config_dict['passfile'], os.F_OK):
+        os.rename (config_dict['passfile'], config_dict['passfile'] + '~')
     pass_file = open(config_dict['passfile'], 'w')
     pass_file.write(config_dict['password'])
+    pass_file.write("\n")
     pass_file.close()
 
     print('Password file created at ' + config_dict['passfile'])
