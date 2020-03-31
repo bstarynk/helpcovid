@@ -446,6 +446,7 @@ public:
   virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
 
+#define HCV_COOKIE_NAME "HelpCovid_COOKIE"
 
 class Hcv_https_template_data : public Hcv_http_template_data
 {

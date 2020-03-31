@@ -345,7 +345,7 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
   char agebuf[32];
   memset(agebuf, 0, sizeof(agebuf));
   snprintf(agebuf, sizeof(agebuf), "; Max-Age=%u",  hcv_web_cookie_duration);
-  std::string cookiestr= res+ agebuf;
+  std::string cookiestr=  std::string(HCV_COOKIE_NAME "=") + res+ agebuf;
   hresp->set_header("Set-Cookie", cookiestr);
   HCV_DEBUGOUT ("hcv_web_register_fresh_cookie reqnum#" << reqnum
 		<< " cookiestr=" << cookiestr);
