@@ -290,10 +290,17 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
     HCV_SYSLOGOUT(LOG_WARNING, "hcv_web_register_fresh_cookie: missing htpl");
     return "";
   }
-  auto hreq = htpl->request();
+  auto hreq = htpl->request();;
   if (!hreq) {
     HCV_SYSLOGOUT(LOG_WARNING,
 		  "hcv_web_register_fresh_cookie: missing web request, reqnum#"
+		  << htpl->serial());
+    return "";
+  };
+  auto hresp = htpl->response();
+  if (!hresp) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_web_register_fresh_cookie: missing web response, reqnum#"
 		  << htpl->serial());
     return "";
   };
@@ -335,6 +342,13 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 	       << " id=" << id);
   std::string res = hcv_web_make_cookie_string(id, randombuf, webagenthash);
   HCV_DEBUGOUT("hcv_web_register_fresh_cookie reqnum#" << reqnum << " gives " << res);
+  char agebuf[32];
+  memset(agebuf, 0, sizeof(agebuf));
+  snprintf(agebuf, sizeof(agebuf), "; Max-Age=%u",  hcv_web_cookie_duration);
+  std::string cookiestr= res+ agebuf;
+  hresp->set_header("Set-Cookie", cookiestr);
+  HCV_DEBUGOUT ("hcv_web_register_fresh_cookie reqnum#" << reqnum
+		<< " cookiestr=" << cookiestr);
   return res;
 } // end hcv_web_register_fresh_cookie
 
