@@ -255,7 +255,7 @@ SELECT user_id FROM tb_user WHERE user_email=$1
      R"addwebcookie(
 INSERT INTO tb_web_cookie
      (wcookie_random, wcookie_exptime, wcookie_webagenthash)
-VALUES ($1, $2, $3)
+VALUES ($1, to_timestamp($2), $3)
 )addwebcookie");
   hcv_dbconn->prepare
     ("lastval_pstm", "SELECT LASTVAL()");
@@ -317,7 +317,7 @@ hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exp
 	       << randomstr);
   pqxx::result res;
   res = transact.exec_prepared("add_web_cookie_pstm",
-			   randomstr, exptime, webagenthash);
+			       randomstr, (double)exptime, webagenthash);
   HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie add_web_cookie_pstm res size:"
 	       << res.size() << " affected rows:" << res.affected_rows());
   res = transact.exec_prepared("lastval_pstm");
