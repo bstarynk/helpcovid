@@ -135,7 +135,7 @@ hcv_view_register_form_token(Hcv_http_template_data*httpdata)
 #warning hcv_view_register_form_token incomplete
   /* TODO: we need to keep that buf in some data structure and clean
      it up later using hcv_do_postpone_background */
-  return std::string(buf);  
+  return std::string(buf);
 } // end hcv_view_register_form_token
 
 

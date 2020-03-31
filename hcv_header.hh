@@ -430,13 +430,15 @@ public:
         _hcvhttp_response->set_header(key, val);
       }
   };
-  void maybe_set_response_cookie() {
-    if ( _hcvhttp_response && !cookie_header().empty())  {
+  void maybe_set_response_cookie()
+  {
+    if ( _hcvhttp_response && !cookie_header().empty())
+      {
         HCV_DEBUGOUT("Hcv_http_template_data #" << request_number()
-		     << " maybe_set_response_cookie '" << cookie_header()
-		     << "'");
-	_hcvhttp_response->set_header("Set-cookie", cookie_header());
-    }
+                     << " maybe_set_response_cookie '" << cookie_header()
+                     << "'");
+        _hcvhttp_response->set_header("Set-cookie", cookie_header());
+      }
   };
   virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
