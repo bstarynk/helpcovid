@@ -165,6 +165,8 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   if (req.method != "POST")
     HCV_FATALOUT("hcv_register_view_post() called with not POST request");
   Hcv_http_template_data data(req, resp, reqnum);
+  HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path
+               << " req#" << reqnum);
 #warning hcv_register_view_post incomplete
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_post incomplete "
