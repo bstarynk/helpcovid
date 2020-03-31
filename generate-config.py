@@ -107,7 +107,7 @@ def create_configuration_file():
     rc_file.write('\n[html]\n\n')
     print("Enter HTML for <?hcv_datacontroller?>")
     print('Example: <a href="mailto:john.doe@example.org>John Doe</a>')
-    conn = write_key_value_pair("hcv_datacontroller_tag", rc_file)
+    write_key_value_pair("hcv_datacontroller_tag", rc_file)
 
     # Generate timestamp
     ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
