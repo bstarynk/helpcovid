@@ -84,10 +84,12 @@
                     Please sign up with the following details
                   </h3>
                 </div>
-
+		<!-- the maxlength are slighty more than the width of 
+                     database table tb_user in hcv_database.cc -->
                 <div class="form-label-group">
                   <input type="text" 
-                         id="inputFirstName" 
+                         id="inputFirstName"
+			 maxlength="40"
                          class="form-control"
                          placeholder="First Name" 
                          required>
@@ -96,7 +98,8 @@
 
                 <div class="form-label-group">
                   <input type="text" 
-                         id="inputLastName" 
+                         id="inputLastName"
+			 maxlength="80"
                          class="form-control"
                          placeholder="Last or Family Name" 
                          required>
@@ -112,8 +115,9 @@
                 </div>
 
                 <div class="form-label-group">
-                  <input type="text" 
-                         id="inputPhone" 
+                  <input type="tel" 
+                         id="inputPhone"
+			 maxlength="32"
                          class="form-control"
                          placeholder="Phone number" 
                          required>
@@ -123,6 +127,7 @@
                 <div class="form-label-group">
                   <input type="email"
                          id="inputEmail" 
+			 maxlength="80"
                          class="form-control" 
                          placeholder="Email address" 
                          required 
@@ -133,7 +138,9 @@
 
                 <div class="checkbox mb-3">
                   <label>
-                    <input type="checkbox" value="agree-terms"> 
+                    <input type="checkbox"
+			   id="registerAgree"
+			   value="agree-terms"> 
                     I agree to share my personally identifiable data
 		     <?hcv basefilepos small clfilpos?>
                   </label>
@@ -144,7 +151,7 @@
               </form>
 	      <?hcv basefilepos small clfilpos?>.
 	      An automatic email will be sent to you in less
-	      than ten minutes.
+	      than ten minutes. It contains an URL that you need to follow to validate your input.
             </div>
           </div>
 
