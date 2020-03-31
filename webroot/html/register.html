@@ -69,7 +69,7 @@
 
           <h1 class="my-4">Sign Up</h1>
 
-	  <p>Register form <small><?hcv basefilepos?> git <?hcv half_gitid?></small><br/>
+	  <p>Register form <?hcv basefilepos small clfilpos?> <small>git <?hcv half_gitid?></small><br/>
           <!-- Blog Post -->
           <div class="card mb-4">
             <div class="card-body">
@@ -100,7 +100,7 @@
                          class="form-control"
                          placeholder="Last or Family Name" 
                          required>
-                  <label for="inputLastName">Last Name</label>
+                  <label for="inputLastName">Last [Family] Name</label>
                 </div>
 
                 <div class="form-label-group">
@@ -109,15 +109,6 @@
                     <option value="F">Female</option>
                     <option value="T">Transgender</option>
                   </select> 
-                </div>
-
-                <div class="form-label-group">
-                  <input type="text" 
-                         id="inputAddress" 
-                         class="form-control"
-                         placeholder="Address" 
-                         required>
-                  <label for="inputAddress">Address</label>
                 </div>
 
                 <div class="form-label-group">
@@ -139,33 +130,18 @@
                   <label for="inputEmail">Email address</label>
                 </div>
 
-                <div class="form-label-group">
-                  <input type="password" 
-                         id="inputPassword" 
-                         class="form-control" 
-                         placeholder="Password" 
-                         required>
-                  <label for="inputPassword">Password</label>
-                </div>
-
-                <div class="form-label-group">
-                  <input type="password" 
-                         id="inputRepeatPassword" 
-                         class="form-control" 
-                         placeholder="Repeat password" 
-                         required>
-                  <label for="inputRepeatPassword">Repeat password</label>
-                </div>
 
                 <div class="checkbox mb-3">
                   <label>
                     <input type="checkbox" value="agree-terms"> 
-                      I agree to share my personally identifiable data
+                    I agree to share my personally identifiable data
+		     <?hcv basefilepos small clfilpos?>
                   </label>
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                   Sign up / Register
                 </button>
+		 <?hcv basefilepos small clfilpos?>
               </form>
             </div>
           </div>
@@ -196,10 +172,10 @@
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
                     <li>
-                      <a href="#">Sign Up</a>
+                      <a href="#">Sign Up</a> at <?hcv basefilepos small clfilpos?>
                     </li>
                     <li>
-                      <a href="home.html">Home</a>
+                      <a href="home.html">Home</a> at  <?hcv basefilepos small clfilpos?>
                     </li>
                   </ul>
                 </div>
@@ -221,7 +197,7 @@
           <div class="card my-4">
             <h5 class="card-header">Side Widget</h5>
             <div class="card-body">
-	      <small><?hcv basefilepos?> git <?hcv half_gitid?></small><br/>
+	      <small> <?hcv basefilepos small clfilpos?> git <?hcv half_gitid?></small><br/>
               You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
             </div>
           </div>
@@ -238,6 +214,7 @@
     <!-- START Bootstrap-Cookie-Alert -->
     <div class="alert text-center cookiealert" role="alert">
       We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.
+       <?hcv basefilepos small clfilpos?> 
       <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>
       <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
         I agree
