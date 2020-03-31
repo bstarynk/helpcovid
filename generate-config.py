@@ -102,6 +102,13 @@ def create_configuration_file():
     print('Enter *full path* of the HelpCovid PostgreSQL password file')
     config_dict['passfile'] = write_key_value_pair('passfile', rc_file)
 
+    # Read HTML template tag keys
+    print("\n ==== HelpCovid HTML template tags configuration ====\n")
+    rc_file.write('\n[html]\n\n')
+    print("Enter HTML for <?hcv_datacontroller?>")
+    print('Example: <a href="mailto:john.doe@example.org>John Doe</a>')
+    conn = write_key_value_pair("hcv_datacontroller_tag", rc_file)
+
     # Generate timestamp
     ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     rc_file.write('\n# generated on %s\n' % ts)
