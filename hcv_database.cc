@@ -255,9 +255,10 @@ SELECT user_id FROM tb_user WHERE user_email=$1
      R"addwebcookie(
 INSERT INTO tb_web_cookie
      (wcookie_random, wcookie_exptime, wcookie_webagenthash)
-VALUES ($1, $2, $3);
-SELECT LASTVAL()
+VALUES ($1, $2, $3)
 )addwebcookie");
+  hcv_dbconn->prepare
+    ("lastval_pstm", "SELECT LASTVAL()");
   prepare_user_model_statements();
 } // end hcv_prepare_statements_in_database
 
@@ -304,20 +305,24 @@ hcv_database_with_known_email (const std::string& emailstr)
 long
 hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exptime, int webagenthash)
 {
+  long id = -1;
   HCV_ASSERT(!randomstr.empty());
   HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie start randomstr='"
 	       << randomstr << " exptime=" << exptime
 	       << " webagenthash=" << webagenthash);
   std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
+  try {
   pqxx::work transact(*hcv_dbconn);
   HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie before add_web_cookie_pstm randomstr="
 	       << randomstr);
-  pqxx::result res =
-    transact.exec_prepared("add_web_cookie_pstm",
+  pqxx::result res;
+  res = transact.exec_prepared("add_web_cookie_pstm",
 			   randomstr, exptime, webagenthash);
-  long id = -1;
-  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie res size:"
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie add_web_cookie_pstm res size:"
 	       << res.size() << " affected rows:" << res.affected_rows());
+  res = transact.exec_prepared("lastval_pstm");
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie lastval_pstm res size:"
+	       << res.size());
   for (auto rowit : res) {
     id = rowit[0].as<long>();
   }
@@ -326,6 +331,12 @@ hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exp
 	       << randomstr << "', exptime=" << exptime
 	       << ", webagenthash=" << webagenthash
 	       << " => id=" << id);
+  } catch (std::exception& exc) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_database_get_id_of_added_web_cookie got exception:"
+		  << exc.what());
+    id = -2;
+  }
   return id;
 } // end hcv_database_get_id_of_added_web_cookie
 
