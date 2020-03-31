@@ -165,6 +165,7 @@ struct argp_option hcv_progoptions[] =
     /*doc:*/ "write debug messages to syslog(LOG_DEBUG, ...)", ///
     /*group:*/0 ///
   },
+#warning TODO: missing --plugin option
   /* ======= terminating empty option ======= */
   {/*name:*/(const char*)0, ///
     /*key:*/0, ///
@@ -296,7 +297,6 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
           : 4;
       return 0;
 
-
     case HCVPROGOPT_SYSLOG:
     {
       int lev = -1;
@@ -328,6 +328,7 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       progargs->hcvprog_opensslkey = std::string(arg);
       return 0;
 
+#warning TODO: hcv_parse1opt should call hcv_load_plugin when appropriate
     default:
       return ARGP_ERR_UNKNOWN;
     }

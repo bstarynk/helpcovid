@@ -41,8 +41,17 @@ extern "C" const char hcvplugin_gpl_compatible_license[];
 extern "C" const char hcvplugin_gitapi[]; // our git id
 ```
 
+and export the following routines
+
+```
+/// every plugin should have
+extern "C" void hcvplugin_initialize_web(httplib::Server*);
+```
+
 The `hcvplugin_name` should be the name of the plugin. The
 `hcvplugin_version` could be some version string. The
 `hcvplugin_gpl_compatible_license` describes a GPL compatible
 license. The `hcvplugin_gitapi` should be the GITID (latest `git
 commit` identifier) of the current `./helpcovid` executable.
+
+The `hcvplugin_initialize_web` is called with the web server and could add services there.

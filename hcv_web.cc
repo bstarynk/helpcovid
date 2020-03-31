@@ -692,7 +692,10 @@ hcv_webserver_run(void)
     HCV_SYSLOGOUT(LOG_WARNING,
 		  "hcv_webserver_run GET /images request unimplemented path="
 		  << req.path);
-  });
+  }); // end /images/ serving
+  ////////
+  //////// initialize plugins, if any
+  hcv_initialize_plugins_for_web(hcv_webserver);
   ////////////////////////////////////////////////////////////////
   hcv_webserver->listen(webhost, webport);
   HCV_SYSLOGOUT(LOG_INFO, "end hcv_webserver_run webhost=" << webhost << " webport=" << webport);

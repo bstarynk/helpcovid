@@ -659,21 +659,22 @@ hcv_initialize_templates(void)
     if (auto pouts = templdata->output_stream())
       {
         const char*lastslash = strrchr(filename?:"??", '/');
-	const char*basefilname = (lastslash&&lastslash[0])?(lastslash+1):filename;
-        if (comm) {
-	  HCV_DEBUGOUT("<?hcv basefilepos comment?> at "<< basefilname << ":" << lineno);
-          *pouts << "<!-- @";
-	}
+        const char*basefilname = (lastslash&&lastslash[0])?(lastslash+1):filename;
+        if (comm)
+          {
+            HCV_DEBUGOUT("<?hcv basefilepos comment?> at "<< basefilname << ":" << lineno);
+            *pouts << "<!-- @";
+          }
         else if (tagbuf[0])
           {
             *pouts << "<" << tagbuf;
             if (classbuf[0])
               *pouts << " class='" << classbuf << "'";
             *pouts << ">";
-	    HCV_DEBUGOUT("<?hcv basefilepos .. @" <<  basefilname << ":" << lineno
-			 << " tagbuf='" << tagbuf << "' classbuf='" << classbuf << "'");
+            HCV_DEBUGOUT("<?hcv basefilepos .. @" <<  basefilname << ":" << lineno
+                         << " tagbuf='" << tagbuf << "' classbuf='" << classbuf << "'");
           }
-	hcv_output_cstr_encoded_html(*pouts, basefilname);
+        hcv_output_cstr_encoded_html(*pouts, basefilname);
         *pouts << ":" << lineno;
         if (comm) *pouts << " -->";
         else if (tagbuf[0])

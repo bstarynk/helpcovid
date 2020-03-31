@@ -31,12 +31,16 @@ extern "C" const char hcv_plugins_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_plugins_date[] = __DATE__;
 
 static std::recursive_mutex hcv_plugin_mtx;
+
+typedef void hcvplugin_initweb_sig_t(httplib::Server*);
+
 struct Hcv_plugin
 {
   std::string hcvpl_name;
   void* hcvpl_handle; 		// result of dlopen
   std::string hcvpl_gitid;
   std::string hcvpl_license;
+  hcvplugin_initweb_sig_t* hcvpl_initweb;
 };
 
 std::vector<Hcv_plugin> hcv_plugin_vect;
@@ -91,6 +95,10 @@ void hcv_load_plugin(const char*plugin)
   if (!plgversion)
     HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
                  << " has no symbol hcvplugin_version: " << dlerror());
+  void* plginit = dlsym(dlh, "hcvplugin_initialize_web");
+  if (!plginit)
+    HCV_FATALOUT("hcv_load_plugin " << plugin << " plugin " << sobuf
+                 << " has no symbol hcvplugin_initialize_web: " << dlerror());
   HCV_SYSLOGOUT(LOG_NOTICE, "hcv_load_plugin " << plugin
                 << " dlopened " << sobuf << " with license " << plglicense
                 << " gitapi " << plgapi << " and version " << plgversion);
@@ -99,14 +107,42 @@ void hcv_load_plugin(const char*plugin)
                   << " dlopened " << sobuf
                   << " with gitapi mismatch - expected " << hcv_gitid
                   << " but got " << plgapi);
-  hcv_plugin_vect.emplace_back(Hcv_plugin{ .hcvpl_name = pluginstr,
-                               .hcvpl_handle= dlh,
-                               .hcvpl_gitid= std::string(plgapi),
-                               .hcvpl_license = std::string(plglicense)
-                                         });
+  hcv_plugin_vect.emplace_back
+  (Hcv_plugin
+  {
+    .hcvpl_name = pluginstr,
+    .hcvpl_handle= dlh,
+    .hcvpl_gitid= std::string(plgapi),
+    .hcvpl_license = std::string(plglicense),
+    .hcvpl_initweb = reinterpret_cast<hcvplugin_initweb_sig_t*>(plginit)
+  });
   ////
-  HCV_SYSLOGOUT(LOG_WARNING, "hcv_load_plugin " << plugin << " incompletely implemented");
-#warning hcv_load_plugin incompletely implemented
+  HCV_DEBUGOUT("hcv_load_plugin done " << pluginstr << " rank#"
+               << hcv_plugin_vect.size());
 } // end hcv_load_plugin
+
+
+
+void
+hcv_initialize_plugins_for_web(httplib::Server*webserv)
+{
+  HCV_ASSERT(webserv != nullptr);
+  std::lock_guard<std::recursive_mutex> guplug(hcv_plugin_mtx);
+  auto nbplugins = hcv_plugin_vect.size();
+  HCV_DEBUGOUT("hcv_initialize_plugins_for_web starting with " << nbplugins
+               << " plugins");
+  if (nbplugins == 0)
+    return;
+  for (auto& pl : hcv_plugin_vect)
+    {
+      HCV_DEBUGOUT("hcv_initialize_plugins_for_web initializing " << pl.hcvpl_name);
+      (*pl.hcvpl_initweb)(webserv);
+      HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_plugins_for_web initialized plugin "
+                    << pl.hcvpl_name);
+    };
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_plugins_for_web done with " << nbplugins
+                << " plugins");
+} // end hcv_initialize_plugins_for_web
+
 
 /****************** end of file hcv_plugins.cc of github.com/bstarynk/helpcovid **/
