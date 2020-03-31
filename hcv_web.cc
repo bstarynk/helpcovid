@@ -668,7 +668,9 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_register_view_get(req, resp, reqcnt), "text/html");
+    auto htmlcont = hcv_register_view_get(req, resp, reqcnt);
+    HCV_DEBUGOUT("register URL handling GET sending " << htmlcont.size() << " bytes in response");
+    resp.set_content(htmlcont, "text/html");
   });
   ///////
   hcv_webserver->Post("/register", [](const httplib::Request& req, 
@@ -677,7 +679,9 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_register_view_post(req, resp, reqcnt), "application/json");
+    auto htmlcont = hcv_register_view_post(req, resp, reqcnt);
+    HCV_DEBUGOUT("register URL handling POST sending " << htmlcont.size() << " bytes in response");
+    resp.set_content(htmlcont, "application/json");
   });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving
