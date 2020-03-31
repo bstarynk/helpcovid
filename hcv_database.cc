@@ -310,12 +310,14 @@ hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exp
 	       << " webagenthash=" << webagenthash);
   std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
   pqxx::work transact(*hcv_dbconn);
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie before add_web_cookie_pstm randomstr="
+	       << randomstr);
   pqxx::result res =
     transact.exec_prepared("add_web_cookie_pstm",
 			   randomstr, exptime, webagenthash);
   long id = -1;
   HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie res size:"
-	       << res.size());
+	       << res.size() << " affected rows:" << res.affected_rows());
   for (auto rowit : res) {
     id = rowit[0].as<long>();
   }
