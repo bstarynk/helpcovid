@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_firstname VARCHAR(31) NOT NULL,  -- first name, in capitals, UTF8
   user_familyname VARCHAR(62) NOT NULL, -- family name, in capitals, UTF8
   user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
+  user_telephone VARCHAR(23) NOT NULL,  -- telephone number (digits, +, - or space)
   user_gender CHAR(1) NOT NULL,         -- 'F' | 'M' | '?'
   user_crtime TIMESTAMP DEFAULT current_timestamp -- user entry creation time
 ); --- end TABLE tb_user
