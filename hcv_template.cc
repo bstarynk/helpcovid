@@ -634,7 +634,7 @@ hcv_initialize_templates(void)
                     << filename << ":" << lineno<< " @" << offset);
   }); /// end <?hcv offset?>
   ////////////////////////////////////////////////////////////////
-  //////////////// for <?hcv basefilepos?>
+  //////////////// for <?hcv basefilepos [htmltag] [cssclass]?>
   hcv_register_template_expander_closure
   ("basefilepos",
    [](Hcv_template_data* templdata, const std::string& procinstr,
@@ -642,23 +642,50 @@ hcv_initialize_templates(void)
   {
     if (!templdata
         || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
-      HCV_FATALOUT("no template data for '<?hcv basefilepos?>' processing instruction  "
+      HCV_FATALOUT("no template data for '<?hcv basefilepos ...?>' processing instruction  "
                    << procinstr << " in " << filename << ":" << lineno);
-
+    HCV_DEBUGOUT("<?hcv basefilepos ...?> at "<< filename << ":" << lineno
+                 << " procinstr='" << procinstr << "'");
+    char tagbuf[24];
+    char classbuf[40];
+    memset (tagbuf, 0, sizeof(tagbuf));
+    memset (classbuf, 0, sizeof(classbuf));
+    int endpos = -1;
+    int nbs = 0;
+    bool comm = !strcmp(procinstr.c_str(), "<?hcv basefilepos comment?>");
+    if (!comm)
+      nbs = sscanf(procinstr.c_str(), "<?hcv %20[A-Za-z0-9_] %38[A-Za-z0-9_] ?>%n",
+                   tagbuf, classbuf, &endpos);
     if (auto pouts = templdata->output_stream())
       {
+        HCV_DEBUGOUT("<?hcv basefilepos ...?> at "<< filename << ":" << lineno
+                     << (comm?"comment"
+                         :tagbuf[0]?(std::string("tag ")+tagbuf+(classbuf[0]?(std::string("class ")+classbuf):""))
+                         :"plain"));
         const char*lastslash = strrchr(filename?:"??", '/');
+        if (comm)
+          *pouts << "<!-- @";
+        else if (tagbuf[0])
+          {
+            *pouts << "<" << tagbuf;
+            if (classbuf[0])
+              *pouts << " class='" << classbuf << "'";
+            *pouts << ">";
+          }
         if (lastslash && lastslash[1])
           hcv_output_cstr_encoded_html(*pouts, lastslash+1);
         else
           hcv_output_cstr_encoded_html(*pouts, filename);
         *pouts << ":" << lineno;
+        if (comm) *pouts << " -->";
+        else if (tagbuf[0])
+          *pouts << "</" << tagbuf << ">";
       }
 
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv basefilepos?>' processing instruction in "
                     << filename << ":" << lineno<< " @" << offset);
-  }); /// end <?hcv basefilepos?>
+  }); /// end <?hcv basefilepos [htmltag] [cssclass]?>
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv register_form_token?>
   hcv_register_template_expander_closure
