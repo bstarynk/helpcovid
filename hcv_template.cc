@@ -654,7 +654,7 @@ hcv_initialize_templates(void)
     int nbs = 0;
     bool comm = !strcmp(procinstr.c_str(), "<?hcv basefilepos comment?>");
     if (!comm)
-      nbs = sscanf(procinstr.c_str(), "<?hcv %20[A-Za-z0-9_] %38[A-Za-z0-9_] ?>%n",
+      nbs = sscanf(procinstr.c_str()+5, " basefilepos %20[A-Za-z0-9_] %38[A-Za-z0-9_] ?>%n",
                    tagbuf, classbuf, &endpos);
     if (auto pouts = templdata->output_stream())
       {
