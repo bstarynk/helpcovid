@@ -1,0 +1,37 @@
+# file helpcovid/captchas-summary.txt
+# for https://github.com/bstarynk/helpcovid
+# small collections of JPEG images 256x256 pixels usable as captchas
+# format: basename of .jpg image file under helpcovid/webroot/images/captchas/, description in Engish
+################################################
+h_dark0001,CLIO
+h_dark0002,Ford
+h_dark0003,paved road
+h_dark0004,17
+h_dark0005,19
+h_dark0006,21
+h_dark0007,PROPRIETE PRIVEE
+h_dark0008,EC
+h_dark0009,PEUGEOT SIREINE AUTO
+h_dark0010,25
+m_dark0001,CAB 500
+m_dark0002,LaTeX
+m_dark0003,Weapons of math destruction
+m_dark0004,Garbage Collection
+n_dark0001,2008
+n_dark0002,SONY
+n_dark0003,The Go Programming Language
+n_dark0004,superfit
+n_dark0005,plein ciel
+n_dark0006,OPTICRON    
+w_dark0001,COLONNE SECHE 3 SUPER
+w_dark0002,IPVF
+w_dark0003,PARK IN SACLAY
+w_dark0004,université PARIS SACLAY
+w_dark0005,Belgique
+w_dark0006,GLS
+w_dark0007,FIAT
+w_dark0008,Quik Stik
+w_dark0009,JKJ
+w_dark0010,30
+
+
