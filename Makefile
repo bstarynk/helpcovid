@@ -102,7 +102,7 @@ clean:
 	$(RM) *~ *% *.orig *.o helpcovid *tmp core*
 
 indent:
-	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
+	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS) $(HELPCOVID_PLUGINSOURCES)
 
 plugins: $(HELPCOVID_PLUGINS)
 

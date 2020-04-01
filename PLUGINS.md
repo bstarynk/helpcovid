@@ -30,6 +30,7 @@ Drepper's paper [How to write shared
 libraries](https://www.akkadia.org/drepper/dsohowto.pdf) (december,
 2011).
 
+
 ## plugin symbols and calling conventions
 
 A plugin should provide the following symbols (bound to literal strings)
@@ -45,13 +46,21 @@ and export the following routines
 
 ```
 /// every plugin should have
-extern "C" void hcvplugin_initialize_web(httplib::Server*);
+extern "C" void hcvplugin_initialize_web(httplib::Server*,const char*);
 ```
 
-The `hcvplugin_name` should be the name of the plugin. The
+The `hcvplugin_name` should be the name of the plugin. The 
 `hcvplugin_version` could be some version string. The
 `hcvplugin_gpl_compatible_license` describes a GPL compatible
 license. The `hcvplugin_gitapi` should be the GITID (latest `git
 commit` identifier) of the current `./helpcovid` executable.
 
 The `hcvplugin_initialize_web` is called with the web server and could add services there.
+
+## using plugins
+
+Pass the `--plugin` program argument with the plugin name and
+optionally, after a colon `:` a plugin argument string.
+
+For example `--plugin=echo:foo` would `dlopen` the `hcvplugin_echo.so`
+plugin and pass it the `foo` argument string.
