@@ -41,6 +41,8 @@ std::string hcv_webroot;
 std::atomic<long> hcv_web_request_counter;
 Json::StreamWriterBuilder hcv_json_builder;
 
+#define HCV_HTML_RESPONSE_MAX_LEN  (128*1024)
+#define HCV_JSON_RESPONSE_MAX_LEN  (256*1024)
 
 extern "C" std::string hcv_get_web_root(void)
 {
@@ -660,7 +662,11 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+    htmlcont = hcv_home_view_get(req, resp, reqcnt);
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("root URL handling GET sending too many bytes " << htmlcont.size());
+    resp.set_content(htmlcont, "text/html");
   });
   hcv_webserver->Get("/", [](const httplib::Request& req,
                              httplib::Response& resp)
@@ -676,7 +682,11 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+    htmlcont = hcv_home_view_get(req, resp, reqcnt);
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("root URL handling GET sending too many bytes " << htmlcont.size());
+    resp.set_content(htmlcont, "text/html");
   });
 
   //////////////// /login/ serving
@@ -686,7 +696,12 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("login URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_login_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+    htmlcont = hcv_login_view_get(req, resp, reqcnt);
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("login URL handling POST sending too many bytes " << htmlcont.size());
+    HCV_DEBUGOUT("login URL handling GET sending " << htmlcont.size() << " bytes in response");;
+    resp.set_content(htmlcont, "text/html");
   });
   ///////
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
@@ -695,7 +710,11 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("login URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_login_view_post(req, resp, reqcnt), "application/json");
+    std::string jsoncont;
+    jsoncont = hcv_login_view_post(req, resp, reqcnt);
+    if (jsoncont.size() > HCV_JSON_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("login URL handling POST sending too many bytes " << jsoncont.size());
+    resp.set_content(jsoncont, "application/json");
   });
   //////////////// /register/ serving
   hcv_webserver->Get("/register", [](const httplib::Request& req,
@@ -704,7 +723,10 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    auto htmlcont = hcv_register_view_get(req, resp, reqcnt);
+    std::string htmlcont;
+     htmlcont = hcv_register_view_get(req, resp, reqcnt);;
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("register URL handling POST sending too many bytes " << htmlcont.size());
     HCV_DEBUGOUT("register URL handling GET sending " << htmlcont.size() << " bytes in response");
     resp.set_content(htmlcont, "text/html");
   });
@@ -715,9 +737,12 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
-    auto htmlcont = hcv_register_view_post(req, resp, reqcnt);
-    HCV_DEBUGOUT("register URL handling POST sending " << htmlcont.size() << " bytes in response");
-    resp.set_content(htmlcont, "application/json");
+    std::string jsoncont;
+    jsoncont = hcv_register_view_post(req, resp, reqcnt);
+    if (jsoncont.size() > HCV_JSON_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("register URL handling POST sending too many bytes " << jsoncont.size());
+    HCV_DEBUGOUT("register URL handling POST sending " << jsoncont.size() << " bytes in response");
+    resp.set_content(jsoncont, "application/json");
   });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving
