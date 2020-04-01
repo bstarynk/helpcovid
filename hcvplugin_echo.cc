@@ -28,21 +28,22 @@
 #include "hcv_header.hh"
 
 
-
+/// mandatory in every HelpCovid plugin
 const char hcvplugin_name[]="echo";
 const char hcvplugin_version[]=__DATE__ "@" __TIME__;
-const char hcvplugin_gpl_compatible_license[]="GPLv3+"
-    const char hcvplugin_gitapi[]=HELPCOVID_GITID;
+const char hcvplugin_gpl_compatible_license[]="GPLv3+";
+const char hcvplugin_gitapi[]=HELPCOVID_GITID;
 
+/// mandatory initialization routine
 void
 hcvplugin_initialize_web(httplib::Server*,const char*arg)
 {
   if (!arg)
-    HCV_SYSLOG(LOG_WARNING, "echo plugin " << hcvplugin_version
-               << " hcvplugin_initialize_web without arguments");
+    HCV_SYSLOGOUT(LOG_WARNING, "echo plugin " << hcvplugin_version
+                  << " hcvplugin_initialize_web without arguments");
   else
-    HCV_SYSLOG(LOG_NOTICE, "echo plugin  " << hcvplugin_version
-               << " hcvplugin_initialize_web got argument: " << arg);
+    HCV_SYSLOGOUT(LOG_NOTICE, "echo plugin  " << hcvplugin_version
+                  << " hcvplugin_initialize_web got argument: " << arg);
 } // end of hcvplugin_initialize_web
 
 

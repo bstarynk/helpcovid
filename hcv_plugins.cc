@@ -79,6 +79,7 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
            plugin_name);
   HCV_ASSERT(sobuf[sizeof(sobuf)-1]==(char)0);
   HCV_ASSERT(strstr(sobuf, ".so") != nullptr);
+  HCV_DEBUGOUT("hcv_load_plugin " << plugin_name << " sobuf=" << sobuf);
   /// Notice that dlopen(3) handles specially paths without /; in that case we prepend
   /// "./" if file exists and is an ELF shared library for 64 bits
   /// (x86-64 a.k.a. amd64 ABI)
@@ -95,7 +96,7 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
                 elfheader.e_ident[EI_MAG0] == ELFMAG0
                 && elfheader.e_ident[EI_MAG1] == ELFMAG1
                 && elfheader.e_ident[EI_MAG2] == ELFMAG2
-                && elfheader.e_ident[EI_MAG3] == ELFMAG2
+                && elfheader.e_ident[EI_MAG3] == ELFMAG3
                 && elfheader.e_ident[EI_CLASS] == ELFCLASS64 /*since x86-64*/
                 && elfheader.e_type == ET_DYN;
             };
@@ -106,6 +107,8 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
               sobuf[1] = '/';
               HCV_DEBUGOUT("hcv_load_plugin prepended sobuf=" << sobuf);
             }
+          else
+            HCV_DEBUGOUT("hcv_load_plugin no prepending kept sobuf=" << sobuf);
           fclose(fplug);
         }
     }
