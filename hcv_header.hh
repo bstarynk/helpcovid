@@ -761,6 +761,8 @@ extern "C" void hcv_load_plugin(const char*plugin_name, const char*plugin_arg);
 
 extern "C" void hcv_initialize_plugins_for_web(httplib::Server*);
 
+extern "C" std::vector<std::string> hcv_get_loaded_plugins_vector(void);
+
 /// every plugin should provide its:
 extern "C" const char hcvplugin_name[];
 extern "C" const char hcvplugin_version[];

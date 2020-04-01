@@ -405,6 +405,15 @@ hcv_web_get_json_status(const httplib::Request&req, httplib::Response& resp, lon
   jsob["cxx"] = hcv_cxx_compiler;
   jsob["build_time"] = hcv_timestamp;
   jsob["build_timestamp"] =  (Json::Value::Int64)hcv_timelong;
+  {
+    auto pluginvect = hcv_get_loaded_plugins_vector();
+    if (!pluginvect.empty()) {
+      Json::Value jsarr(Json::arrayValue);
+      for (auto curplugname : pluginvect)
+	jsarr.append(curplugname);
+      jsob["plugins"] = jsarr;
+    }
+  }
   auto str = Json::writeString(hcv_json_builder, jsob);
   resp.set_content(str.c_str(), "application/json");
 } // end hcv_web_get_json_status
@@ -502,6 +511,19 @@ hcv_web_get_html_status(const httplib::Request&req, httplib::Response& resp, lon
   outstatus << "<li>pid: <tt>" << ((long)getpid()) << "</tt></li>" << std::endl;
   outstatus << "<li>web request count: <tt>" << reqcnt  << "</tt></li>" << std::endl;
   outstatus << "<li>compiled with: <tt>" << hcv_cxx_compiler << "</tt></li>" << std::endl;
+  {
+    auto pluginvect = hcv_get_loaded_plugins_vector();
+    if (!pluginvect.empty()) {
+      outstatus << "<li>plugins: ";
+      int plcnt = 0;
+      Json::Value jsarr(Json::arrayValue);
+      for (auto curplugname : pluginvect) {
+	if (plcnt++ > 0) outstatus << ",";
+	outstatus << " <tt>" << curplugname << "</tt>";	
+      }
+      outstatus << " ;</li>" << std::endl;
+    }      
+  }
   outstatus << "</ul>" << std::endl;
   outstatus << "<hr/>" << std::endl;
   outstatus << "<p><small>Use <tt>" << "<a href='" << hcv_weburl

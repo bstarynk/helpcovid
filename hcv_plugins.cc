@@ -45,6 +45,19 @@ struct Hcv_plugin
 
 std::vector<Hcv_plugin> hcv_plugin_vect;
 
+
+std::vector<std::string>
+hcv_get_loaded_plugins_vector(void)
+{
+  std::vector<std::string> res;
+  std::lock_guard<std::recursive_mutex> guplug(hcv_plugin_mtx);
+  res.reserve(hcv_plugin_vect.size());
+  for (auto &pl: hcv_plugin_vect)
+    res.push_back(pl.hcvpl_name);
+  return res;
+} // end hcv_get_loaded_plugins_vector
+
+
 void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
 {
   if (!plugin_name || !plugin_name[0])
