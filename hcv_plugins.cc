@@ -66,6 +66,37 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
            plugin_name);
   HCV_ASSERT(sobuf[sizeof(sobuf)-1]==(char)0);
   HCV_ASSERT(strstr(sobuf, ".so") != nullptr);
+  /// Notice that dlopen(3) handles specially paths without /; in that case we prepend
+  /// "./" if file exists and is an ELF shared library for 64 bits
+  /// (x86-64 a.k.a. amd64 ABI)
+  if (!strchr(sobuf, '/') && strlen(sobuf)<sizeof(sobuf)-4)
+    {
+      bool needprepend = false;
+      if (FILE* fplug = fopen(sobuf, "r"))
+        {
+          Elf64_Ehdr elfheader;
+          memset (&elfheader, 0, sizeof(elfheader));
+          if (fread(&elfheader, sizeof(elfheader), 1, fplug) > 0)
+            {
+              needprepend =
+                elfheader.e_ident[EI_MAG0] == ELFMAG0
+                && elfheader.e_ident[EI_MAG1] == ELFMAG1
+                && elfheader.e_ident[EI_MAG2] == ELFMAG2
+                && elfheader.e_ident[EI_MAG3] == ELFMAG2
+                && elfheader.e_ident[EI_CLASS] == ELFCLASS64 /*since x86-64*/
+                && elfheader.e_type == ET_DYN;
+            };
+          if (needprepend)
+            {
+              memmove(sobuf+2, sobuf, strlen(sobuf));
+              sobuf[0] = '.';
+              sobuf[1] = '/';
+              HCV_DEBUGOUT("hcv_load_plugin prepended sobuf=" << sobuf);
+            }
+          fclose(fplug);
+        }
+    }
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_load_plugin " << plugin_name << " is dlopen-ing " << sobuf);
   void* dlh = dlopen(sobuf, RTLD_NOW | RTLD_DEEPBIND);
   if (!dlh)
     HCV_FATALOUT("hcv_load_plugin " << plugin_name << " failed to dlopen " << sobuf

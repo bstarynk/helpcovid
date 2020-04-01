@@ -51,6 +51,7 @@
 #include <functional>
 #include <typeinfo>
 #include <locale>
+#include <regex>
 
 #include <cassert>
 #include <cstring>
@@ -77,7 +78,9 @@
 #include <pthread.h>
 #include <pwd.h>
 #include <poll.h>
-#include <regex>
+#include <elf.h>
+
+
 
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
