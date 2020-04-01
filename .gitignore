@@ -1,6 +1,7 @@
 *.o
 *.orig
 *~
+*.so
 *%
 helpcovid
 sanitized-helpcovid
