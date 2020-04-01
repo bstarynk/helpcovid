@@ -38,6 +38,7 @@ std::atomic<bool> hcv_debugging;
 double hcv_monotonic_start_time;
 unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
+bool hcv_should_clear_database;
 
 thread_local Hcv_Random Hcv_Random::_rand_thr_;
 
@@ -65,7 +66,8 @@ enum hcv_progoption_en
 
   HCVPROGOPT_WEBSSLCERT=1000,
   HCVPROGOPT_WEBSSLKEY=1001,
-  HCVPROGOPT_PLUGIN=1002,xs
+  HCVPROGOPT_PLUGIN=1002,
+  HCVPROGOPT_CLEARDATABASE=1003,
 };
 
 struct argp_option hcv_progoptions[] =
@@ -164,6 +166,14 @@ struct argp_option hcv_progoptions[] =
     /*arg:*/ nullptr, ///
     /*flags:*/0, ///
     /*doc:*/ "write debug messages to syslog(LOG_DEBUG, ...)", ///
+    /*group:*/0 ///
+  },
+  /* ======= enable clearing of every database table  ======= */
+  {/*name:*/ "clear-database", ///
+    /*key:*/ HCVPROGOPT_CLEARDATABASE, ///
+    /*arg:*/ nullptr, ///
+    /*flags:*/0, ///
+    /*doc:*/ "clear database entirely", ///
     /*group:*/0 ///
   },
   /* ======= load a plugin ======= */
@@ -353,6 +363,10 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       hcv_load_plugin(plugnambuf, plugarg);
       return 0;
     }
+
+    case HCVPROGOPT_CLEARDATABASE:
+      hcv_should_clear_database = true;
+      return 0;
 
     default:
       return ARGP_ERR_UNKNOWN;
@@ -909,7 +923,7 @@ main(int argc, char**argv)
         HCV_SYSLOGOUT(LOG_WARNING, "helpcovid unable to write builtin pidfile " << HCV_BUILTIN_PIDFILE);
     }
   errno = 0;
-  hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
+  hcv_initialize_database(hcv_progargs.hcvprog_postgresuri, hcv_should_clear_database);
   errno = 0;
   hcv_initialize_templates();
   errno = 0;

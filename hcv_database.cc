@@ -97,7 +97,7 @@ hcv_postgresql_version(void)
 } // end  hcv_postgresql_version
 
 void
-hcv_initialize_database(const std::string&uri)
+hcv_initialize_database(const std::string&uri, bool cleardata)
 {
   std::string connstr = uri;
   if (connstr.empty())
@@ -131,6 +131,11 @@ hcv_initialize_database(const std::string&uri)
     HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database for connstr=" << connstr << " hcv_dbconn is " << hcv_dbconn.get());
     {
       pqxx::work firsttransact(*hcv_dbconn);
+      if (cleardata)
+        {
+          HCV_SYSLOGOUT(LOG_WARNING, "hcv_initialize_database clear database not implemented");
+#warning hcv_initialize_database clear database not implemented
+        }
       ///================ add something into PostGreSQL log
       {
         /// see https://stackoverflow.com/a/60954480/841108
