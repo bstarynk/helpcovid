@@ -369,12 +369,14 @@ hcv_syslog_program_arguments(void)
   for (int ix=0; ix<hcv_main_argc; ix++)
     {
       if (ix>0) os << ' ';
-      os << hcv_main_argv[0];
+      os << hcv_main_argv[ix];
     };
   os << std::endl;
   syslog (LOG_NOTICE, "HelpCovid %30s program arguments:\n... %s",
           hcv_lastgitcommit, os.str().c_str());
 } // end hcv_syslog_program_arguments
+
+
 
 void
 hcv_early_initialize(const char*progname)
