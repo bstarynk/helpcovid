@@ -754,7 +754,7 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
 #define HCV_PLUGIN_NAME_MAXLEN 48
 #define HCV_PLUGIN_PREFIX "hcvplugin_"
 #define HCV_PLUGIN_SUFFIX ".so"
-extern "C" void hcv_load_plugin(const char*plugin);
+extern "C" void hcv_load_plugin(const char*plugin_name, const char*plugin_arg);
 
 extern "C" void hcv_initialize_plugins_for_web(httplib::Server*);
 
@@ -764,5 +764,7 @@ extern "C" const char hcvplugin_version[];
 extern "C" const char hcvplugin_gpl_compatible_license[];
 extern "C" const char hcvplugin_gitapi[]; // our git id
 /// every plugin should have
-extern "C" void hcvplugin_initialize_web(httplib::Server*);
+extern "C" void hcvplugin_initialize_web(httplib::Server*,const char*);
+/// ... whose signature is
+typedef void hcvplugin_initializer_sig_t(httplib::Server*,const char*);
 #endif /*HELPCOVID_HEADER*/

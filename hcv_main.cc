@@ -65,6 +65,7 @@ enum hcv_progoption_en
 
   HCVPROGOPT_WEBSSLCERT=1000,
   HCVPROGOPT_WEBSSLKEY=1001,
+  HCVPROGOPT_PLUGIN=1002,xs
 };
 
 struct argp_option hcv_progoptions[] =
@@ -165,7 +166,17 @@ struct argp_option hcv_progoptions[] =
     /*doc:*/ "write debug messages to syslog(LOG_DEBUG, ...)", ///
     /*group:*/0 ///
   },
-#warning TODO: missing --plugin option
+  /* ======= load a plugin ======= */
+  {/*name:*/ "plugin", ///
+    /*key:*/ HCVPROGOPT_PLUGIN, ///
+    /*arg:*/ "PLUGIN_NAME", ///
+    /*flags:*/0, ///
+    /*doc:*/ "dlopen a given plugin named PLUGIN_NAME and optional string argument\n"
+    " ... for example --plugin=foo would dlopen(3) hcvplugin_foo.so\n"
+    " ... and --plugin=bar_2:argbar would dlopen(3) hcvplugin_bar_2.so"
+    " and pass argument 'argbar' to it.\n",
+    /*group:*/0 ///
+  },
   /* ======= terminating empty option ======= */
   {/*name:*/(const char*)0, ///
     /*key:*/0, ///
@@ -328,7 +339,21 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       progargs->hcvprog_opensslkey = std::string(arg);
       return 0;
 
-#warning TODO: hcv_parse1opt should call hcv_load_plugin when appropriate
+    case HCVPROGOPT_PLUGIN:
+    {
+      char plugnambuf[64];
+      memset (plugnambuf, 0, sizeof(plugnambuf));
+      int endp = -1;
+      const char*plugarg = nullptr;
+      if (sscanf(arg, "%60[A-Za-z0-9_]%n", plugnambuf, &endp) < 1 || endp <= 0)
+        HCV_FATALOUT("bad --plugin option " << arg <<std::endl
+                     << "... (expected plugin name with letters, digits, underscore)");
+      if (sscanf(arg, "%60[A-Za-z0-9_]:%n", plugnambuf, &endp) >= 1 && endp > 2)
+        plugarg = arg+endp;
+      hcv_load_plugin(plugnambuf, plugarg);
+      return 0;
+    }
+
     default:
       return ARGP_ERR_UNKNOWN;
     }
