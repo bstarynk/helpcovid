@@ -129,9 +129,30 @@ hcv_initialize_database(const std::string&uri)
   hcv_dbconn.reset(new pqxx::connection(connstr));
   {
     HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database for connstr=" << connstr << " hcv_dbconn is " << hcv_dbconn.get());
-    ////================ query the PostGreSQL version
     {
       pqxx::work firsttransact(*hcv_dbconn);
+      ///================ add something into PostGreSQL log
+      {
+        /// see https://stackoverflow.com/a/60954480/841108
+        char logreqbuf[256];
+        memset (logreqbuf, 0, sizeof(logreqbuf));
+        char gitbuf[24];
+        memset (gitbuf, 0, sizeof(gitbuf));
+        strncpy(gitbuf, hcv_gitid, sizeof(gitbuf)-5);
+        if (strchr(hcv_gitid, '+'))
+          strcat(gitbuf, "+");
+        snprintf (logreqbuf, sizeof(logreqbuf),
+                  "starting HelpCovid git %.22s (built %.80s, md5 %.20s...) on %.64s pid %d",
+                  gitbuf, hcv_timestamp, hcv_md5sum, hcv_get_hostname(), (int)getpid());
+        if (strchr(logreqbuf, '\'') || strchr(logreqbuf, ';') || strchr(logreqbuf, '\\'))
+          HCV_FATALOUT("hcv_initialize_database invalid logreqbuf:" << logreqbuf);
+        static char fullreqbuf[300];
+        snprintf(fullreqbuf, sizeof (fullreqbuf),
+                 "DO $$BEGIN RAISE LOG '%s'; END;$$;", logreqbuf);
+        HCV_DEBUGOUT("hcv_initialize_database: fullreqbuf=" << fullreqbuf);
+        firsttransact.exec0(fullreqbuf);
+      }
+      ////================ query the PostGreSQL version
       pqxx::row rversion = firsttransact.exec1("SELECT VERSION();");
       std::string pqversion = rversion[0].as<std::string>();
       pqxx::row r2version = firsttransact.exec1("SHOW SERVER_VERSION;");
