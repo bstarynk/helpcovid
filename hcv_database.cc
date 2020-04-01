@@ -96,6 +96,8 @@ hcv_postgresql_version(void)
   return hcv_our_postgresql_server_version;
 } // end  hcv_postgresql_version
 
+
+
 void
 hcv_initialize_database(const std::string&uri, bool cleardata)
 {
@@ -133,8 +135,22 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
       pqxx::work firsttransact(*hcv_dbconn);
       if (cleardata)
         {
-          HCV_SYSLOGOUT(LOG_WARNING, "hcv_initialize_database clear database not implemented");
-#warning hcv_initialize_database clear database not implemented
+          // https://dba.stackexchange.com/a/154075/204015
+          firsttransact.exec0(R"cleardatabase(
+DO
+$$
+DECLARE
+  l_stmt text;
+BEGIN
+  SELECT 'truncate ' || string_agg(format('%I.%I', schemaname, tablename), ',')
+    INTO l_stmt
+  FROM pg_tables
+  WHERE schemaname IN ('public');
+  EXECUTE l_stmt;
+END;
+$$
+)cleardatabase");	  
+          HCV_SYSLOGOUT(LOG_NOTICE, "hcv_initialize_database cleared database");
         }
       ///================ add something into PostGreSQL log
       {
@@ -147,8 +163,10 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
         if (strchr(hcv_gitid, '+'))
           strcat(gitbuf, "+");
         snprintf (logreqbuf, sizeof(logreqbuf),
-                  "starting HelpCovid git %.22s (built %.80s, md5 %.20s...) on %.64s pid %d",
-                  gitbuf, hcv_timestamp, hcv_md5sum, hcv_get_hostname(), (int)getpid());
+                  "starting HelpCovid git %.22s (built %.80s, md5 %.20s...) %s on %.64s pid %d",
+                  gitbuf, hcv_timestamp, hcv_md5sum,
+		  (cleardata?"cleared":"initialized"),
+		  hcv_get_hostname(), (int)getpid());
         if (strchr(logreqbuf, '\'') || strchr(logreqbuf, ';') || strchr(logreqbuf, '\\'))
           HCV_FATALOUT("hcv_initialize_database invalid logreqbuf:" << logreqbuf);
         static char fullreqbuf[300];
