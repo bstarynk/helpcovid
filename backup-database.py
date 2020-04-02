@@ -35,6 +35,18 @@ def find_config_file():
 
 
 
+def get_connection_string(path):
+    keys = {}
+    with open(path) as rcfile:
+        for line in rcfile:
+            name, var = line.partition("=")[::2]
+            keys[name.strip()] = str(var)
+
+    print("Found connection string: " + keys["connection"])
+    return keys["connection"]
+
+
+
 def main():
     print("Starting HelpCovid database backup...")
     print("See https://github.com/bstarynk/helpcovid and its README.md\n")
@@ -43,7 +55,9 @@ def main():
         print("PostgreSql database server not available; skipping...")
         return
 
-    rc_path = find_config_file()
+    path = find_config_file()
+    connstr = get_connection_string(path)
+
 
 
 if __name__ == '__main__':
