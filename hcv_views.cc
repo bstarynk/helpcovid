@@ -193,6 +193,10 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_post incomplete "
                 << req.path << " req#" << reqnum);
+  char buf[64];
+  memset (buf, 0, sizeof(buf));
+  snprintf (buf, sizeof(buf), "unimplemented hcv_register_view_post req#%ld", reqnum);
+  res = std::string(buf);
   return res;
   ///  return hcv_expand_template_file(thtml, &data);
 
