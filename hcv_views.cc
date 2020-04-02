@@ -168,7 +168,7 @@ hcv_register_view_get(const httplib::Request& req, httplib::Response& resp, long
 std::string
 hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, long reqnum)
 {
-  std::string res;
+  std::string jsonres;
   if (req.method != "POST")
     HCV_FATALOUT("hcv_register_view_post() called with not POST request");
   Hcv_http_template_data data(req, resp, reqnum);
@@ -193,13 +193,20 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   HCV_SYSLOGOUT(LOG_WARNING,
                 "hcv_register_view_post incomplete "
                 << req.path << " req#" << reqnum);
-  char buf[64];
-  memset (buf, 0, sizeof(buf));
-  snprintf (buf, sizeof(buf), "unimplemented hcv_register_view_post req#%ld", reqnum);
-  res = std::string(buf);
-  return res;
+  Json::StreamWriterBuilder jstr;
+  Json::Value jsob(Json::objectValue);
+  jsob["unimplemented_cxx_function"] = "hcv_expand_template_file";
+  jsob["unimplemented_request_number"] = (Json::Value::Int64)reqnum;
+  jsob["unimplemented_request_path"] =req.path;
+  jsob["unimplemented_cxx_file"] == __FILE__;
+  jsob["unimplemented_cxx_line"] == (Json::Value::Int)__LINE__;
+  jsob["gitid"] = hcv_gitid;
+  jsonres = Json::writeString(hcv_get_json_builder(), jsob);
+  HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path << "unimplemented; jsonres=" << std::endl
+               << jsonres);
+#warning hcv_register_view_post unimplemented
+  return jsonres;
   ///  return hcv_expand_template_file(thtml, &data);
-
 } // end hcv_register_view_post
 
 ///////////////////////////
