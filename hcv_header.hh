@@ -207,6 +207,8 @@ extern "C" void hcv_syslog_at (const char *fil, int lin, int prio,const std::str
 // debug facility
 extern "C" std::atomic<bool> hcv_debugging;
 
+// JSON writer
+extern "C" const Json::StreamWriterBuilder& hcv_get_json_builder(void);
 
 extern "C" void hcv_debug_at (const char *fil, int lin, std::ostringstream&outs);
 #define HCV_DEBUGOUT_AT_BIS(Fil,Lin,...) do {	\

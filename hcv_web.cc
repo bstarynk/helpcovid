@@ -44,10 +44,17 @@ Json::StreamWriterBuilder hcv_json_builder;
 #define HCV_HTML_RESPONSE_MAX_LEN  (128*1024)
 #define HCV_JSON_RESPONSE_MAX_LEN  (256*1024)
 
-extern "C" std::string hcv_get_web_root(void)
+extern "C" std::string
+hcv_get_web_root(void)
 {
   return hcv_webroot;
-}
+} // end  hcv_get_web_root
+
+const Json::StreamWriterBuilder&
+hcv_get_json_builder(void)
+{
+  return  hcv_json_builder;
+} // end  hcv_get_json_builder
 
 
 /// this function should *NOT* be public (for readability reasons)
