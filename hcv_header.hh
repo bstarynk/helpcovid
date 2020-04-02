@@ -79,7 +79,7 @@
 #include <pwd.h>
 #include <poll.h>
 #include <elf.h>
-
+#include <libintl.h>
 
 
 
@@ -750,6 +750,13 @@ hcv_register_view_post(const httplib::Request& req, httplib::Response& resp, lon
 extern "C" std::string
 hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long reqnum);
 
+
+///////////////////////////////////////////////////////////////////////////////
+// message views - to emit some message (usually request specific, e.g. localized)
+///////////////////////////////////////////////////////////////////////////////
+extern "C" std::string
+hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
+                    const char*filename, int lineno, long offset);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Plugins. See files hcv_plugins.cc and PLUGINS.md
