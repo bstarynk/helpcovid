@@ -196,6 +196,56 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
 
 } // end hcv_register_view_post
 
+///////////////////////////
+// message views - to emit some message (usually request specific, e.g. localized)
+///////////////////////////////////////////////////////////////////////////////
+extern "C" std::string  /// for <?hcv msg ...?>
+hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
+                    const char*filename, int lineno, long offset)
+{
+  HCV_ASSERT(tdata != nullptr && tdata->request() != nullptr && tdata->response() != nullptr);
+  char msgidbuf[40];
+  memset (msgidbuf, 0, sizeof(msgidbuf));
+  int endp = -1;
+  if (sscanf(procinstr.c_str(), "<?hcv msg %.38[A-Za-z0-9_] %n", msgidbuf, &endp) >= 1
+      && endp > 0)
+    {
+      if (!isalpha(msgidbuf[0]))
+        HCV_FATALOUT("hcv_view_expand_msg " << procinstr << " at "  << filename << ":" << lineno
+                     << "invalid msgidbuf:" << msgidbuf);
+      HCV_DEBUGOUT("hcv_view_expand_msg " << procinstr << " at "  << filename << ":" << lineno
+                   << "msgidbuf:" << msgidbuf);
+      const char*begmsg = procinstr.c_str() + endp;
+      const char*endmsg = strstr(begmsg, "?>");
+      HCV_ASSERT(endmsg != nullptr);
+      /// see http://man7.org/linux/man-pages/man7/locale.7.html
+      /// see http://man7.org/linux/man-pages/man5/locale.5.html
+      /// see http://man7.org/linux/man-pages/man3/dgettext.3.html
+      char* localizedmsg = gettext(msgidbuf);
+      if (localizedmsg)
+        {
+          HCV_DEBUGOUT("hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                       << " => " << localizedmsg);
+          return std::string(localizedmsg);
+        }
+      else
+        {
+          HCV_SYSLOGOUT(LOG_NOTICE, "hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                        << " not found");
+          std::string rawmsg(begmsg, endmsg-begmsg);
+          HCV_DEBUGOUT("hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                       << ":::" << rawmsg);
+          return rawmsg;
+        }
+    }
+  else
+    {
+      HCV_SYSLOGOUT(LOG_WARNING,
+                    "hcv_view_expand_msg bad PI " << procinstr
+                    << " at " << filename << ":" << lineno << "@" << offset);
+      return "";
+    }
+} // end hcv_view_expand_msg
 
 //////////////////// end of file hcv_views.cc of github.com/bstarynk/helpcovid
 
