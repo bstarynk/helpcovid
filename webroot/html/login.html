@@ -18,8 +18,7 @@
 
 <!-- NOTE: Edit the following tag to change the title of the page -->
     <title>
-      HelpCovid | Login 
-      <?hcv half_gitid?>
+      <?hcv msg LOGIN_TITLE HelpCovid | Login?> - <?hcv half_gitid?>
     </title>
   </head>
 
@@ -43,8 +42,8 @@
                 <img src="/images/English_language.svg" 
                      width="24px"
                      height="16px">
-                English
-                <span class="sr-only">(current)</span>
+               <?hcv msg LOGIN_ENGLISH1 English?>
+                <?hcv msg LOGIN_ENGLISH2 <span class="sr-only">(current)</span>?>
               </a>
             </li>
             <li class="nav-item">
@@ -52,7 +51,7 @@
                 <img src="/images/Flag_of_French_language.svg" 
                      width="24px"
                      height="16px">
-                French
+                <?hcv msg LOGIN_FRENCH French?>
               </a>
             </li>
           </ul>
@@ -69,7 +68,7 @@
         <div class="col-md-8">
 
           <!-- NOTE: This is the login page heading -->
-          <h1 class="my-4">Login</h1>
+          <h1 class="my-4"><?hcv msg LOGIN_HEADING Login Heading?></h1>
 
           <!-- NOTE: This is the outlined card containing the login form -->
           <div class="card mb-4">
@@ -86,7 +85,7 @@
                   <!-- NOTE: This is the login page sub-heading giving a -->
                   <!-- explanation of what has to be done by the user -->
                   <h3 class="h3 mb-3 font-weight-normal">
-                    Please sign in with your e-mail address and password
+                    <?hcv msg LOGIN_PLEASESIGNIN Please sign in with your e-mail address and password?>
                   </h3>
 		  <small><?hcv half_gitid?> at <?hcv basefilepos small clfilpos?>.</small>
                 </div>
@@ -99,9 +98,9 @@
                          id="inputEmail" 
                          name="email"
                          class="form-control" 
-                         placeholder="Email address" 
+                         placeholder="<?hcv msg LOGIN_EMAILPLACEHOLDER  login email placeholder..?>" 
                          required autofocus>
-                  <label for="inputEmail">Email address</label>
+                  <label for="inputEmail"><?hcv msg LOGIN_EMAILLABEL Email address lab login?></label>
                 </div>
 
                 <div class="form-label-group">
@@ -109,17 +108,17 @@
                          id="inputPassword" 
                          name="password"
                          class="form-control" 
-                         placeholder="Password" 
+                         placeholder="<?hcv msg LOGIN_PASSWORDPLACEHOLDER  login password placeholder..?>" 
                          required>
-                  <label for="inputPassword">Password</label>
+                  <label for="inputPassword"><?hcv msg LOGIN_PASSWORDLABEL password lab login?></label>
                 </div>
 
                 <div class="checkbox mb-3">
                   <label>
-                    <input type="checkbox" value="remember-me"> Remember me
+                    <input type="checkbox" value="remember-me"> <?hcv msg LOGIN_REMEMBERME login remember me?>
                   </label>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><?hcv msg LOGIN_SUBMIT login submit?></button>
               </form>
             </div>
           </div>
@@ -132,12 +131,12 @@
           <!-- NOTE: This div group contains the serach widget on the right -->
           <!-- pane -->
           <div class="card my-4">
-            <h5 class="card-header">Search</h5>
+            <h5 class="card-header"><?hcv msg LOGIN_SEARCH search login?></h5>
             <div class="card-body">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
+                <input type="text" class="form-control" placeholder="<?hcv msg LOGIN_SEARCHPLACEHOLDER login search for...?>">
                 <span class="input-group-btn">
-                  <button class="btn btn-secondary" type="button">Go!</button>
+                  <button class="btn btn-secondary" type="button"><?hcv msg LOGIN_SEARCHGO go login search!?></button>
                 </span>
               </div>
             </div>
@@ -145,17 +144,17 @@
 
           <!-- NOTE: This is the Quick Links widget on the right pane -->
           <div class="card my-4">
-            <h5 class="card-header">Quick Links</h5>
+            <h5 class="card-header"><?hcv msg LOGIN_QUICKLINKS login quick Links?></h5>
             <div class="card-body">
               <div class="row">
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
                     <li>
-                      <a href="/register">Register</a>
+                      <a href="/register"><?hcv msg LOGIN_REGISTER login register?></a>
 		      <small> at <?hcv basefilepos small clfilpos?>.</small>
                     </li>
                     <li>
-                      <a href="/">Home</a>  
+                      <a href="/"><?hcv msg LOGIN_HOME login home?></a>  
 		      <small> at <?hcv basefilepos small clfilpos?>.</small>
                     </li>
                   </ul>
@@ -163,11 +162,11 @@
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
                     <li>
-                      <a href="/login">Login</a>
+                      <a href="/login"><?hcv msg LOGIN_LOGIN login login?></a>
 		      <small> at <?hcv basefilepos small clfilpos?>.</small>
                     </li>
                     <li>
-                      <a href="privacy.html">Privacy</a>
+                      <a href="privacy.html"><?hcv msg LOGIN_PRIVACY login privacy?></a>
 		      <small> at <?hcv basefilepos small clfilpos?>.</small>
                     </li>
                   </ul>
@@ -178,10 +177,10 @@
 
           <!-- NOTE: This is the optional extra widget -->
           <div class="card my-4">
-            <h5 class="card-header">Side Widget</h5>
+            <h5 class="card-header"><?hcv msg LOGIN_SIDEWIDGET Login Side Widget?></h5>
             <div class="card-body">
 	      <small><?hcv half_gitid?></small> at <?hcv basefilepos small clfilpos?> <br/>
-	      You can put anything you want here!
+	      <?hcv msg LOGIN_SIDEMORE Login side more?>
             </div>
           </div>
 
@@ -198,15 +197,15 @@
     <div class="alert text-center cookiealert" role="alert">
 		<?hcv half_gitid?> at <?hcv filename?> line
 		<?hcv lineno?>. <br/>
-      We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.
-      <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>
+		 <?hcv msg LOGIN_WEUSECOOKIES Login We use cookies?>
+      <?hcv msg LOGIN_COOKIEMORE <a href="https://gdpr.eu/tag/gdpr" target="_blank">Login cookie more</a>?>
       <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
-        I agree
+         <?hcv msg LOGIN_COOKIEAGREE login cookie agree?>
       </button>
       <a class="btn btn-primary btn-sm acceptcookies" 
          href="privacy.html"
-         aria-label="Close">
-        Privacy Policy
+         aria-label="<?hcv msg LOGIN_COOKIECLOSE login cookie close?>">
+        <?hcv msg LOGIN_PRIVACY Login Privacy Policy?>
       </a>
     </div>
     <!-- END Bootstrap-Cookie-Alert -->
