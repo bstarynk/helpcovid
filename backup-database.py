@@ -78,6 +78,16 @@ def backup(keys):
 
 
 
+def backup_dry_run(keys):
+    cmd = "pg_dump -U {0} -h {1} -p {2} {3}".format(keys["user"], keys["host"],
+            keys["port"], keys["dbname"])
+
+    print("Starting database backup dry run...")
+    print(cmd)
+    os.system(cmd)
+
+
+
 def main():
     print("Starting HelpCovid database backup...")
     print("See https://github.com/bstarynk/helpcovid and its README.md\n")
