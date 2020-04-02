@@ -204,17 +204,18 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
                     const char*filename, int lineno, long offset)
 {
   HCV_ASSERT(tdata != nullptr && tdata->request() != nullptr && tdata->response() != nullptr);
+  HCV_DEBUGOUT("hcv_view_expand_msg " << procinstr << " @STARTMSG@ at "  << filename << ":" << lineno);
   char msgidbuf[40];
   memset (msgidbuf, 0, sizeof(msgidbuf));
   int endp = -1;
-  if (sscanf(procinstr.c_str(), "<?hcv msg %.38[A-Za-z0-9_] %n", msgidbuf, &endp) >= 1
+  if (sscanf(procinstr.c_str(), "<?hcv msg %38[A-Za-z0-9_] %n", msgidbuf, &endp) >= 1
       && endp > 0)
     {
       if (!isalpha(msgidbuf[0]))
         HCV_FATALOUT("hcv_view_expand_msg " << procinstr << " at "  << filename << ":" << lineno
                      << "invalid msgidbuf:" << msgidbuf);
       HCV_DEBUGOUT("hcv_view_expand_msg " << procinstr << " at "  << filename << ":" << lineno
-                   << "msgidbuf:" << msgidbuf);
+                   << "msgidbuf:" << msgidbuf << ".");
       const char*begmsg = procinstr.c_str() + endp;
       const char*endmsg = strstr(begmsg, "?>");
       HCV_ASSERT(endmsg != nullptr);
@@ -222,7 +223,7 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
       /// see http://man7.org/linux/man-pages/man5/locale.5.html
       /// see http://man7.org/linux/man-pages/man3/dgettext.3.html
       char* localizedmsg = gettext(msgidbuf);
-      if (localizedmsg)
+      if (localizedmsg && strcmp(localizedmsg, msgidbuf))
         {
           HCV_DEBUGOUT("hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
                        << " => " << localizedmsg);

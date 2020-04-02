@@ -267,8 +267,8 @@ hcv_debug_at (const char*fil, int lin, std::ostringstream&outs)
       strftime(timbuf, sizeof(timbuf), "%c %Z", &nowtm);
       syslog(LOG_DEBUG, "========== DEBUG timestamp %s #%ld ==========", timbuf, dbgcnt);
     }
-  // we use the Δ U+0394 GREEK CAPITAL LETTER DELTA
-  syslog(LOG_DEBUG, "ΔBG!%s:%d:%05.2f s %s", fil, lin, elapsed, outs.str().c_str());
+  // we use the Δ U+0394 GREEK CAPITAL LETTER DELTA and ▪ U+25AA BLACK SMALL SQUARE and ‣ U+2023 TRIANGULAR BULLET
+  syslog(LOG_DEBUG, "ΔBG!%s:%d▪ %05.2f s‣ %s", fil, lin, elapsed, outs.str().c_str());
 } // end hcv_debug_at
 
 // parse a single program option
