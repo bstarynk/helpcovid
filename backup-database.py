@@ -2,6 +2,7 @@
 
 
 
+import argparse
 import os
 import pwd
 import time
@@ -89,6 +90,15 @@ def backup_dry_run(keys):
 
 
 def main():
+    arg_parser = argparse.ArgumentParser(prog = "./backup-database.py",
+            usage = "%(prog)s [--dry-run]", description = "Performs a backup of"
+            " the Helpcovid database")
+    arg_parser.add_argument("--dry-run", action = "store_true",
+            required = False, help = "perform a dry run of the backup")
+    args = arg_parser.parse_args()
+
+    print(args)
+
     print("Starting HelpCovid database backup...")
     print("See https://github.com/bstarynk/helpcovid and its README.md\n")
 
@@ -102,7 +112,11 @@ def main():
         return
 
     keys = parse_connection_string(connstr)
-    backup(keys)
+    if args.dry_run:
+        backup_dry_run(keys)
+    else:
+        backup(keys)
+
 
 
 if __name__ == '__main__':
