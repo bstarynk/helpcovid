@@ -38,6 +38,7 @@ std::atomic<bool> hcv_debugging;
 double hcv_monotonic_start_time;
 unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
+bool hcv_should_clear_database;
 
 thread_local Hcv_Random Hcv_Random::_rand_thr_;
 
@@ -65,6 +66,8 @@ enum hcv_progoption_en
 
   HCVPROGOPT_WEBSSLCERT=1000,
   HCVPROGOPT_WEBSSLKEY=1001,
+  HCVPROGOPT_PLUGIN=1002,
+  HCVPROGOPT_CLEARDATABASE=1003,
 };
 
 struct argp_option hcv_progoptions[] =
@@ -165,7 +168,25 @@ struct argp_option hcv_progoptions[] =
     /*doc:*/ "write debug messages to syslog(LOG_DEBUG, ...)", ///
     /*group:*/0 ///
   },
-#warning TODO: missing --plugin option
+  /* ======= enable clearing of every database table  ======= */
+  {/*name:*/ "clear-database", ///
+    /*key:*/ HCVPROGOPT_CLEARDATABASE, ///
+    /*arg:*/ nullptr, ///
+    /*flags:*/0, ///
+    /*doc:*/ "clear database entirely", ///
+    /*group:*/0 ///
+  },
+  /* ======= load a plugin ======= */
+  {/*name:*/ "plugin", ///
+    /*key:*/ HCVPROGOPT_PLUGIN, ///
+    /*arg:*/ "PLUGIN_NAME", ///
+    /*flags:*/0, ///
+    /*doc:*/ "dlopen a given plugin named PLUGIN_NAME and optional string argument\n"
+    " ... for example --plugin=foo would dlopen(3) hcvplugin_foo.so\n"
+    " ... and --plugin=bar_2:argbar would dlopen(3) hcvplugin_bar_2.so"
+    " and pass argument 'argbar' to it.\n",
+    /*group:*/0 ///
+  },
   /* ======= terminating empty option ======= */
   {/*name:*/(const char*)0, ///
     /*key:*/0, ///
@@ -328,7 +349,25 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       progargs->hcvprog_opensslkey = std::string(arg);
       return 0;
 
-#warning TODO: hcv_parse1opt should call hcv_load_plugin when appropriate
+    case HCVPROGOPT_PLUGIN:
+    {
+      char plugnambuf[64];
+      memset (plugnambuf, 0, sizeof(plugnambuf));
+      int endp = -1;
+      const char*plugarg = nullptr;
+      if (sscanf(arg, "%60[A-Za-z0-9_]%n", plugnambuf, &endp) < 1 || endp <= 0)
+        HCV_FATALOUT("bad --plugin option " << arg <<std::endl
+                     << "... (expected plugin name with letters, digits, underscore)");
+      if (sscanf(arg, "%60[A-Za-z0-9_]:%n", plugnambuf, &endp) >= 1 && endp > 2)
+        plugarg = arg+endp;
+      hcv_load_plugin(plugnambuf, plugarg);
+      return 0;
+    }
+
+    case HCVPROGOPT_CLEARDATABASE:
+      hcv_should_clear_database = true;
+      return 0;
+
     default:
       return ARGP_ERR_UNKNOWN;
     }
@@ -344,12 +383,14 @@ hcv_syslog_program_arguments(void)
   for (int ix=0; ix<hcv_main_argc; ix++)
     {
       if (ix>0) os << ' ';
-      os << hcv_main_argv[0];
+      os << hcv_main_argv[ix];
     };
   os << std::endl;
   syslog (LOG_NOTICE, "HelpCovid %30s program arguments:\n... %s",
           hcv_lastgitcommit, os.str().c_str());
 } // end hcv_syslog_program_arguments
+
+
 
 void
 hcv_early_initialize(const char*progname)
@@ -882,7 +923,7 @@ main(int argc, char**argv)
         HCV_SYSLOGOUT(LOG_WARNING, "helpcovid unable to write builtin pidfile " << HCV_BUILTIN_PIDFILE);
     }
   errno = 0;
-  hcv_initialize_database(hcv_progargs.hcvprog_postgresuri);
+  hcv_initialize_database(hcv_progargs.hcvprog_postgresuri, hcv_should_clear_database);
   errno = 0;
   hcv_initialize_templates();
   errno = 0;

@@ -51,6 +51,7 @@
 #include <functional>
 #include <typeinfo>
 #include <locale>
+#include <regex>
 
 #include <cassert>
 #include <cstring>
@@ -77,7 +78,9 @@
 #include <pthread.h>
 #include <pwd.h>
 #include <poll.h>
-#include <regex>
+#include <elf.h>
+
+
 
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
@@ -219,7 +222,10 @@ extern "C" void hcv_debug_at (const char *fil, int lin, std::ostringstream&outs)
 // typical usage would be HCV_DEBUGOUT("x=" << x)
 #define HCV_DEBUGOUT(...) HCV_DEBUGOUT_AT(__FILE__,__LINE__,##__VA_ARGS__)
 
-
+/// once an invocation of HCV_DEBUGOUT becomes useless we can replace
+/// it with HCV_NEVEROUT...
+#define HCV_NEVEROUT(...) do { if (false)	\
+      std::clog << ##__VA_ARGS__; } while(0)
 
 ////////////////////////////////////////////////////////////////
 ///// configuration file https://developer.gnome.org/glibmm/stable/classGlib_1_1KeyFile.html
@@ -263,7 +269,7 @@ private:
 //// PostGreSQL database
 extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
 extern "C" std::recursive_mutex hcv_dbmtx;
-extern "C" void hcv_initialize_database(const std::string&uri);
+extern "C" void hcv_initialize_database(const std::string&uri, bool cleardata);
 
 extern "C" const std::string hcv_postgresql_version(void);
 
@@ -443,6 +449,7 @@ public:
   virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
 
+#define HCV_COOKIE_NAME "HelpCovid_COOKIE"
 
 class Hcv_https_template_data : public Hcv_http_template_data
 {
@@ -750,9 +757,11 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
 #define HCV_PLUGIN_NAME_MAXLEN 48
 #define HCV_PLUGIN_PREFIX "hcvplugin_"
 #define HCV_PLUGIN_SUFFIX ".so"
-extern "C" void hcv_load_plugin(const char*plugin);
+extern "C" void hcv_load_plugin(const char*plugin_name, const char*plugin_arg);
 
 extern "C" void hcv_initialize_plugins_for_web(httplib::Server*);
+
+extern "C" std::vector<std::string> hcv_get_loaded_plugins_vector(void);
 
 /// every plugin should provide its:
 extern "C" const char hcvplugin_name[];
@@ -760,5 +769,7 @@ extern "C" const char hcvplugin_version[];
 extern "C" const char hcvplugin_gpl_compatible_license[];
 extern "C" const char hcvplugin_gitapi[]; // our git id
 /// every plugin should have
-extern "C" void hcvplugin_initialize_web(httplib::Server*);
+extern "C" void hcvplugin_initialize_web(httplib::Server*,const char*);
+/// ... whose signature is
+typedef void hcvplugin_initializer_sig_t(httplib::Server*,const char*);
 #endif /*HELPCOVID_HEADER*/

@@ -96,8 +96,10 @@ hcv_postgresql_version(void)
   return hcv_our_postgresql_server_version;
 } // end  hcv_postgresql_version
 
+
+
 void
-hcv_initialize_database(const std::string&uri)
+hcv_initialize_database(const std::string&uri, bool cleardata)
 {
   std::string connstr = uri;
   if (connstr.empty())
@@ -129,9 +131,51 @@ hcv_initialize_database(const std::string&uri)
   hcv_dbconn.reset(new pqxx::connection(connstr));
   {
     HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database for connstr=" << connstr << " hcv_dbconn is " << hcv_dbconn.get());
-    ////================ query the PostGreSQL version
     {
       pqxx::work firsttransact(*hcv_dbconn);
+      if (cleardata)
+        {
+          // https://dba.stackexchange.com/a/154075/204015
+          firsttransact.exec0(R"cleardatabase(
+DO
+$$
+DECLARE
+  l_stmt text;
+BEGIN
+  SELECT 'truncate ' || string_agg(format('%I.%I', schemaname, tablename), ',')
+    INTO l_stmt
+  FROM pg_tables
+  WHERE schemaname IN ('public');
+  EXECUTE l_stmt;
+END;
+$$
+)cleardatabase");	  
+          HCV_SYSLOGOUT(LOG_NOTICE, "hcv_initialize_database cleared database");
+        }
+      ///================ add something into PostGreSQL log
+      {
+        /// see https://stackoverflow.com/a/60954480/841108
+        char logreqbuf[256];
+        memset (logreqbuf, 0, sizeof(logreqbuf));
+        char gitbuf[24];
+        memset (gitbuf, 0, sizeof(gitbuf));
+        strncpy(gitbuf, hcv_gitid, sizeof(gitbuf)-5);
+        if (strchr(hcv_gitid, '+'))
+          strcat(gitbuf, "+");
+        snprintf (logreqbuf, sizeof(logreqbuf),
+                  "starting HelpCovid git %.22s (built %.80s, md5 %.20s...) %s on %.64s pid %d",
+                  gitbuf, hcv_timestamp, hcv_md5sum,
+		  (cleardata?"cleared":"initialized"),
+		  hcv_get_hostname(), (int)getpid());
+        if (strchr(logreqbuf, '\'') || strchr(logreqbuf, ';') || strchr(logreqbuf, '\\'))
+          HCV_FATALOUT("hcv_initialize_database invalid logreqbuf:" << logreqbuf);
+        static char fullreqbuf[300];
+        snprintf(fullreqbuf, sizeof (fullreqbuf),
+                 "DO $$BEGIN RAISE LOG '%s'; END;$$;", logreqbuf);
+        HCV_DEBUGOUT("hcv_initialize_database: fullreqbuf=" << fullreqbuf);
+        firsttransact.exec0(fullreqbuf);
+      }
+      ////================ query the PostGreSQL version
       pqxx::row rversion = firsttransact.exec1("SELECT VERSION();");
       std::string pqversion = rversion[0].as<std::string>();
       pqxx::row r2version = firsttransact.exec1("SHOW SERVER_VERSION;");
@@ -255,9 +299,10 @@ SELECT user_id FROM tb_user WHERE user_email=$1
      R"addwebcookie(
 INSERT INTO tb_web_cookie
      (wcookie_random, wcookie_exptime, wcookie_webagenthash)
-VALUES ($1, $2, $3);
-SELECT LASTVAL()
+VALUES ($1, to_timestamp($2), $3)
 )addwebcookie");
+  hcv_dbconn->prepare
+    ("lastval_pstm", "SELECT LASTVAL()");
   prepare_user_model_statements();
 } // end hcv_prepare_statements_in_database
 
@@ -304,13 +349,24 @@ hcv_database_with_known_email (const std::string& emailstr)
 long
 hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exptime, int webagenthash)
 {
-  HCV_ASSERT(!randomstr.empty());
-  std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
-  pqxx::work transact(*hcv_dbconn);
-  pqxx::result res =
-    transact.exec_prepared("add_web_cookie_pstm",
-			   randomstr, exptime, webagenthash);
   long id = -1;
+  HCV_ASSERT(!randomstr.empty());
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie start randomstr='"
+	       << randomstr << " exptime=" << exptime
+	       << " webagenthash=" << webagenthash);
+  std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
+  try {
+  pqxx::work transact(*hcv_dbconn);
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie before add_web_cookie_pstm randomstr="
+	       << randomstr);
+  pqxx::result res;
+  res = transact.exec_prepared("add_web_cookie_pstm",
+			       randomstr, (double)exptime, webagenthash);
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie add_web_cookie_pstm res size:"
+	       << res.size() << " affected rows:" << res.affected_rows());
+  res = transact.exec_prepared("lastval_pstm");
+  HCV_DEBUGOUT("hcv_database_get_id_of_added_web_cookie lastval_pstm res size:"
+	       << res.size());
   for (auto rowit : res) {
     id = rowit[0].as<long>();
   }
@@ -319,6 +375,12 @@ hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exp
 	       << randomstr << "', exptime=" << exptime
 	       << ", webagenthash=" << webagenthash
 	       << " => id=" << id);
+  } catch (std::exception& exc) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_database_get_id_of_added_web_cookie got exception:"
+		  << exc.what());
+    id = -2;
+  }
   return id;
 } // end hcv_database_get_id_of_added_web_cookie
 

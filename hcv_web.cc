@@ -41,6 +41,8 @@ std::string hcv_webroot;
 std::atomic<long> hcv_web_request_counter;
 Json::StreamWriterBuilder hcv_json_builder;
 
+#define HCV_HTML_RESPONSE_MAX_LEN  (128*1024)
+#define HCV_JSON_RESPONSE_MAX_LEN  (256*1024)
 
 extern "C" std::string hcv_get_web_root(void)
 {
@@ -290,10 +292,17 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
     HCV_SYSLOGOUT(LOG_WARNING, "hcv_web_register_fresh_cookie: missing htpl");
     return "";
   }
-  auto hreq = htpl->request();
+  auto hreq = htpl->request();;
   if (!hreq) {
     HCV_SYSLOGOUT(LOG_WARNING,
 		  "hcv_web_register_fresh_cookie: missing web request, reqnum#"
+		  << htpl->serial());
+    return "";
+  };
+  auto hresp = htpl->response();
+  if (!hresp) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_web_register_fresh_cookie: missing web response, reqnum#"
 		  << htpl->serial());
     return "";
   };
@@ -335,6 +344,13 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 	       << " id=" << id);
   std::string res = hcv_web_make_cookie_string(id, randombuf, webagenthash);
   HCV_DEBUGOUT("hcv_web_register_fresh_cookie reqnum#" << reqnum << " gives " << res);
+  char agebuf[32];
+  memset(agebuf, 0, sizeof(agebuf));
+  snprintf(agebuf, sizeof(agebuf), "; Max-Age=%u",  hcv_web_cookie_duration);
+  std::string cookiestr=  std::string(HCV_COOKIE_NAME "=") + res+ agebuf;
+  hresp->set_header("Set-Cookie", cookiestr);
+  HCV_DEBUGOUT ("hcv_web_register_fresh_cookie reqnum#" << reqnum
+		<< " cookiestr=" << cookiestr);
   return res;
 } // end hcv_web_register_fresh_cookie
 
@@ -391,6 +407,15 @@ hcv_web_get_json_status(const httplib::Request&req, httplib::Response& resp, lon
   jsob["cxx"] = hcv_cxx_compiler;
   jsob["build_time"] = hcv_timestamp;
   jsob["build_timestamp"] =  (Json::Value::Int64)hcv_timelong;
+  {
+    auto pluginvect = hcv_get_loaded_plugins_vector();
+    if (!pluginvect.empty()) {
+      Json::Value jsarr(Json::arrayValue);
+      for (auto curplugname : pluginvect)
+	jsarr.append(curplugname);
+      jsob["plugins"] = jsarr;
+    }
+  }
   auto str = Json::writeString(hcv_json_builder, jsob);
   resp.set_content(str.c_str(), "application/json");
 } // end hcv_web_get_json_status
@@ -488,6 +513,19 @@ hcv_web_get_html_status(const httplib::Request&req, httplib::Response& resp, lon
   outstatus << "<li>pid: <tt>" << ((long)getpid()) << "</tt></li>" << std::endl;
   outstatus << "<li>web request count: <tt>" << reqcnt  << "</tt></li>" << std::endl;
   outstatus << "<li>compiled with: <tt>" << hcv_cxx_compiler << "</tt></li>" << std::endl;
+  {
+    auto pluginvect = hcv_get_loaded_plugins_vector();
+    if (!pluginvect.empty()) {
+      outstatus << "<li>plugins: ";
+      int plcnt = 0;
+      Json::Value jsarr(Json::arrayValue);
+      for (auto curplugname : pluginvect) {
+	if (plcnt++ > 0) outstatus << ",";
+	outstatus << " <tt>" << curplugname << "</tt>";	
+      }
+      outstatus << " ;</li>" << std::endl;
+    }      
+  }
   outstatus << "</ul>" << std::endl;
   outstatus << "<hr/>" << std::endl;
   outstatus << "<p><small>Use <tt>" << "<a href='" << hcv_weburl
@@ -624,7 +662,11 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+    htmlcont = hcv_home_view_get(req, resp, reqcnt);
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("root URL handling GET sending too many bytes " << htmlcont.size());
+    resp.set_content(htmlcont, "text/html");
   });
   hcv_webserver->Get("/", [](const httplib::Request& req,
                              httplib::Response& resp)
@@ -640,7 +682,11 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_home_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+    htmlcont = hcv_home_view_get(req, resp, reqcnt);
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("root URL handling GET sending too many bytes " << htmlcont.size());
+    resp.set_content(htmlcont, "text/html");
   });
 
   //////////////// /login/ serving
@@ -650,7 +696,12 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("login URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_login_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+    htmlcont = hcv_login_view_get(req, resp, reqcnt);
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("login URL handling POST sending too many bytes " << htmlcont.size());
+    HCV_DEBUGOUT("login URL handling GET sending " << htmlcont.size() << " bytes in response");;
+    resp.set_content(htmlcont, "text/html");
   });
   ///////
   hcv_webserver->Post("/login", [](const httplib::Request& req, 
@@ -659,7 +710,11 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("login URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_login_view_post(req, resp, reqcnt), "application/json");
+    std::string jsoncont;
+    jsoncont = hcv_login_view_post(req, resp, reqcnt);
+    if (jsoncont.size() > HCV_JSON_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("login URL handling POST sending too many bytes " << jsoncont.size());
+    resp.set_content(jsoncont, "application/json");
   });
   //////////////// /register/ serving
   hcv_webserver->Get("/register", [](const httplib::Request& req,
@@ -668,7 +723,12 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_register_view_get(req, resp, reqcnt), "text/html");
+    std::string htmlcont;
+     htmlcont = hcv_register_view_get(req, resp, reqcnt);;
+    if (htmlcont.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("register URL handling POST sending too many bytes " << htmlcont.size());
+    HCV_DEBUGOUT("register URL handling GET sending " << htmlcont.size() << " bytes in response");
+    resp.set_content(htmlcont, "text/html");
   });
   ///////
   hcv_webserver->Post("/register", [](const httplib::Request& req, 
@@ -677,7 +737,12 @@ hcv_webserver_run(void)
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
-    resp.set_content(hcv_register_view_post(req, resp, reqcnt), "application/json");
+    std::string jsoncont;
+    jsoncont = hcv_register_view_post(req, resp, reqcnt);
+    if (jsoncont.size() > HCV_JSON_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("register URL handling POST sending too many bytes " << jsoncont.size());
+    HCV_DEBUGOUT("register URL handling POST sending " << jsoncont.size() << " bytes in response");
+    resp.set_content(jsoncont, "application/json");
   });
   ////////////////////////////////////////////////////////////////
   //////////////// /images/ serving

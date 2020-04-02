@@ -178,6 +178,7 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   auto phonestr = req.get_param_value("inputPhone");
   auto emailstr = req.get_param_value("inputEmail");
   auto agreestr = req.get_param_value("registerAgree");
+  auto cookiestr = req.get_header_value("Set-Cookie");
   HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path
                << " req#" << reqnum << std::endl
                << " .. regtoken=" << regtokenstr << std::endl
@@ -185,6 +186,7 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
                << " .. lastname=" << lastnamestr << std::endl
                << " .. phonestr=" << phonestr << std::endl
                << " .. emailstr=" << emailstr << std::endl
+               << " .. cookiestr=" << cookiestr << std::endl
               );
 #warning hcv_register_view_post incomplete
   HCV_SYSLOGOUT(LOG_WARNING,

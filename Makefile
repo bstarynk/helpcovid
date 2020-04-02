@@ -14,12 +14,17 @@
 ##    You should have received a copy of the GNU General Public License
 ##    along with this program.  If not, see <http://www.gnu.org/licences>
 
-.PHONY: all clean indent deploy localtest0
+.PHONY: all plugins sanitized_plugins clean indent deploy localtest0
 
 
-.SUFFIXES: .sanit.o
-HELPCOVID_SOURCES := $(wildcard hcv*.cc)
+.SUFFIXES: .sanit.
+.SUFFIXES: .so
+.SUFFIXES: _sanit.so
+HELPCOVID_SOURCES := $(wildcard hcv_*.cc)
+HELPCOVID_PLUGINSOURCES := $(wildcard hcvplugin_*.cc)
 HELPCOVID_OBJECTS := $(patsubst %.cc, %.o, $(HELPCOVID_SOURCES))
+HELPCOVID_PLUGINS := $(patsubst %.cc, %.so, $(HELPCOVID_PLUGINSOURCES))
+HELPCOVID_SANITIZED_PLUGINS := $(patsubst %.cc, %_sanit.so, $(HELPCOVID_PLUGINSOURCES))
 HELPCOVID_HEADERS := $(wildcard hcv*.hh)
 HELPCOVID_GIT_ID := $(shell ./generate-gitid.sh)
 
@@ -57,6 +62,7 @@ all:
 	if [ -f helpcovid ] ; then  $(MV) -f --backup helpcovid helpcovid~ ; fi
 	$(RM) __timestamp.o __timestamp.c
 	$(MAKE) $(MAKEFLAGS) helpcovid
+	$(MAKE) $(MAKEFLAGS) plugins
 
 
 
@@ -85,11 +91,22 @@ sanitized-helpcovid: $(HELPCOVID_SANITIZED_OBJECTS) __timestamp.o
 
 %.sanit.o: %.cc
 	$(COMPILE.cc) $^ $(HELPCOVID_SANITIZE_CXXFLAGS) -o $@
+
+%.so: %.cc
+	$(LINK.cc) -fPIC -shared $^ -o $@
+
+%_sanit.so: %.cc
+	$(LINK.cc) -fPIC -shared $(HELPCOVID_SANITIZE_CXXFLAGS) $^ -o $@
+
 clean:
 	$(RM) *~ *% *.orig *.o helpcovid *tmp core*
 
 indent:
-	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS)
+	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS) $(HELPCOVID_PLUGINSOURCES)
+
+plugins: $(HELPCOVID_PLUGINS)
+
+sanitized_plugins: $(HELPCOVID_SANITIZED_PLUGINS)
 
 localtest0: helpcovid
 #	./generate-config.py
