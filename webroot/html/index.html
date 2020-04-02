@@ -62,28 +62,22 @@
         <!-- Blog Entries Column -->
         <div class="col-md-8">
 
-          <h1 class="my-4">Page Heading
-            <small>Secondary Text</small>
+          <h1 class="my-4"><?hcv msg MAINPAGE_HEADING Page Heading?>
+            <?hcv msg MAINPAGE_SECOND_HEADING <small>Secondary Text</small>?>
           </h1>
 
           <!-- Blog Post -->
           <div class="card mb-4">
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
-              <h2 class="card-title">Post Title</h2>
+              <h2 class="card-title"><?hcv msg MAINPAGEPOST1 Post Title 1?></h2>
               <p class="card-text">
-		<small><?hcv half_gitid?> at <?hcv filename?> line
-		  <?hcv lineno?>.</small> <br/> Lorem ipsum dolor sit amet,
-		consectetur adipisicing elit. Reiciendis aliquid
-		atque, nulla? Quos cum ex quis soluta, a
-		laboriosam. Dicta expedita corporis animi vero
-		voluptate voluptatibus possimus, veniam magni
-		quis!</p>
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
+		<small><?hcv half_gitid?> at <?hcv filename?> line <?hcv lineno?>.</small> <br/>
+	      <?hcv msg MAINPAGE_WELCOMEPOST welcome post?></p>
+              <a href="#" class="btn btn-primary"><?hcv msg MAINPAGE_READMORE Read More &rarr;?></a>
             </div>
             <div class="card-footer text-muted">
-              Posted on January 1, 2017 by
-              <a href="#">Start Bootstrap</a>
+             <?hcv msg MAINPAGE_STARTBOOTSTRAP <a href="#">Start Bootstrap</a>?>
             </div>
           </div>
 
@@ -91,17 +85,13 @@
           <div class="card mb-4">
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
-              <h2 class="card-title">Post Title</h2>
-              <p class="card-text"><?hcv basefilepos small clfilpos?> Lorem ipsum
-              dolor sit amet, consectetur adipisicing elit. Reiciendis
-              aliquid atque, nulla? Quos cum ex quis soluta, a
-              laboriosam. Dicta expedita corporis animi vero voluptate
-              voluptatibus possimus, veniam magni quis!</p>
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
+              <h2 class="card-title"><?hcv msg MAINPAGE_POST_TITLE Post Title?></h2>
+              <p class="card-text"><?hcv basefilepos small clfilpos?>
+	      </p>
+              <a href="#" class="btn btn-primary"><?hcv msg MAINPAGE_READMORE1 Read More 1 &rarr;?></a>
             </div>
             <div class="card-footer text-muted">
-              Posted on January 1, 2017 by
-              <a href="#">Start Bootstrap</a>
+	      <?hcv msg MAINPAGE_FOOTERPOST footer of post?>
             </div>
           </div>
 
@@ -109,27 +99,24 @@
           <div class="card mb-4">
             <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
             <div class="card-body">
-              <h2 class="card-title">Post Title</h2>
-              <p class="card-text"><small><?hcv basefilepos?></small> Lorem ipsum
-              dolor sit amet, consectetur adipisicing elit. Reiciendis
-              aliquid atque, nulla? Quos cum ex quis soluta, a
-              laboriosam. Dicta expedita corporis animi vero voluptate
-              voluptatibus possimus, veniam magni quis!</p>
-              <a href="#" class="btn btn-primary">Read More &rarr;</a>
+              <h2 class="card-title"><?hcv msg MAINPAGEPOST2 Post Title 2?></h2>
+              <p class="card-text"><small><?hcv basefilepos?></small>
+		<?hcv msg MAINPAGEPOST3 Post Title 3?>
+	      </p>
+              <a href="#" class="btn btn-primary"><?hcv msg MAINPAGE_READMORE2 Read More 2 &rarr;?></a>
             </div>
             <div class="card-footer text-muted">
-              Posted on January 1, 2017 by
-              <a href="#">Start Bootstrap</a>
+	      <?hcv msg MAINPAGE_READMORE2 Read More 3 &rarr;?>
             </div>
           </div>
 
           <!-- Pagination -->
           <ul class="pagination justify-content-center mb-4">
             <li class="page-item">
-              <a class="page-link" href="#">&larr; Older</a>
+              <a class="page-link" href="#"><?hcv msg MAINPAGE_OLDER &larr; Older?></a>
             </li>
             <li class="page-item disabled">
-              <a class="page-link" href="#">Newer &rarr;</a>
+              <a class="page-link" href="#"><?hcv msg MAINPAGE_NEWER Newer &rarr;?></a>
             </li>
           </ul>
 
@@ -140,12 +127,12 @@
 
           <!-- Search Widget -->
           <div class="card my-4">
-            <h5 class="card-header">Search</h5>
+            <h5 class="card-header"><?hcv msg MAINPAGE_SEARCH Search &rarr;?></h5>
             <div class="card-body">
               <div class="input-group">
                 <input type="text" class="form-control" placeholder="Search for...">
                 <span class="input-group-btn">
-                  <button class="btn btn-secondary" type="button">Go!</button>
+                  <button class="btn btn-secondary" type="button"><?hcv msg MAINPAGE_SEARCHGO Go?></button>
                 </span>
               </div>
             </div>
@@ -153,16 +140,16 @@
 
           <!-- Categories Widget -->
           <div class="card my-4">
-            <h5 class="card-header">Quick Links</h5>
+            <h5 class="card-header"><?hcv msg MAINPAGE_QUICK Quick?></h5>
             <div class="card-body">
               <div class="row">
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
                     <li>
-                      <a href="#">Sign Up</a> (register)
+                      <?hcv msg MAINPAGE_SIGNUP <a href="#">Sign Up</a> (register)?>
                     </li>
                     <li>
-                      <a href="home.html">Home</a>
+                       <?hcv msg MAINPAGE_HOME <a href="home.html">Home</a>?>
 		      <small><?hcv basefilepos?></small>
                     </li>
                   </ul>
@@ -170,11 +157,11 @@
                 <div class="col-lg-6">
                   <ul class="list-unstyled mb-0">
                     <li>
-                      <a href="signin.html">Sign In</a> (login)
+                      <?hcv msg MAINPAGE_SIGNIN <a href="signin.html">Sign In</a> (login)?>
 		      <small><?hcv basefilepos?></small>
                     </li>
                     <li>
-                      <a href="privacy.html">Privacy</a>
+                      <?hcv msg MAINPAGE_PRIVACY <a href="privacy.html">Privacy</a>?>
 		      <small><?hcv basefilepos?></small>
                     </li>
                   </ul>
@@ -185,12 +172,10 @@
 
           <!-- Side Widget -->
           <div class="card my-4">
-            <h5 class="card-header">Side Widget</h5>
+            <h5 class="card-header"><?hcv msg MAINPAGE_SIDEW Side Widget?></h5>
             <div class="card-body">
-	      <small><?hcv basefilepos?></small> You can put anything
-		      you want inside of these side widgets. They are
-		      easy to use, and feature the new Bootstrap 4
-		      card containers!
+	      <small><?hcv basefilepos?></small>
+	      <?hcv msg MAINPAGE_SIDEBLURB Side Blurb?>
             </div>
           </div>
 
@@ -205,17 +190,16 @@
     <!-- Footer -->
     <!-- START Bootstrap-Cookie-Alert -->
     <div class="alert text-center cookiealert" role="alert">
-      <small><?hcv basefilepos?></small> We use cookies to ensure that we give you
-      the best experience on our website. If you continue to use this
-      site we will assume that you are happy with it.
-      <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>
+      <small><?hcv basefilepos?></small>
+      <?hcv msg MAINPAGE_COOKIEALERT We are using cookies...?>
+      <?hcv msg MAINPAGE_COOKIEMORE <a href="https://gdpr.eu/tag/gdpr" target="_blank">Learn more</a>?>
       <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
-        I agree
+       <?hcv msg MAINPAGE_COOKIEAGREE I agree for cookies.?>
       </button>
       <a class="btn btn-primary btn-sm acceptcookies" 
          href="privacy.html"
-         aria-label="Close">
-        Privacy Policy <small><?hcv basefilepos?></small>
+         aria-label="<?hcv msg MAINPAGE_CLOSEBUT Close?>">
+        <?hcv msg MAINPAGE_PRIVACYPOLICY Privacy Policy?> <small><?hcv basefilepos?></small>
       </a>
     </div>
     <!-- END Bootstrap-Cookie-Alert -->
