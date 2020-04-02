@@ -69,7 +69,7 @@ def parse_connection_string(connstr):
 
 def backup(keys):
     fname = time.strftime("helpcovid_db-%Y-%m-%d-%H-%M-%S", time.gmtime())
-    cmd = "sudo pg_dump -U {0} -h {1} -p {2} {3} | gzip > {4}.gz".format(
+    cmd = "sudo pg_dump -U {0} -h {1} -p {2} {3} | gzip > {4}.sql.gz".format(
         keys["user"], keys["host"], keys["port"], keys["dbname"], fname)
 
     print("Starting database backup...")
