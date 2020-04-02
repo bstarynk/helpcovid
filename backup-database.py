@@ -23,7 +23,7 @@ def find_config_file():
         print("Reading configuration file at " + path + "...")
         return path
 
-    print("Configuration file not found at " + path + "...")
+    print("NOTE: configuration file not found at " + path + "...")
    
     while True:
         path = input("Enter configuration file path: ")
@@ -31,7 +31,7 @@ def find_config_file():
             print("Reading configuration file at " + path + "...")
             return path
 
-        print("Configuration file not found at " + path + "...")
+        print("NOTE: configuration file not found at " + path + "...")
 
 
 
@@ -42,8 +42,12 @@ def get_connection_string(path):
             name, var = line.partition("=")[::2]
             keys[name.strip()] = str(var)
 
-    print("Found connection string: " + keys["connection"])
-    return keys["connection"]
+    if "connection" in keys:
+        print("Found connection string: " + keys["connection"])
+        return keys["connection"]
+
+    print("ERROR: connection string not found in " + path + "...")
+    return None
 
 
 
@@ -57,6 +61,8 @@ def main():
 
     path = find_config_file()
     connstr = get_connection_string(path)
+    if connstr is None:
+        return
 
 
 
