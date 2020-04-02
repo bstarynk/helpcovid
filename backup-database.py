@@ -51,6 +51,30 @@ def get_connection_string(path):
 
 
 
+def parse_connection_string(connstr):
+    keys = {}
+
+    split = connstr.split("=", 1)[1]
+    split = split.split()
+
+    keys["dbname"] = split[0]
+    keys["user"] = split[1].split("=")[1]
+    keys["host"] = split[3].split("=")[1]
+    keys["port"] = split[4].split("=")[1]
+
+    return keys
+
+
+def backup(keys):
+
+    cmd = "sudo pg_dump -U {0} -h {1} -p {2} {3} | gzip > backup.gz".format(
+        keys["user"], keys["host"], keys["port"], keys["dbname"])
+
+    print("Starting database backup...")
+    print(cmd)
+    os.system(cmd)
+
+
 def main():
     print("Starting HelpCovid database backup...")
     print("See https://github.com/bstarynk/helpcovid and its README.md\n")
@@ -64,6 +88,8 @@ def main():
     if connstr is None:
         return
 
+    keys = parse_connection_string(connstr)
+    backup(keys)
 
 
 if __name__ == '__main__':
