@@ -31,6 +31,11 @@ in Europe).
 
 See [PLUGINS.md](PLUGINS.md) for more.
 
+## relational database
+
+We use a [PostGreSQL](https://postgresql.org) relational database. See
+[DATABASE.md](DATABASE.md) for more.
+
 ## contributors
 
 * [Basile Starynkevitch](http://starynkevitch.net/Basile/), near [Paris](https://en.wikipedia.org/wiki/Paris), France; email `basile-freelance@starynkevitch.net` 
