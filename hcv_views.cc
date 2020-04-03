@@ -98,20 +98,18 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
 {
   if (req.method != "GET")
     HCV_FATALOUT("hcv_home_view_get() called with non GET request");
-
-  HCV_DEBUGOUT("hcv_home_view_get '" << req.path << "' req#" << reqcnt);
-
+  //
+  HCV_DEBUGOUT("hcv_home_view_get start '" << req.path << "' req#" << reqcnt);
+  //
   // return login .html for now
   Hcv_http_template_data webdata(req, resp, reqcnt);
   std::string thtml = hcv_get_web_root() + "html/login.html";
-  return hcv_expand_template_file(thtml, &webdata);
-
-#if 0 && old_code
-  // for now, redirect to the login view by default
-  hcv_login_view_get(req, resp);
-#warning implement conditional redirection based on session checks
-#endif /*0 && old_code*/
-
+  auto res =  hcv_expand_template_file(thtml, &webdata);
+  HCV_ASSERT(res.size() < HCV_HTML_RESPONSE_MAX_LEN);
+  hcv_web_forget_cookie(&webdata);
+  HCV_DEBUGOUT("hcv_home_view_get '" << req.path << "' req#" << reqcnt
+               << " response size=" << res.size());
+  return res;
 } // end of hcv_home_view_get
 
 

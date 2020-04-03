@@ -41,8 +41,6 @@ std::string hcv_webroot;
 std::atomic<long> hcv_web_request_counter;
 Json::StreamWriterBuilder hcv_json_builder;
 
-#define HCV_HTML_RESPONSE_MAX_LEN  (128*1024)
-#define HCV_JSON_RESPONSE_MAX_LEN  (256*1024)
 
 extern "C" std::string
 hcv_get_web_root(void)
@@ -260,6 +258,7 @@ hcv_web_make_cookie_string(long id, const char*randomstr, int webhash)
 {
   char buf[64];
   memset (buf, 0, sizeof(buf));
+  HCV_ASSERT(id>0);
   snprintf(buf, sizeof(buf), "HCV%06lx-%24s-A%08x",
 	   id, randomstr, webhash);
   return std::string(buf);
@@ -288,6 +287,8 @@ hcv_web_extract_cookie_string(const std::string&str, long *id, char randomstr[HC
 
 static constexpr unsigned hcv_web_cookie_duration = 5400; // in seconds, so one hour and a half
 /// register a fresh cookie in the database and return it.
+/// see also https://tools.ietf.org/html/rfc6265
+#warning we may want to implement secure or httponly web cookies, see RFC6265
 std::string
 hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
 {

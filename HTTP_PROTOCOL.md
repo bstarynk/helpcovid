@@ -14,6 +14,22 @@ The user browser should support HTML5, AJAX, and
 [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s. The websocket
 URL start with `/websocket/` and should be secure.
 
+
+## HTTP cookies
+
+HelpCovid manage one single [web
+cookie](https://en.wikipedia.org/wiki/HTTP_cookie) named
+`HelpCovid_COOKIE` (in C++, the `HCV_COOKIE_NAME` macro), containing
+some randomly generated data. See C++ functions
+`hcv_web_register_fresh_cookie` and `hcv_web_forget_cookie` and SQL
+table `tb_web_cookie`, PostGreSQL prepared statement
+`add_web_cookie_pstm` used by function
+`hcv_database_get_id_of_added_web_cookie`. A typical cookie value
+could be `HCV0002a4-hD1c22YSXqrf2i8bhnPGR6Rr-Aee0a9546` where
+`hD1c22YSXqrf2i8bhnPGR6Rr` is a random string kept in the database.
+That session cookie should expire in less than 12 hours (both in the
+browser and in the database).
+
 ## HTTP requests and responses
 
 The HelpCovid server interacts with the web browser through HTTP (or

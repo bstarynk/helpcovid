@@ -321,6 +321,9 @@ extern "C" std::string hcv_get_web_root(void);
 
 
 
+#define HCV_HTML_RESPONSE_MAX_LEN  (128*1024)
+#define HCV_JSON_RESPONSE_MAX_LEN  (256*1024)
+
 #define HCV_COOKIE_NAME "HelpCovid_COOKIE"
 
 /// return a string, perhaps 0123-9wI1QOXiH0M03Pf1ef14ab69-1abc4, for a fresh web cookie for HCV_COOKIE_NAME
