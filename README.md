@@ -1,7 +1,10 @@
 # helpcovid
 
 A quick and dirty C++17 application (GPLv3+) to help neighbours making
-essential buying (food, medicine) during the [2019–20 coronavirus pandemic](https://en.wikipedia.org/wiki/2019–20_coronavirus_pandemic).
+essential buying (food, medicine) during the [2019–20 coronavirus
+pandemic](https://en.wikipedia.org/wiki/2019–20_coronavirus_pandemic)
+for older neighbours (avoiding elder persons having to go out).
+
 **For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
 
 Of course that application stores personal data in some
@@ -16,6 +19,37 @@ In France, see also [enpremiereligne.fr](https://enpremiereligne.fr/)
 and [covid19-que-lire.fr](https://www.covid19-que-lire.fr); look also
 into
 [covid19-floss-initiatives](https://github.com/bzg/covid19-floss-initatives)
+
+
+## why C++17 with HTML5
+
+Because the main developers know it, and because it should be more
+efficient than a PHP or Python application (which one of the
+developers [Basile
+Starynkevitch](http://starynkevitch.net/Basile/index_en.html) does not
+know well). Hopefully, a C++17 code could be more
+efficient. Scalability is achieved also by using a PostGreSQL database
+which could run on a different server.
+
+## expected end-user audience
+
+The end-user is expected to have a computer (or a mobile phone) with a
+*recent* Web browser (e.g. Firefox 68) knowing HTML5 and JavaScript
+connected to the Internet. The end-user is supposed to be honest and a
+good enough person, and will volunteerly but in good faith add
+honestly some personal information about him/her-self (real name,
+email, phone number, perhaps even if he/she is in good health). We do
+try to code in a defensive way, against some malicious hackers.
+
+We hope to add something to help health professionals and food shops
+(e.g. registering their actual open hours and availability).
+
+We want to use [OpenStreetMap](https://www.openstreetmap.org/), but
+are not familiar with it.
+
+
+We want to code a web application which could be deployed in several
+countries (hopefully one Linux VPS server per city).
 
 ## license
 
