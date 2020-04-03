@@ -94,6 +94,21 @@ provided by `$HELPCOVID_SSLKEY`. See also the `--websslcert` and
 `--websslkey` program options. These files should not be
 world-readable.
 
+Customization of HTML contents visible to the end-user happens with
+[processing
+instructions](https://en.wikipedia.org/wiki/Processing_Instruction)
+starting with `<?hcv` (that triggers dynamic HTML generation) and
+ending with `?>` on the same line. In particular,
+[internationalization and
+localization](https://en.wikipedia.org/wiki/Internationalization_and_localization)
+of messages in our HTML files (under `webroot/html/`) is done by
+processing instructions on a *single* line such as, for example something as
+`<?hcv msg MAINPAGE_HEADING Page Heading?>` handled by C++ code in
+`hcv_template.cc` function `hcv_initialize_templates` which should use
+[locale(7)](http://man7.org/linux/man-pages/man7/locale.7.html)
+facilities such as
+[gettext(3)](http://man7.org/linux/man-pages/man3/gettext.3.html).
+
 ### template conventions
 
 In some HTML-like files, template expansion occurs. These are
@@ -102,6 +117,9 @@ instructions](https://en.wikipedia.org/wiki/Processing_Instruction)
 starting with `<?hcv ` in lower-case. See our source file
 `hcv_template.cc`. For example `<?hcv now?>` should be expanded into the
 current date and time.
+
+HTML files subject to template expansion should have an HTML comment
+containing `!HelpCoVidDynamic!` in the first 8 lines.
 
 ### web conventions
 
