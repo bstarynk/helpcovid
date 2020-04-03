@@ -71,7 +71,8 @@ in Europe).
 
 ## plugins
 
-See [PLUGINS.md](PLUGINS.md) for more.
+See [PLUGINS.md](PLUGINS.md) for more. Several plugins are possible,
+and might provide country or city specific features.
 
 ## relational database
 

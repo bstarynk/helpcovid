@@ -40,7 +40,8 @@ struct Hcv_plugin
   const char* hcvpl_arg;	// argument passed to plugin
   std::string hcvpl_gitid;
   std::string hcvpl_license;
-  hcvplugin_initializer_sig_t* hcvpl_initweb;
+  hcvplugin_web_initializer_sig_t* hcvpl_initweb;
+  hcvplugin_database_initializer_sig_t* hcvpl_initdatabase;
 };
 
 std::vector<Hcv_plugin> hcv_plugin_vect;
@@ -142,8 +143,8 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
   if (!plgversion)
     HCV_FATALOUT("hcv_load_plugin " << plugin_name << " plugin " << sobuf
                  << " has no symbol hcvplugin_version: " << dlerror());
-  void* plginit = dlsym(dlh, "hcvplugin_initialize_web");
-  if (!plginit)
+  void* plgwebinit = dlsym(dlh, "hcvplugin_initialize_web");
+  if (!plgwebinit)
     HCV_FATALOUT("hcv_load_plugin " << plugin_name << " plugin " << sobuf
                  << " has no symbol hcvplugin_initialize_web: " << dlerror());
   HCV_SYSLOGOUT(LOG_NOTICE, "hcv_load_plugin " << plugin_name
@@ -154,6 +155,13 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
                   << " dlopened " << sobuf
                   << " with gitapi mismatch - expected " << hcv_gitid
                   << " but got " << plgapi);
+  void* plgdatabaseinit = dlsym(dlh, "hcvplugin_initialize_database");
+  if (plgdatabaseinit)
+    HCV_SYSLOGOUT(LOG_NOTICE, "hcv_load_plugin " << plugin_name
+                  << " has database initializer");
+  else
+    HCV_SYSLOGOUT(LOG_NOTICE, "hcv_load_plugin " << plugin_name
+                  << " without database initializer: " << dlerror());
   hcv_plugin_vect.emplace_back
   (Hcv_plugin
   {
@@ -162,7 +170,8 @@ void hcv_load_plugin(const char*plugin_name, const char*plugin_arg)
     .hcvpl_arg= plugin_arg,
     .hcvpl_gitid= std::string(plgapi),
     .hcvpl_license = std::string(plglicense),
-    .hcvpl_initweb = reinterpret_cast<hcvplugin_initializer_sig_t*>(plginit)
+    .hcvpl_initweb = reinterpret_cast<hcvplugin_web_initializer_sig_t*>(plgwebinit),
+    .hcvpl_initdatabase =  reinterpret_cast<hcvplugin_database_initializer_sig_t*>(plgdatabaseinit)
   });
   ////
   HCV_DEBUGOUT("hcv_load_plugin done " << pluginstr << " rank#"
@@ -194,6 +203,36 @@ hcv_initialize_plugins_for_web(httplib::Server*webserv)
   HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_plugins_for_web done with " << nbplugins
                 << " plugins");
 } // end hcv_initialize_plugins_for_web
+
+
+
+void
+hcv_initialize_plugins_for_database(pqxx::connection*dbconn)
+{
+  HCV_ASSERT(dbconn != nullptr);
+  std::lock_guard<std::recursive_mutex> guplug(hcv_plugin_mtx);
+  auto nbplugins = hcv_plugin_vect.size();
+  HCV_DEBUGOUT("hcv_initialize_plugins_for_database starting with " << nbplugins
+               << " plugins");
+  if (nbplugins == 0)
+    return;
+  int cnt = 0;
+  for (auto& pl : hcv_plugin_vect)
+    {
+      if (!pl.hcvpl_initdatabase)
+        continue;
+      HCV_DEBUGOUT("hcv_initialize_plugins_for_database initializing " << pl.hcvpl_name
+                   << (pl.hcvpl_arg?" with argument ":" without argument")
+                   << (pl.hcvpl_arg?:"."));
+      (*pl.hcvpl_initdatabase)(dbconn,pl.hcvpl_arg);
+      cnt++;
+      HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_plugins_for_database initialized plugin "
+                    << pl.hcvpl_name << (pl.hcvpl_arg?" with argument ":" without argument")
+                    << (pl.hcvpl_arg?:"."));
+    };
+  HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_plugins_for_database done with " << nbplugins
+                << " plugins " << " with " << cnt << " database initializations");
+} // end hcv_initialize_plugins_for_database
 
 
 /****************** end of file hcv_plugins.cc of github.com/bstarynk/helpcovid **/

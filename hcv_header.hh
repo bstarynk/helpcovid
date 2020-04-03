@@ -768,7 +768,11 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
 #define HCV_PLUGIN_SUFFIX ".so"
 extern "C" void hcv_load_plugin(const char*plugin_name, const char*plugin_arg);
 
+/// called once from hcv_web.cc
 extern "C" void hcv_initialize_plugins_for_web(httplib::Server*);
+
+/// called once from hcv_database.cc
+extern "C" void hcv_initialize_plugins_for_database(pqxx::connection*);
 
 extern "C" std::vector<std::string> hcv_get_loaded_plugins_vector(void);
 
@@ -780,5 +784,9 @@ extern "C" const char hcvplugin_gitapi[]; // our git id
 /// every plugin should have
 extern "C" void hcvplugin_initialize_web(httplib::Server*,const char*);
 /// ... whose signature is
-typedef void hcvplugin_initializer_sig_t(httplib::Server*,const char*);
+typedef void hcvplugin_web_initializer_sig_t(httplib::Server*,const char*);
+/// and every plugin may have its
+extern "C" void hcvplugin_initialize_database(pqxx::connection*,const char*);
+/// ... whose signature is
+typedef void hcvplugin_database_initializer_sig_t(pqxx::connection*,const char*);
 #endif /*HELPCOVID_HEADER*/
