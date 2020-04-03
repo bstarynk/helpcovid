@@ -195,12 +195,16 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
                 << req.path << " req#" << reqnum);
   Json::StreamWriterBuilder jstr;
   Json::Value jsob(Json::objectValue);
-  jsob["unimplemented_cxx_function"] = Json::Value((const char*)"hcv_expand_template_file");
+  jsob["unimplemented_cxx_function"]
+    = Json::Value(Json::StaticString("hcv_expand_template_file"));
   jsob["unimplemented_request_number"] = (Json::Value::Int64)reqnum;
-  jsob["unimplemented_request_path"] = Json::Value((const char*)(req.path.c_str()));
-  jsob["unimplemented_cxx_file"] == Json::Value((const char*)__FILE__);
-  jsob["unimplemented_cxx_line"] == (Json::Value::Int)__LINE__;
-  jsob["gitid"] = Json::Value((const char*)hcv_gitid);
+  jsob["unimplemented_request_path"]
+    = Json::Value((const char*)(req.path.c_str()));
+  jsob["unimplemented_cxx_file"]
+    = Json::Value(Json::StaticString(__FILE__));
+  jsob["unimplemented_cxx_line"] = (Json::Value::Int)__LINE__;
+  jsob["gitid"]
+    = Json::Value(Json::StaticString(hcv_gitid));
   jsonres = Json::writeString(hcv_get_json_builder(), jsob);
   HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path << " unimplemented; jsonres=" << std::endl
                << jsonres);
