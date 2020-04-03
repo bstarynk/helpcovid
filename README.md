@@ -436,4 +436,4 @@ You can also do `make localtest0`; see the `Makefile`
 
 In March 2020 `./helpcovid` is often crashing.
 
-[hcv_main.cc]:https://https://github.com/bstarynk/helpcovid/blob/master/hcv_main.cc
+[hcv_main.cc]:/https://github.com/bstarynk/helpcovid/blob/master/hcv_main.cc
