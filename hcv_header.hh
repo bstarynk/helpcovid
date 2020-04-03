@@ -296,6 +296,11 @@ class Hcv_http_template_data; /// forward declaration
 // the first bytes of every HTML5 file
 #define HCV_HTML5_START "<!DOCTYPE html"
 
+/// see https://tools.ietf.org/html/rfc2616#section-3.3.1
+/// useful to obsolete a web cookie
+/// https://en.wikipedia.org/wiki/HTTP_cookie#Expires_and_Max-Age
+#define HCV_HTTP_DATE_RFC822_LONG_TIME_AGO "Thu, 01 Jan 1970 01:02:03 GMT"
+
 // if the first 8 lines of some HTML file contain the following
 // string, it should be expanded for <?hcv ...?> processing
 // instructions
