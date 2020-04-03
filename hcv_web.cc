@@ -361,6 +361,39 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
   return res;
 } // end hcv_web_register_fresh_cookie
 
+
+void
+hcv_web_forget_cookie(Hcv_http_template_data*htpl)
+{
+  
+  if (!htpl) {
+    HCV_SYSLOGOUT(LOG_WARNING, "hcv_web_forget_cookie: missing htpl");
+    return;
+  }
+  auto hreq = htpl->request();
+  if (!hreq) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_web_forget_cookie: missing web request, reqnum#"
+		  << htpl->serial());
+    return;
+  };
+  auto hresp = htpl->response();
+  if (!hresp) {
+    HCV_SYSLOGOUT(LOG_WARNING,
+		  "hcv_web_forget_cookie: missing web response, reqnum#"
+		  << htpl->serial());
+    return;
+  };
+  
+  constexpr const char* forgetcookie
+    = HCV_COOKIE_NAME "=; Expires=" HCV_HTTP_DATE_RFC822_LONG_TIME_AGO;
+  HCV_DEBUGOUT("hcv_web_forget_cookie reqnum#" << htpl->serial()
+	       << " method " << hreq->method
+	       << " path=" << hreq->path << std::endl
+	       << forgetcookie);
+  hresp->set_header("Set-Cookie", forgetcookie);
+} // end of hcv_web_forget_cookie
+  
 ////////////////////////////////////////////////////////////////
 
 void

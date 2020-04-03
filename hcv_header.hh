@@ -321,9 +321,12 @@ extern "C" std::string hcv_get_web_root(void);
 
 
 
-/// return a string, perhaps 0123-9wI1QOXiH0M03Pf1ef14ab69-1abc4, for a fresh web cookie.
-extern "C" std::string hcv_web_register_fresh_cookie(Hcv_http_template_data*);
+#define HCV_COOKIE_NAME "HelpCovid_COOKIE"
 
+/// return a string, perhaps 0123-9wI1QOXiH0M03Pf1ef14ab69-1abc4, for a fresh web cookie for HCV_COOKIE_NAME
+extern "C" std::string hcv_web_register_fresh_cookie(Hcv_http_template_data*);
+/// forget our HCV_COOKIE_NAME cookie
+extern "C" void hcv_web_forget_cookie(Hcv_http_template_data*htpl);
 
 ////////////////////////////////////////////////////////////////
 
@@ -456,7 +459,6 @@ public:
   virtual ~Hcv_http_template_data();
 };				// end of Hcv_http_template_data
 
-#define HCV_COOKIE_NAME "HelpCovid_COOKIE"
 
 class Hcv_https_template_data : public Hcv_http_template_data
 {
