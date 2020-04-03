@@ -81,7 +81,12 @@ We use a [PostGreSQL](https://postgresql.org) relational database. See
 
 ## contributors
 
-* [Basile Starynkevitch](http://starynkevitch.net/Basile/), near [Paris](https://en.wikipedia.org/wiki/Paris), France; email `basile-freelance@starynkevitch.net` 
+* [Basile Starynkevitch](http://starynkevitch.net/Basile/), near
+  [Paris](https://en.wikipedia.org/wiki/Paris), France; email
+  `basile-freelance@starynkevitch.net` - see [my web
+  page](http://starynkevitch.net/Basile/) and [my
+  resume](http://starynkevitch.net/Basile/cv-Basile-Starynkevitch.pdf)
+  for contact details.
 
 * [Abhishek Chakravarti](http://taranjali.org/aboutme), near [Kolkota](https://en.wikipedia.org/wiki/Kolkata), India; email `abhishek@taranjali.org` 
 
