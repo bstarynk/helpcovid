@@ -79,7 +79,7 @@ file](https://developer.gnome.org/glib/stable/glib-Key-value-file-parser.html)..
 is `/etc/helpcovid.conf` (or given with `--config=` program argument
 or `$HELPCOVID_CONFIG` environment variable) parsed by
 [GlibMM](https://developer.gnome.org/glibmm/stable/) with `.ini` like
-syntax in our file `hcv_main.cc` at startup.
+syntax in our file `[hcv_main.cc][]` at startup.
 
 The web root is `webroot/` or the `$HELPCOVID_WEBROOT` environment variable. e. g. `export HELPCOVID_WEBROOT=/home/helpcovid/webroot`
 
@@ -206,13 +206,13 @@ It provides "global" settings
 
 * `seteuid`, to use dangerous
   [seteuid](https://en.wikipedia.org/wiki/Setuid) facilities. **Never
-  use them without first reviewing our `hcv_main.cc` source file,
+  use them without first reviewing our `[hcv_main.cc][]` source file,
   because there could be a huge cybersecurity risk**.
 
 * `startup_popen_command`, a dangerous string passed to
   [`popen(3)`](http://man7.org/linux/man-pages/man3/popen.3.html)
   which is run once at startup. Use with great caution, and review our
-  code in `hcv_main.cc` before using it.  The output of that pipe goes
+  code in `[hcv_main.cc][]` before using it.  The output of that pipe goes
   to the system log. It is run after `seteuid` facilities.
 
 * `pid_file`, a file path where the process id of the running `helpcovid`
@@ -418,3 +418,4 @@ You can also do `make localtest0`; see the `Makefile`
 
 In March 2020 `./helpcovid` is often crashing.
 
+[hcv_main.cc]:https://https://github.com/bstarynk/helpcovid/blob/master/hcv_main.cc
