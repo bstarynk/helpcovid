@@ -33,13 +33,21 @@ which could run on a different server.
 
 ## expected end-user audience
 
-The end-user is expected to have a computer (or a mobile phone) with a
-*recent* Web browser (e.g. Firefox 68) knowing HTML5 and JavaScript
+**The end-user is expected to have a computer or a mobile phone with a
+recent Web browser** (e.g. Firefox 68) understanding HTML5 and
+JavaScript
+(i.e. [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) and
+[EcmaScript6](https://ecma-international.org/ecma-262/6.0/) ...) and
+with [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s and
 connected to the Internet. The end-user is supposed to be honest and a
 good enough person, and will volunteerly but in good faith add
 honestly some personal information about him/her-self (real name,
 email, phone number, perhaps even if he/she is in good health). We do
-try to code in a defensive way, against some malicious hackers.
+try to code in a defensive way, against some malicious hackers.  We
+have no time for [W3C accessibility
+issues](https://www.w3.org/standards/webdesign/accessibility)
+(e.g. usage of `helpcovid` by blind persons) but accept patches to
+improve accessibility.
 
 We hope to add something to help health professionals and food shops
 (e.g. registering their actual open hours and availability).
