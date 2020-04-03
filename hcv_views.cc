@@ -170,7 +170,7 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
 {
   std::string jsonres;
   if (req.method != "POST")
-    HCV_FATALOUT("hcv_register_view_post() called with not POST request");
+    HCV_FATALOUT("hcv_register_view_post() not called with POST request");
   Hcv_http_template_data data(req, resp, reqnum);
   auto regtokenstr = req.get_param_value("registerToken");
   auto firstnamestr = req.get_param_value("inputFirstName");
@@ -185,6 +185,7 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
                << " .. regtoken=" << regtokenstr << std::endl
                << " .. firstname=" << firstnamestr << std::endl
                << " .. lastname=" << lastnamestr << std::endl
+               << " .. gender=" << genderstr << std::endl
                << " .. phonestr=" << phonestr << std::endl
                << " .. emailstr=" << emailstr << std::endl
                << " .. cookiestr=" << cookiestr << std::endl

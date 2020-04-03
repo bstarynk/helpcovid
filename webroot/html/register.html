@@ -74,7 +74,10 @@
           <div class="card mb-4">
             <div class="card-body">
               <form class="form-signin" method="POST" action="/register">
-		<input type="hidden" id="registerToken" value="<?hcv register_form_token?>"/>
+		            <input type="hidden" 
+                       id="registerToken"
+                       name="registerToken"
+                       value="<?hcv register_form_token?>"/>
                 <div class="text-center mb-4">
                   <img class="mb-4" 
                        src="../images/helpcovid-logo.svg" 
@@ -89,9 +92,10 @@
                 <div class="form-label-group">
                   <input type="text" 
                          id="inputFirstName"
-			 maxlength="40"
+			                   maxlength="40"
                          class="form-control"
                          placeholder="First Name" 
+                         name="inputFirstName"
                          required>
                   <label for="inputFirstName">First Name</label>
                 </div>
@@ -99,9 +103,10 @@
                 <div class="form-label-group">
                   <input type="text" 
                          id="inputLastName"
-			 maxlength="80"
+			                   maxlength="80"
                          class="form-control"
                          placeholder="Last or Family Name" 
+                         name="inputLastName"
                          required>
                   <label for="inputLastName">Last [Family] Name</label>
                 </div>
@@ -117,9 +122,10 @@
                 <div class="form-label-group">
                   <input type="tel" 
                          id="inputPhone"
-			 maxlength="32"
+			                   maxlength="32"
                          class="form-control"
-                         placeholder="Phone number" 
+                         placeholder="Phone number"
+                         name="inputPhone"
                          required>
                   <label for="inputPhone">Phone number</label>
                 </div>
@@ -127,10 +133,11 @@
                 <div class="form-label-group">
                   <input type="email"
                          id="inputEmail" 
-			 maxlength="80"
+			                   maxlength="80"
                          class="form-control" 
                          placeholder="Email address" 
                          required 
+                         name="inputEmail"
                          autofocus>
                   <label for="inputEmail">Email address</label>
                 </div>
@@ -139,8 +146,9 @@
                 <div class="checkbox mb-3">
                   <label>
                     <input type="checkbox"
-			   id="registerAgree"
-			   value="agree-terms"> 
+			                     id="registerAgree"
+                           name="registerAgree"
+			                     value="agree-terms"> 
                     I agree to share my personally identifiable data
 		     <?hcv basefilepos small clfilpos?>
                   </label>
