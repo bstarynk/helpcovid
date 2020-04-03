@@ -17,7 +17,16 @@ Our `backup-database.py` [Python](https://python.org/) script is dumping the dat
 
 ## related program arguments and configuration
 
-The `--clear-database` program argument is clearing the database entirely.
+The `--clear-database` program argument is clearing the database
+entirely. The `--postgresql-database=` or `-P` program argument sets
+the PostgreSQL database URI, which uses by default the
+`$HELPCOVID_POSTGRESQL` environment variable (see
+[environ(7)](http://man7.org/linux/man-pages/man7/environ.7.html),
+[getenv(3)](http://man7.org/linux/man-pages/man3/getenv.3.html)
+
+In the configuration file provided by `--config=` or `-C` program
+argument, or the `$HELPCOVID_CONFIG` environment variable, or by
+default `/etc/helpcovid.conf` file,
 
 
 ## C++ code
@@ -40,7 +49,25 @@ mutex.
 
 The SQL tables and indexes are created in routine
 `hcv_initialize_database`. Conventionally, table names start with
-`tb_`, index names start with `ix_`, prepared statements names end with `_pstm`.
+`tb_`, index names start with `ix_` (followed by something specific to
+their table), prepared statements names end with `_pstm`.
 
 In every SQL table, columns names share a common prefix. For example
 columns of `tb_user` start with `user_`.
+
+
+## SQL tables, indexes and prepared statements.
+
+The `tb_user` table contains information about human users of
+HelpCovid, with indexes `ix_user_familyname`, `ix_user_email`,
+`ix_user_crtime`. See prepared statements `user_create_pstm`, etc...
+
+The `tb_password` table should store passwords, encrypted using
+[crypt(3)](http://man7.org/linux/man-pages/man3/crypt.3.html). See
+prepared statements `user_get_password_by_email_pstm`, etc...
+
+The `tb_web_cookie` table store web cookies, each having a randomly
+generated key. Associated indexes are `ix_cookie_random` and
+`ix_cookie_exptime`. See prepared statements `add_web_cookie_pstm`,
+etc...
+
