@@ -69,6 +69,18 @@ but both
 
 ## conventions
 
+The `./helpcovid` executable accepts both `--help` and `--version`
+program arguments. It uses environment variables (see
+[environ(7)](http://man7.org/linux/man-pages/man7/environ.7.html),
+[getenv(3)](http://man7.org/linux/man-pages/man3/getenv.3.html) ...)
+prefixed with `HELPCOVID_`. The default configuration file (it is some
+[Glib key
+file](https://developer.gnome.org/glib/stable/glib-Key-value-file-parser.html)...)
+is `/etc/helpcovid.conf` (or given with `--config=` program argument
+or `$HELPCOVID_CONFIG` environment variable) parsed by
+[GlibMM](https://developer.gnome.org/glibmm/stable/) with `.ini` like
+syntax in our file `hcv_main.cc` at startup.
+
 The web root is `webroot/` or the `$HELPCOVID_WEBROOT` environment variable. e. g. `export HELPCOVID_WEBROOT=/home/helpcovid/webroot`
 
 The served URL is the `$HELPCOVID_URL` environment variable e.g. `export HELPCOVID_URL=https://b-star-y.tech/helpcovid`
