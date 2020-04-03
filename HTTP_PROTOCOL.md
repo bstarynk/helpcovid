@@ -18,3 +18,5 @@ prefixed with `/api/`.
 | /api/profile    | DELETE | JSON  | Delete user's profile             |
 | /help           | GET    | HTML  | Display neighbours requiring help |
 | /api/help       | POST   | JSON  | Respond to neighbour needing help |
+| /helper         | GET    | HTML  | Display neighbours will to help   |
+| /api/helper     | POST   | JSON  | Accept help from a neighbour      |
