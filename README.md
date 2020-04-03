@@ -378,7 +378,19 @@ Puis cet utilisateur ajouterait -de sa propre volonté- des informations supplé
 
 Et nous espérons pouvoir fournir une liste de proches voisins (à moins de 2 km) désireux d'aider.
 
-	
+
+## List of HTTP Requests
+
+
+| URL             | Method | MIME  |
+| :-------------: |:------:|:-----:|
+| /login          | GET    | HTML  |
+| /api/login      | POST   | JSON  |
+| /index          | GET    | HTML  |	
+| /profile        | GET    | HTML  |	
+| /api/profile    | PUT    | JSON  |	
+| /api/profile    | DELETE | JSON  |	
+
 	
 ## important notice
 
