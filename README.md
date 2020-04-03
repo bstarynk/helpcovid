@@ -393,15 +393,19 @@ Et nous espérons pouvoir fournir une liste de proches voisins (à moins de 2 km
 
 ## List of HTTP Requests
 
+The HelpCovid server interacts with the web browser through HTTP requests made
+by two categories of URLs. The standard URLs are GET requests returning HTML
+pages, and the API URLS are used to make AJAX requests. The API URLs are
+prefixed with `/api/`.
 
-| URL             | Method | MIME  |
-| :-------------: |:------:|:-----:|
-| /login          | GET    | HTML  |
-| /api/login      | POST   | JSON  |
-| /index          | GET    | HTML  |	
-| /profile        | GET    | HTML  |	
-| /api/profile    | PUT    | JSON  |	
-| /api/profile    | DELETE | JSON  |	
+| URL             | Method | MIME  | Purpose |
+| :-------------: |:------:|:-----:|-----------------------------|
+| /login          | GET    | HTML  | Display login page          |
+| /api/login      | POST   | JSON  | Perform login request       |
+| /index          | GET    | HTML  | Display index page          |
+| /profile        | GET    | HTML  | Display user's profile page |
+| /api/profile    | PUT    | JSON  | Update user's profile       |
+| /api/profile    | DELETE | JSON  | Delete user's profile       |
 
 	
 ## important notice
