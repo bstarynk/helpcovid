@@ -381,6 +381,10 @@ Et nous espérons pouvoir fournir une liste de proches voisins (à moins de 2 km
 
 ## List of HTTP Requests
 
+The HelpCovid server interacts with the web browser through HTTP requests made
+by two categories of URLs. The standard URLs are GET requests returning HTML
+pages, and the API URLS are used to make AJAX requests. The API URLs are
+prefixed with `/api/`.
 
 | URL             | Method | MIME  | Purpose |
 | :-------------: |:------:|:-----:|-----------------------------|
