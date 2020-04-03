@@ -1,9 +1,9 @@
 //
 //  httplib.h
+//
 //  from https://github.com/yhirose/cpp-httplib
 //
 //  Copyright (c) 2020 Yuji Hirose. All rights reserved.
-//
 //  MIT License
 //
 
@@ -158,6 +158,7 @@ using socket_t = int;
 #include <openssl/x509v3.h>
 
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 // #if OPENSSL_VERSION_NUMBER < 0x1010100fL
@@ -513,7 +514,7 @@ private:
   int bind_internal(const char *host, int port, int socket_flags);
   bool listen_internal();
 
-  bool routing(Request &req, Response &res, Stream &strm, bool last_connection);
+  bool routing(Request &req, Response &res, Stream &strm);
   bool handle_file_request(Request &req, Response &res, bool head = false);
   bool dispatch_request(Request &req, Response &res, Handlers &handlers);
   bool dispatch_request_for_content_reader(Request &req, Response &res,
@@ -526,14 +527,14 @@ private:
   bool write_content_with_provider(Stream &strm, const Request &req,
                                    Response &res, const std::string &boundary,
                                    const std::string &content_type);
-  bool read_content(Stream &strm, bool last_connection, Request &req,
-                    Response &res);
-  bool read_content_with_content_receiver(
-      Stream &strm, bool last_connection, Request &req, Response &res,
-      ContentReceiver receiver, MultipartContentHeader multipart_header,
-      ContentReceiver multipart_receiver);
-  bool read_content_core(Stream &strm, bool last_connection, Request &req,
-                         Response &res, ContentReceiver receiver,
+  bool read_content(Stream &strm, Request &req, Response &res);
+  bool
+  read_content_with_content_receiver(Stream &strm, Request &req, Response &res,
+                                     ContentReceiver receiver,
+                                     MultipartContentHeader multipart_header,
+                                     ContentReceiver multipart_receiver);
+  bool read_content_core(Stream &strm, Request &req, Response &res,
+                         ContentReceiver receiver,
                          MultipartContentHeader mulitpart_header,
                          ContentReceiver multipart_receiver);
 
@@ -861,8 +862,8 @@ private:
 class SSLClient : public Client {
 public:
   explicit SSLClient(const std::string &host, int port = 443,
-            const std::string &client_cert_path = std::string(),
-            const std::string &client_key_path = std::string());
+                     const std::string &client_cert_path = std::string(),
+                     const std::string &client_key_path = std::string());
 
   ~SSLClient() override;
 
@@ -2781,8 +2782,7 @@ inline void Response::set_content(const char *s, size_t n,
   set_header("Content-Type", content_type);
 }
 
-inline void Response::set_content(std::string s,
-                                  const char *content_type) {
+inline void Response::set_content(std::string s, const char *content_type) {
   body = std::move(s);
   set_header("Content-Type", content_type);
 }
@@ -3246,47 +3246,45 @@ Server::write_content_with_provider(Stream &strm, const Request &req,
   return true;
 }
 
-inline bool Server::read_content(Stream &strm, bool last_connection,
-                                 Request &req, Response &res) {
+inline bool Server::read_content(Stream &strm, Request &req, Response &res) {
   MultipartFormDataMap::iterator cur;
-  auto ret = read_content_core(
-      strm, last_connection, req, res,
-      // Regular
-      [&](const char *buf, size_t n) {
-        if (req.body.size() + n > req.body.max_size()) { return false; }
-        req.body.append(buf, n);
-        return true;
-      },
-      // Multipart
-      [&](const MultipartFormData &file) {
-        cur = req.files.emplace(file.name, file);
-        return true;
-      },
-      [&](const char *buf, size_t n) {
-        auto &content = cur->second.content;
-        if (content.size() + n > content.max_size()) { return false; }
-        content.append(buf, n);
-        return true;
-      });
-
-  const auto &content_type = req.get_header_value("Content-Type");
-  if (!content_type.find("application/x-www-form-urlencoded")) {
-    detail::parse_query_text(req.body, req.params);
+  if (read_content_core(
+          strm, req, res,
+          // Regular
+          [&](const char *buf, size_t n) {
+            if (req.body.size() + n > req.body.max_size()) { return false; }
+            req.body.append(buf, n);
+            return true;
+          },
+          // Multipart
+          [&](const MultipartFormData &file) {
+            cur = req.files.emplace(file.name, file);
+            return true;
+          },
+          [&](const char *buf, size_t n) {
+            auto &content = cur->second.content;
+            if (content.size() + n > content.max_size()) { return false; }
+            content.append(buf, n);
+            return true;
+          })) {
+    const auto &content_type = req.get_header_value("Content-Type");
+    if (!content_type.find("application/x-www-form-urlencoded")) {
+      detail::parse_query_text(req.body, req.params);
+    }
+    return true;
   }
-
-  return ret;
+  return false;
 }
 
 inline bool Server::read_content_with_content_receiver(
-    Stream &strm, bool last_connection, Request &req, Response &res,
-    ContentReceiver receiver, MultipartContentHeader multipart_header,
+    Stream &strm, Request &req, Response &res, ContentReceiver receiver,
+    MultipartContentHeader multipart_header,
     ContentReceiver multipart_receiver) {
-  return read_content_core(strm, last_connection, req, res, receiver,
-                           multipart_header, multipart_receiver);
+  return read_content_core(strm, req, res, receiver, multipart_header,
+                           multipart_receiver);
 }
 
-inline bool Server::read_content_core(Stream &strm, bool last_connection,
-                                      Request &req, Response &res,
+inline bool Server::read_content_core(Stream &strm, Request &req, Response &res,
                                       ContentReceiver receiver,
                                       MultipartContentHeader mulitpart_header,
                                       ContentReceiver multipart_receiver) {
@@ -3298,7 +3296,7 @@ inline bool Server::read_content_core(Stream &strm, bool last_connection,
     std::string boundary;
     if (!detail::parse_multipart_boundary(content_type, boundary)) {
       res.status = 400;
-      return write_response(strm, last_connection, req, res);
+      return false;
     }
 
     multipart_form_data_parser.set_boundary(std::move(boundary));
@@ -3312,13 +3310,13 @@ inline bool Server::read_content_core(Stream &strm, bool last_connection,
 
   if (!detail::read_content(strm, req, payload_max_length_, res.status,
                             Progress(), out)) {
-    return write_response(strm, last_connection, req, res);
+    return false;
   }
 
   if (req.is_multipart_form_data()) {
     if (!multipart_form_data_parser.is_valid()) {
       res.status = 400;
-      return write_response(strm, last_connection, req, res);
+      return false;
     }
   }
 
@@ -3448,8 +3446,7 @@ inline bool Server::listen_internal() {
   return ret;
 }
 
-inline bool Server::routing(Request &req, Response &res, Stream &strm,
-                            bool last_connection) {
+inline bool Server::routing(Request &req, Response &res, Stream &strm) {
   // File handler
   bool is_head_request = req.method == "HEAD";
   if ((req.method == "GET" || is_head_request) &&
@@ -3462,12 +3459,12 @@ inline bool Server::routing(Request &req, Response &res, Stream &strm,
     {
       ContentReader reader(
           [&](ContentReceiver receiver) {
-            return read_content_with_content_receiver(
-                strm, last_connection, req, res, receiver, nullptr, nullptr);
+            return read_content_with_content_receiver(strm, req, res, receiver,
+                                                      nullptr, nullptr);
           },
           [&](MultipartContentHeader header, ContentReceiver receiver) {
-            return read_content_with_content_receiver(
-                strm, last_connection, req, res, nullptr, header, receiver);
+            return read_content_with_content_receiver(strm, req, res, nullptr,
+                                                      header, receiver);
           });
 
       if (req.method == "POST") {
@@ -3489,7 +3486,7 @@ inline bool Server::routing(Request &req, Response &res, Stream &strm,
     }
 
     // Read content into `req.body`
-    if (!read_content(strm, last_connection, req, res)) { return false; }
+    if (!read_content(strm, req, res)) { return false; }
   }
 
   // Regular handler
@@ -3616,7 +3613,7 @@ Server::process_request(Stream &strm, bool last_connection,
   }
 
   // Rounting
-  if (routing(req, res, strm, last_connection)) {
+  if (routing(req, res, strm)) {
     if (res.status == -1) { res.status = req.ranges.empty() ? 200 : 206; }
   } else {
     if (res.status == -1) { res.status = 404; }
