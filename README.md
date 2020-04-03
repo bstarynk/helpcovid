@@ -377,14 +377,14 @@ Et nous espérons pouvoir fournir une liste de proches voisins (à moins de 2 km
 ## List of HTTP Requests
 
 
-| URL             | Method | MIME  |
-| :-------------: |:------:|:-----:|
-| /login          | GET    | HTML  |
-| /api/login      | POST   | JSON  |
-| /index          | GET    | HTML  |	
-| /profile        | GET    | HTML  |	
-| /api/profile    | PUT    | JSON  |	
-| /api/profile    | DELETE | JSON  |	
+| URL             | Method | MIME  | Purpose |
+| :-------------: |:------:|:-----:|-----------------------------|
+| /login          | GET    | HTML  | Display login page          |
+| /api/login      | POST   | JSON  | Perform login request       |
+| /index          | GET    | HTML  | Display index page          |
+| /profile        | GET    | HTML  | Display user's profile page |
+| /api/profile    | PUT    | JSON  | Update user's profile       |
+| /api/profile    | DELETE | JSON  | Delete user's profile       |
 
 	
 ## important notice
