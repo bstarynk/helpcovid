@@ -40,6 +40,11 @@ unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
 bool hcv_should_clear_database;
 
+/// the email command to send HTML5 emails  is popen-ed as <command> <subject> <to_addr> ....
+/// see also https://unix.stackexchange.com/a/15463/50557
+std::string hcv_email_command;
+
+
 thread_local Hcv_Random Hcv_Random::_rand_thr_;
 
 static int hcv_main_argc;
@@ -732,6 +737,16 @@ hcv_config_handle_helpcovid_config_group(void)
         HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid did startup popen command " << cmd
                       << " in " << (hcv_monotonic_real_time() - startim) << " elapsed seconds");
       };
+    /// we have to be paranoid here.... This could be a cybersecurity risk.
+    std::string emailcmd = kf->get_string("helpcovid","html_email_popen_command");
+    if (emailcmd.empty())
+            HCV_SYSLOGOUT(LOG_WARNING,
+			  "helpcovid misses an html_email_popen_command in configuration file");
+    else
+      {
+	hcv_email_command = emailcmd;
+	HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use " << hcv_email_command << " to send emails");
+      }
   });
 
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid did handle 'helpcovid' config group");
@@ -746,6 +761,15 @@ hcv_get_hostname(void)
 {
   return hcv_hostname;
 } // end hcv_get_hostname
+
+
+const std::string&
+hcv_get_html_email_command(void)
+{
+  if (hcv_email_command.empty())
+    HCV_FATALOUT("hcv_get_html_email_command: unconfigured empty html_email_popen_command in [helpcovid]");
+  return hcv_email_command;
+} // end hcv_get_html_email_command
 
 
 

@@ -281,6 +281,12 @@ It provides "global" settings
   code in [hcv_main.cc][] before using it.  The output of that pipe goes
   to the system log. It is run after `seteuid` facilities.
 
+* `html_email_popen_command`, a command
+  [`popen(3)`](http://man7.org/linux/man-pages/man3/popen.3.html)-ed
+  to send HTML5 emails. Invoked as *command* *subject*
+  *destination-email* ... and getting the HTML5 body as standard
+  output.
+
 * `pid_file`, a file path where the process id of the running `helpcovid`
   process is written. Defaults to
   `/var/run/helpcovid.pid`. Overridable by `$HELPCOVID_PIDFILE` or
