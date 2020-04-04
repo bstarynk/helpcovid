@@ -740,12 +740,12 @@ hcv_config_handle_helpcovid_config_group(void)
     /// we have to be paranoid here.... This could be a cybersecurity risk.
     std::string emailcmd = kf->get_string("helpcovid","html_email_popen_command");
     if (emailcmd.empty())
-            HCV_SYSLOGOUT(LOG_WARNING,
-			  "helpcovid misses an html_email_popen_command in configuration file");
+      HCV_SYSLOGOUT(LOG_WARNING,
+                    "helpcovid misses an html_email_popen_command in configuration file");
     else
       {
-	hcv_email_command = emailcmd;
-	HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use " << hcv_email_command << " to send emails");
+        hcv_email_command = emailcmd;
+        HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use " << hcv_email_command << " to send emails");
       }
   });
 

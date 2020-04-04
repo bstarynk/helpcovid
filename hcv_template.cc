@@ -55,12 +55,19 @@ Hcv_https_template_data::~Hcv_https_template_data()
 } // end Hcv_https_template_data::~Hcv_https_template_data
 
 ////////////////
+std::atomic<long> Hcv_email_template_data::_hcvemail_counter_;
 long
 Hcv_email_template_data::incremented_email_counter()
 {
-  HCV_FATALOUT("unimplemented Hcv_email_template_data::incremented_email_counter");
-#warning TODO: unimplemented Hcv_email_template_data::incremented_email_counter
+#if __GNUC__ >= 9
+  return 1+std::atomic_fetch_add(&_hcvemail_counter_, 1);
+#else
+  //return __sync_fetch_and_add(&hcv_web_request_counter, 1);
+  return 1+__sync_fetch_and_add(reinterpret_cast<long*>(&_hcvemail_counter_),
+                                1L);
+#endif /* __GNUC__ >= 9 */
 } // end of Hcv_email_template_data::incremented_email_counter
+
 
 Hcv_email_template_data::~Hcv_email_template_data()
 {

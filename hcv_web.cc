@@ -65,9 +65,9 @@ hcv_incremented_request_counter(void)
   //return __sync_fetch_and_add(&hcv_web_request_counter, 1);
   return 1+__sync_fetch_and_add(reinterpret_cast<long*>(&hcv_web_request_counter),
                                 1L);
-
 #endif /* __GNUC__ >= 9 */
 } // end hcv_incremented_request_counter
+
 
 /// this could be run with root privilege if we need to serve the :80
 /// HTTP TCP port. So be specially careful here!
