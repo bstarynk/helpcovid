@@ -227,7 +227,7 @@ extern "C" void hcv_debug_at (const char *fil, int lin, std::ostringstream&outs)
 /// once an invocation of HCV_DEBUGOUT becomes useless we can replace
 /// it with HCV_NEVEROUT...
 #define HCV_NEVEROUT(...) do { if (false)	\
-      std::clog << ##__VA_ARGS__; } while(0)
+      std::clog << __VA_ARGS__; } while(0)
 
 ////////////////////////////////////////////////////////////////
 ///// configuration file https://developer.gnome.org/glibmm/stable/classGlib_1_1KeyFile.html

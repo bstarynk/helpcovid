@@ -429,7 +429,7 @@ hcv_initialize_templates(void)
           gidstr.erase(gidsiz/3, gidsiz-gidsiz/3-1);
         else
           gidstr.erase(gidsiz/3,gidsiz);
-        HCV_DEBUGOUT("<?hcv half_gitid?> hcv_gitid='" << hcv_gitid
+        HCV_NEVEROUT("<?hcv half_gitid?> hcv_gitid='" << hcv_gitid
                      << "' gidstr='" << gidstr << "'");
         *pouts << gidstr;
       }
@@ -644,7 +644,7 @@ hcv_initialize_templates(void)
         || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
       HCV_FATALOUT("no template data for '<?hcv basefilepos ...?>' processing instruction  "
                    << procinstr << " in " << filename << ":" << lineno);
-    HCV_DEBUGOUT("<?hcv basefilepos ...?> at "<< filename << ":" << lineno
+    HCV_NEVEROUT("<?hcv basefilepos ...?> at "<< filename << ":" << lineno
                  << " procinstr='" << procinstr << "'");
     char tagbuf[24];
     char classbuf[40];
@@ -662,7 +662,7 @@ hcv_initialize_templates(void)
         const char*basefilname = (lastslash&&lastslash[0])?(lastslash+1):filename;
         if (comm)
           {
-            HCV_DEBUGOUT("<?hcv basefilepos comment?> at "<< basefilname << ":" << lineno);
+            HCV_NEVEROUT("<?hcv basefilepos comment?> at "<< basefilname << ":" << lineno);
             *pouts << "<!-- @";
           }
         else if (tagbuf[0])
@@ -671,7 +671,7 @@ hcv_initialize_templates(void)
             if (classbuf[0])
               *pouts << " class='" << classbuf << "'";
             *pouts << ">";
-            HCV_DEBUGOUT("<?hcv basefilepos .. @" <<  basefilname << ":" << lineno
+            HCV_NEVEROUT("<?hcv basefilepos .. @" <<  basefilname << ":" << lineno
                          << " tagbuf='" << tagbuf << "' classbuf='" << classbuf << "'");
           }
         hcv_output_cstr_encoded_html(*pouts, basefilname);
@@ -724,7 +724,7 @@ hcv_initialize_templates(void)
             std::string str =
               hcv_view_expand_msg(dynamic_cast<Hcv_http_template_data*>(templdata), procinstr, filename, lineno, offset);
             *pouts << str;
-            HCV_DEBUGOUT("PI " << procinstr  << " @" << filename << ":" << lineno << " =>" << std::endl << str);
+            HCV_NEVEROUT("PI " << procinstr  << " @" << filename << ":" << lineno << " =>" << std::endl << str);
           }
         catch (std::exception& exc)
           {
@@ -736,7 +736,7 @@ hcv_initialize_templates(void)
             HCV_FATALOUT("PI " << procinstr << " @" << filename << ":" << lineno
                          << " got Glib exception " << gex.what());
           }
-        HCV_DEBUGOUT("<?hcv msg ...?> at "<< filename << ":" << lineno << " done");
+        HCV_NEVEROUT("<?hcv msg ...?> at "<< filename << ":" << lineno << " done");
       }
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv msg ...?>' processing instruction in "
