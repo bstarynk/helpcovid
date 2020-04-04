@@ -83,7 +83,7 @@ def backup_to_stdout(keys):
     cmd = "pg_dump -U {0} -h {1} -p {2} {3}".format(keys["user"], keys["host"],
             keys["port"], keys["dbname"])
 
-    print("Starting database backup dry run...")
+    print("Starting database backup dump to stdout...")
     print(cmd)
     os.system(cmd)
 
