@@ -786,6 +786,21 @@ hcv_webserver_run(void)
     resp.set_content(jsoncont, "application/json");
   });
   ////////////////////////////////////////////////////////////////
+  
+  hcv_webserver->Get("/profile", [](const httplib::Request& req,
+                                    httplib::Response& resp)
+  {
+    long reqcnt = hcv_incremented_request_counter();
+    HCV_DEBUGOUT("profile GET URL: '" << req.path << "' req # " << reqcnt);
+
+    std::string html = hcv_profile_view_get(req, resp, reqcnt);
+    if (html.size() > HCV_HTML_RESPONSE_MAX_LEN)
+      HCV_FATALOUT("profile GET view sent too many bytes: " << html.size());
+
+    HCV_DEBUGOUT("profile GET view sent " << html.size() << " bytes");
+    resp.set_content(html, "text/html");
+  });
+
   //////////////// /images/ serving
   hcv_webserver->Get("/images/", [](const httplib::Request& req,
                                   httplib::Response&)

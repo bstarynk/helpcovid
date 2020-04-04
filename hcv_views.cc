@@ -212,6 +212,23 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   ///  return hcv_expand_template_file(thtml, &data);
 } // end hcv_register_view_post
 
+
+std::string
+hcv_profile_view_get(const httplib::Request& req, httplib::Response& resp, 
+                     long reqnum)
+{
+  if (req.method != "GET")
+    HCV_FATALOUT("hcv_profile_view_get() called with non GET request");
+
+  Hcv_http_template_data data(req, resp, reqnum);
+  std::string thtml = hcv_get_web_root() + "html/profile.html";
+  HCV_DEBUGOUT("hcv_profile_view_get reqpath:" << req.path
+               << " req#" << reqnum);
+
+  return hcv_expand_template_file(thtml, &data);
+} // end hcv_profile_view_get
+
+
 ///////////////////////////
 // message views - to emit some message (usually request specific, e.g. localized)
 ///////////////////////////////////////////////////////////////////////////////
