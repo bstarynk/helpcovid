@@ -349,7 +349,8 @@ public:
     hcvtk_none=0,
     hcvtk_http,
     hcvtk_https,
-    hcvtk_websocket
+    hcvtk_websocket,
+    hcvtk_email,
   };
   virtual std::ostream* output_stream() const =0;
   virtual long serial() const =0;
@@ -369,6 +370,8 @@ public:
   };
 };				// end of Hcv_template_data
 
+
+////////////////
 
 class Hcv_http_template_data : public Hcv_template_data
 {
@@ -482,6 +485,48 @@ class Hcv_websocket_template_data : public Hcv_template_data
 #endif /*missing Hcv_websocket_template_data*/
 
 
+//////////////// email template
+
+class Hcv_email_template_data : public Hcv_template_data
+{
+  long _hcvemail_serial; // unique serial number
+  std::string _hcvemail_to; // email address of recipient
+  std::string _hcvemail_subject; // subject of the email
+  mutable std::ostringstream _hcvemail_outbody;  // output stream for email body
+  static std::atomic<long> _hcvemail_counter_;
+  static long incremented_email_counter(void);
+public:
+  Hcv_email_template_data(const std::string&toemail, const std::string& emailsubject)
+    : Hcv_template_data(TmplKind_en::hcvtk_email),
+      _hcvemail_serial(0),
+      _hcvemail_to(toemail),
+      _hcvemail_subject(emailsubject),
+      _hcvemail_outbody()
+  {
+    _hcvemail_serial = incremented_email_counter();
+  };
+  long email_serial() const
+  {
+    return _hcvemail_serial;
+  };
+  const std::string email_to() const
+  {
+    return _hcvemail_to;
+  };
+  const std::string email_subject() const
+  {
+    return _hcvemail_subject;
+  };
+  virtual std::ostream* output_stream() const
+  {
+    return &_hcvemail_outbody;
+  };
+  virtual ~Hcv_email_template_data();
+  void send_email(void);
+};				// end class Hcv_email_template_data
+
+
+////////////////
 
 extern "C" std::string hcv_expand_template_file(const std::string& filepath,Hcv_template_data*templdata);
 

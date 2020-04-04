@@ -40,6 +40,8 @@ Hcv_template_data::~Hcv_template_data()
 {
 } // end Hcv_template_data::~Hcv_template_data
 
+////////////////
+
 Hcv_http_template_data::~Hcv_http_template_data()
 {
   _hcvhttp_request = nullptr;
@@ -52,6 +54,27 @@ Hcv_https_template_data::~Hcv_https_template_data()
 {
 } // end Hcv_https_template_data::~Hcv_https_template_data
 
+////////////////
+long
+Hcv_email_template_data::incremented_email_counter()
+{
+  HCV_FATALOUT("unimplemented Hcv_email_template_data::incremented_email_counter");
+#warning TODO: unimplemented Hcv_email_template_data::incremented_email_counter
+} // end of Hcv_email_template_data::incremented_email_counter
+
+Hcv_email_template_data::~Hcv_email_template_data()
+{
+  HCV_FATALOUT("unimplemented Hcv_email_template_data::~Hcv_email_template_data");
+#warning TODO: unimplemented Hcv_email_template_data::~Hcv_email_template_data
+} // end Hcv_email_template_data::~Hcv_email_template_data
+
+void
+Hcv_email_template_data::send_email()
+{
+  HCV_FATALOUT("unimplemented Hcv_email_template_data::send_email #" << email_serial() << " to " << email_to()
+               << " about " << email_subject());
+#warning TODO: unimplemented Hcv_email_template_data::send_email
+} // end Hcv_email_template_data::send_email
 
 
 ////////////////////////////////////////////////////////////////
