@@ -490,4 +490,9 @@ $PWD/webroot/ -T 2 -D` but then beware if your computer is connected
 to the Internet with some open ports: your `helpcovid` process would
 then be accessible from outside.
 
+To generate self-signed HTTPS certificates for our `--websslcert=` and
+`--websslkey` program options, see
+[this](https://stackoverflow.com/a/10176685/841108).
+
+
 [hcv_main.cc]:https://github.com/bstarynk/helpcovid/blob/master/hcv_main.cc
