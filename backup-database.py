@@ -70,7 +70,7 @@ def parse_connection_string(connstr):
 
 def backup(keys):
     fname = time.strftime("helpcovid_db-%Y-%m-%d-%H-%M-%S", time.gmtime())
-    cmd = "sudo pg_dump -U {0} -h {1} -p {2} {3} | gzip > {4}.sql.gz".format(
+    cmd = "pg_dump -U {0} -h {1} -p {2} {3} | gzip > {4}.sql.gz".format(
         keys["user"], keys["host"], keys["port"], keys["dbname"], fname)
 
     print("Starting database backup...")
@@ -91,10 +91,10 @@ def backup_dry_run(keys):
 
 def main():
     arg_parser = argparse.ArgumentParser(prog = "./backup-database.py",
-            usage = "%(prog)s [--dry-run]", description = "Performs a backup of"
+            usage = "%(prog)s [--to-stdout]", description = "Performs a backup of"
             " the Helpcovid database")
-    arg_parser.add_argument("--dry-run", action = "store_true",
-            required = False, help = "perform a dry run of the backup")
+    arg_parser.add_argument("--to-stdout", action = "store_true",
+            required = False, help = "dump backup output to stdout")
     args = arg_parser.parse_args()
 
     print(args)
