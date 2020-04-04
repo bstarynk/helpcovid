@@ -40,15 +40,15 @@ AJAX requests. The API URLs are prefixed with `/api/`.
 | URL             | Method | MIME  | Purpose                           |
 | :-------------: |:------:|:-----:|-----------------------------------|
 | /login          | GET    | HTML  | Display login page                |
-| /api/login      | POST   | JSON  | Perform login request             |
+| /ajax/login     | POST   | JSON  | Perform login request             |
 | /register       | GET    | HTML  | Display registration page         |
-| /api/register   | POST   | JSON  | Perform registration request      |
+| /ajax/register  | POST   | JSON  | Perform registration request      |
 | /index          | GET    | HTML  | Display index page                |
 | /profile        | GET    | HTML  | Display user's profile page       |
-| /api/profile    | PUT    | JSON  | Update user's profile             |
+| /ajax/profile   | PUT    | JSON  | Update user's profile             |
 | /api/profile    | DELETE | JSON  | Delete user's profile             |
 | /help           | GET    | HTML  | Display neighbours requiring help |
-| /api/help       | POST   | JSON  | Respond to neighbour needing help |
+| /ajax/help      | POST   | JSON  | Respond to neighbour needing help |
 | /helper         | GET    | HTML  | Display neighbours will to help   |
-| /api/helper     | POST   | JSON  | Accept help from a neighbour      |
+| /ajax/helper    | POST   | JSON  | Accept help from a neighbour      |
 
