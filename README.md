@@ -484,4 +484,10 @@ You can also do `make localtest0`; see the `Makefile`
 
 In March 2020 `./helpcovid` is often crashing.
 
+If your system's `/etc/hosts` file contains a line `0.0.0.0 anyhost`
+you could try to run `./helpcovid -W http://anyhost:8089/ -R
+$PWD/webroot/ -T 2 -D` but then beware if your computer is connected
+to the Internet with some open ports: your `helpcovid` process would
+then be accessible from outside.
+
 [hcv_main.cc]:https://github.com/bstarynk/helpcovid/blob/master/hcv_main.cc
