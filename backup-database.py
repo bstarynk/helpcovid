@@ -79,7 +79,7 @@ def backup(keys):
 
 
 
-def backup_dry_run(keys):
+def backup_to_stdout(keys):
     cmd = "pg_dump -U {0} -h {1} -p {2} {3}".format(keys["user"], keys["host"],
             keys["port"], keys["dbname"])
 
@@ -112,8 +112,8 @@ def main():
         return
 
     keys = parse_connection_string(connstr)
-    if args.dry_run:
-        backup_dry_run(keys)
+    if args.to_stdout:
+        backup_to_stdout(keys)
     else:
         backup(keys)
 
