@@ -42,7 +42,7 @@ AJAX requests. The API URLs are prefixed with `/api/`.
 | /login          | GET    | HTML  | Display login page                |
 | /ajax/login     | POST   | JSON  | Perform login request             |
 | /register       | GET    | HTML  | Display registration page         |
-| /ajax/register  | POST   | JSON  | Perform registration request      |
+| /register       | POST   | HTML  | Perform registration request      |
 | /index          | GET    | HTML  | Display index page                |
 | /profile        | GET    | HTML  | Display user's profile page       |
 | /ajax/profile   | PUT    | JSON  | Update user's profile             |
@@ -53,9 +53,27 @@ AJAX requests. The API URLs are prefixed with `/api/`.
 | /ajax/helper    | POST   | JSON  | Accept help from a neighbour      |
 
 
-### /ajax/register GET Request
+### /register GET Request
 
 This request does not pass any GET parameters through the query string. It 
 returns `webroot/html/register.html` through a call to `hcv_register_view_get()`
 defined in `hcv_views.cc`.
+
+
+### /register POST Request
+
+The `/ajax/register` POST request is invoked when the submit button in the form
+provided by the `/register` GET request is clicked. The following POST
+parameters are passed:
+  * `registerToken`: the unique registration token
+  * `inputFirstName`: the user's first name
+  * `inputLastName`: the user's last name
+  * `gender`: the user's gender
+  * `inputPhone`: the user's phone number
+  * `inputEmail`: the user's e-mail address
+  * `registerAgree`: the user's agreement to register
+  * `Set-Cookie`: the cookie string  
+
+On successful registration, the user is redirected to the `/profile` URL,
+through a call to the `hcv_profile_view_get()` function in `hcv_views.cc`.
 
