@@ -225,7 +225,10 @@ hcv_profile_view_get(const httplib::Request& req, httplib::Response& resp,
   HCV_DEBUGOUT("hcv_profile_view_get reqpath:" << req.path
                << " req#" << reqnum);
 
-  return hcv_expand_template_file(thtml, &data);
+  std::string str = hcv_expand_template_file(thtml, &data);
+  HCV_DEBUGOUT("hcv_profile_view_get reqpath:" << req.path
+               << " req#" << reqnum << " gives " << str.size() << " bytes");
+  return str;
 } // end hcv_profile_view_get
 
 
