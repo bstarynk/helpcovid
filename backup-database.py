@@ -61,6 +61,7 @@ def parse_connection_string(connstr):
 
     keys["dbname"] = split[0]
     keys["user"] = split[1].split("=")[1]
+    keys["password"] = split[2].split("=")[1]
     keys["host"] = split[3].split("=")[1]
     keys["port"] = split[4].split("=")[1]
 
@@ -70,8 +71,9 @@ def parse_connection_string(connstr):
 
 def backup(keys):
     fname = time.strftime("helpcovid_db-%Y-%m-%d-%H-%M-%S", time.gmtime())
-    cmd = "pg_dump -U {0} -h {1} -p {2} {3} | gzip > {4}.sql.gz".format(
-        keys["user"], keys["host"], keys["port"], keys["dbname"], fname)
+    cmd = "export PGPASSWORD='{0}'; pg_dump -U {1} -h {2} -p {3} {4} | gzip > {5}.sql.gz".format(
+            keys["password"], keys["user"], keys["host"], keys["port"], 
+            keys["dbname"], fname)
 
     print("Starting database backup...")
     print(cmd)
@@ -80,8 +82,9 @@ def backup(keys):
 
 
 def backup_to_stdout(keys):
-    cmd = "pg_dump -U {0} -h {1} -p {2} {3}".format(keys["user"], keys["host"],
-            keys["port"], keys["dbname"])
+    cmd = "export PGPASSWORD='{0}'; pg_dump -U {1} -h {2} -p {3} {4}".format(
+            keys["password"], keys["user"], keys["host"], keys["port"], 
+            keys["dbname"])
 
     print("Starting database backup dump to stdout...")
     print(cmd)
