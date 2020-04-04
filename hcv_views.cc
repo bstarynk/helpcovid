@@ -205,7 +205,8 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   jsob["gitid"]
     = Json::Value(Json::StaticString(hcv_gitid));
   jsonres = Json::writeString(hcv_get_json_builder(), jsob);
-  HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path << " unimplemented; jsonres=" << std::endl
+  HCV_DEBUGOUT("hcv_register_view_post reqpath:" << req.path << " unimplemented for gitid "
+               << std::string (hcv_gitid, 16) << "...; jsonres=" << std::endl
                << jsonres);
 #warning hcv_register_view_post unimplemented
   return jsonres;
@@ -214,7 +215,7 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
 
 
 std::string
-hcv_profile_view_get(const httplib::Request& req, httplib::Response& resp, 
+hcv_profile_view_get(const httplib::Request& req, httplib::Response& resp,
                      long reqnum)
 {
   if (req.method != "GET")
