@@ -52,3 +52,10 @@ AJAX requests. The API URLs are prefixed with `/api/`.
 | /helper         | GET    | HTML  | Display neighbours will to help   |
 | /ajax/helper    | POST   | JSON  | Accept help from a neighbour      |
 
+
+### /ajax/register GET Request
+
+This request does not pass any GET parameters through the query string. It 
+returns `webroot/html/register.html` through a call to `hcv_register_view_get()`
+defined in `hcv_views.cc`.
+
