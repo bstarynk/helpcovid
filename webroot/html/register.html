@@ -24,6 +24,7 @@
 
     <title>HelpCovid | Sign Up</title>
 
+
   </head>
 
   <body>
@@ -68,7 +69,10 @@
         <div class="col-md-8">
 
           <h1 class="my-4">Sign Up</h1>
+          <p>Click the button to get your coordinates.</p>
 
+          <button onclick="getLocation()">GeoLocation coordinates</button>
+          <p id="demo"></p>
 	  <p>Register form <?hcv basefilepos small clfilpos?> <small>git <?hcv half_gitid?></small><br/>
           <!-- Blog Post -->
           <div class="card mb-4">
@@ -78,6 +82,14 @@
                        id="registerToken"
                        name="registerToken"
                        value="<?hcv register_form_token?>"/>
+                <input type="hidden" 
+                       id="longitude"
+                       name="longitude"
+                       value="42"/>
+                <input type="hidden" 
+                       id="latitude"
+                       name="latitude"
+                       value="1337"/>
                 <div class="text-center mb-4">
                   <img class="mb-4" 
                        src="../images/helpcovid-logo.svg" 
@@ -272,6 +284,23 @@
       });
     </script>
 
+    <script>
+      var x = document.getElementById("demo");
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+      }
+      
+      function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+        "<br>Longitude: " + position.coords.longitude;
+        document.getElementById("latitude").value = position.coords.latitude;
+        document.getElementById("longitude").value = position.coords.longitude;
+      }
+     </script>
   </body>
 
 </html>

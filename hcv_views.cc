@@ -173,6 +173,8 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
   auto regtokenstr = req.get_param_value("registerToken");
   auto firstnamestr = req.get_param_value("inputFirstName");
   auto lastnamestr = req.get_param_value("inputLastName");
+  auto longitudestr = req.get_param_value("longitude");
+  auto latitudestr = req.get_param_value("latitude");
   auto genderstr = req.get_param_value("gender");
   auto phonestr = req.get_param_value("inputPhone");
   auto emailstr = req.get_param_value("inputEmail");
@@ -183,6 +185,8 @@ hcv_register_view_post(const httplib::Request& req,  httplib::Response& resp, lo
                << " .. regtoken=" << regtokenstr << std::endl
                << " .. firstname=" << firstnamestr << std::endl
                << " .. lastname=" << lastnamestr << std::endl
+               << " .. longitude=" << longitudestr << std::endl
+               << " .. latitude=" << latitudestr << std::endl
                << " .. gender=" << genderstr << std::endl
                << " .. phonestr=" << phonestr << std::endl
                << " .. emailstr=" << emailstr << std::endl
