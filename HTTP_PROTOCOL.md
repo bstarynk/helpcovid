@@ -77,3 +77,9 @@ parameters are passed:
 On successful registration, the user is redirected to the `/profile` URL,
 through a call to the `hcv_profile_view_get()` function in `hcv_views.cc`.
 
+
+### /login GET Request
+
+This request does not pass any GET parameters through the query string. It 
+returns `webroot/html/login.html` through a call to `hcv_login_view_get()`
+defined in `hcv_views.cc`.
