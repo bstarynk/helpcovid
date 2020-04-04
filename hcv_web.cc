@@ -358,7 +358,7 @@ hcv_web_register_fresh_cookie(Hcv_http_template_data*htpl)
   std::string cookiestr=  std::string(HCV_COOKIE_NAME "=") + res+ agebuf;
   hresp->set_header("Set-Cookie", cookiestr);
   HCV_DEBUGOUT ("hcv_web_register_fresh_cookie reqnum#" << reqnum
-		<< " cookiestr=" << cookiestr);
+		<< " SETCOOKIE cookiestr=" << cookiestr);
   return res;
 } // end hcv_web_register_fresh_cookie
 
@@ -390,8 +390,8 @@ hcv_web_forget_cookie(Hcv_http_template_data*htpl)
     = HCV_COOKIE_NAME "=; Expires=" HCV_HTTP_DATE_RFC822_LONG_TIME_AGO;
   HCV_DEBUGOUT("hcv_web_forget_cookie reqnum#" << htpl->serial()
 	       << " method " << hreq->method
-	       << " path=" << hreq->path << std::endl
-	       << forgetcookie);
+	       << " path=" << hreq->path <<  " CLEARSETCOOKIE" << std::endl
+	       << forgetcookie << std::endl);
   hresp->set_header("Set-Cookie", forgetcookie);
 } // end of hcv_web_forget_cookie
   
