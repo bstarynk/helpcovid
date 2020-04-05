@@ -176,12 +176,11 @@ containing `!HelpCoVidDynamic!` in the first 8 lines.
 
 ### web conventions
 
-HTTP [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests (either `GET` or `PUT` have an URL starting with `/ajax/`
-
 The user browser should support HTML5, AJAX, and
 [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s. The websocket
 URL start with `/websocket/` and should be secure.
 
+See mostly [HTTP_PROTOCOL.md](HTTP_PROTOCOL.md) for more.
 
 
 -----------
