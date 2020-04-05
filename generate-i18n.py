@@ -4,6 +4,20 @@ import argparse
 
 
 
+class Generator:
+    def __init__(self):
+        pass
+
+
+    def en(self):
+        pass
+
+
+    def fr(self):
+        pass
+
+
+
 class Cmdline:
     def __init__(self):
         prog = "admin.py"
@@ -17,11 +31,12 @@ class Cmdline:
 
         self.args = parser.parse_args()
 
+
     def parse(self):
         if self.args.cmd == "en":
-            pass
+            Generator().en()
         elif self.args.cmd == "fr":
-            pass
+            Generator().fr()
         else:
             print("unrecognised language: " + args.lang)
 
