@@ -40,13 +40,13 @@ AJAX requests. The API URLs are prefixed with `/api/`.
 | URL             | Method | MIME  | Purpose                           |
 | :-------------: |:------:|:-----:|-----------------------------------|
 | /login          | GET    | HTML  | Display login page                |
-| /login          | POST   | HTML  | Perform login request             |
+| /ajax/login     | POST   | JSON  | Perform login request             |
 | /register       | GET    | HTML  | Display registration page         |
 | /register       | POST   | HTML  | Perform registration request      |
 | /index          | GET    | HTML  | Display index page                |
 | /profile        | GET    | HTML  | Display user's profile page       |
 | /ajax/profile   | PUT    | JSON  | Update user's profile             |
-| /api/profile    | DELETE | JSON  | Delete user's profile             |
+| /ajax/profile    | DELETE | JSON  | Delete user's profile             |
 | /help           | GET    | HTML  | Display neighbours requiring help |
 | /ajax/help      | POST   | JSON  | Respond to neighbour needing help |
 | /helper         | GET    | HTML  | Display neighbours will to help   |
@@ -85,16 +85,39 @@ returns `webroot/html/login.html` through a call to `hcv_login_view_get()`
 defined in `hcv_views.cc`.
 
 
-### /login POST Request
+### /ajax/login POST Request
 
-The `/login` POST request is invoked when the submit button in the form provided
-by the `/login` GET request is clicked. The following POST parameters are
-passed:
+The `/ajax/login` POST request is invoked when the submit button in the form 
+provided by the `/login` GET request is clicked. The following POST parameters 
+are passed:
   * `email`: the user's e-mail address
   * `password`: the user's encrypted e-mail address
 
-On successful login, the user is redirected to the `profile` URL, through a call
-to the `hcv_profile_view_get()` function defined in `hcv_views.cc`. For now, it
-seems appropriate to redirect the user to the profile page, but we might decide
-to change this later.
+The `hcv_login_view_post()` function in `hcv_views.cc` process this request. In
+case the e-mail and password match, the login is considered successful, and a 
+JSON object comprising of a Boolean `status` attribute and a localised `message`
+string attribute is returned.
+
+The Javascript code embedded in the `login.html` page through the `signin.js`
+file process this response. For a successful login, it expects the JSON response
+ to be similar to the following (considering `en-US.UTF-8` locale):
+```
+{
+  status: true,
+  message: "Success!"
+}
+```
+
+Conversely, in case of a login failure, the Javascript code expects a JSON
+response similar to the following:
+```
+{
+  status: true,
+  message: "Your e-mail and password do not match! Please try again."
+}
+```
+
+On successful login, the user is redirected to the `profile` page by making a
+call to the `/profile` GET request. For now, it seems appropriate to redirect 
+the user to the profile page, but we might decide to change this later.
 
