@@ -176,12 +176,11 @@ containing `!HelpCoVidDynamic!` in the first 8 lines.
 
 ### web conventions
 
-HTTP [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) requests (either `GET` or `PUT` have an URL starting with `/ajax/`
-
 The user browser should support HTML5, AJAX, and
 [WebSocket](https://en.wikipedia.org/wiki/WebSocket)s. The websocket
 URL start with `/websocket/` and should be secure.
 
+See mostly [HTTP_PROTOCOL.md](HTTP_PROTOCOL.md) for more.
 
 
 -----------
@@ -304,7 +303,9 @@ It provides "global" settings
   [locale(7)](http://man7.org/linux/man-pages/man7/locale.7.html),
   [setlocale(3)](http://man7.org/linux/man-pages/man3/setlocale.3.html),
   [dggettext(3)](http://man7.org/linux/man-pages/man3/dgettext.3.html). Overridable
-  by `$HELPCOVID_LOCALE` or `--locale` option.
+  by `$HELPCOVID_LOCALE` or `--locale` option. See C++ functions
+  `hcv_view_expand_msg` in file `hcv_views.cc` and `hcv_get_locale` in
+  file `hcv_main.cc` ...
 
 #### `web` group
 
@@ -367,7 +368,10 @@ The phone number of Basile Starynkevitch there is `+33 6 8501 2359`
 
 See https://framalistes.org/sympa/info/helpcovid
 
-Please follow the following conventions and stay civil and nice. The forum is overloaded, so don't work quickly.
+Please follow the following conventions and stay civil and nice. The
+forum website is overloaded, so don't work quickly. Expect a few hours
+of delay between sending a message there and seeing it thru the web
+interface.
 
 * all emails are in English and public
 
