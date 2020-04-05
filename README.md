@@ -369,7 +369,10 @@ The phone number of Basile Starynkevitch there is `+33 6 8501 2359`
 
 See https://framalistes.org/sympa/info/helpcovid
 
-Please follow the following conventions and stay civil and nice. The forum is overloaded, so don't work quickly.
+Please follow the following conventions and stay civil and nice. The
+forum website is overloaded, so don't work quickly. Expect a few hours
+of delay between sending a message there and seeing it thru the web
+interface.
 
 * all emails are in English and public
 
