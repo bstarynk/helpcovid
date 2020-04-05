@@ -1,4 +1,32 @@
-#!/bin/python3
+#!/usr/bin/python3
+
+##
+## Description:
+##      Internationalization and customization script for https://github.com/bstarynk/helpcovid
+##
+## File generate-i18n.py of github.com/bstarynk/helpcovid
+##
+## Author(s):
+##      © Copyright 2020
+##      Basile Starynkevitch <basile@starynkevitch.net>
+##      Abhishek Chakravarti <abhishek@taranjali.org>
+##
+##
+## License:
+##    This HELPCOVID program is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 3 of the License, or
+##    (at your option) any later version.
+##
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##****************************************************************************
+
 
 import argparse
 import glob
