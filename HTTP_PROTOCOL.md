@@ -40,7 +40,7 @@ AJAX requests. The API URLs are prefixed with `/api/`.
 | URL             | Method | MIME  | Purpose                           |
 | :-------------: |:------:|:-----:|-----------------------------------|
 | /login          | GET    | HTML  | Display login page                |
-| /ajax/login     | POST   | JSON  | Perform login request             |
+| /login          | POST   | HTML  | Perform login request             |
 | /register       | GET    | HTML  | Display registration page         |
 | /register       | POST   | HTML  | Perform registration request      |
 | /index          | GET    | HTML  | Display index page                |
@@ -62,7 +62,7 @@ defined in `hcv_views.cc`.
 
 ### /register POST Request
 
-The `/ajax/register` POST request is invoked when the submit button in the form
+The `/register` POST request is invoked when the submit button in the form
 provided by the `/register` GET request is clicked. The following POST
 parameters are passed:
   * `registerToken`: the unique registration token
@@ -83,3 +83,18 @@ through a call to the `hcv_profile_view_get()` function in `hcv_views.cc`.
 This request does not pass any GET parameters through the query string. It 
 returns `webroot/html/login.html` through a call to `hcv_login_view_get()`
 defined in `hcv_views.cc`.
+
+
+### /login POST Request
+
+The `/login` POST request is invoked when the submit button in the form provided
+by the `/login` GET request is clicked. The following POST parameters are
+passed:
+  * `email`: the user's e-mail address
+  * `password`: the user's encrypted e-mail address
+
+On successful login, the user is redirected to the `profile` URL, through a call
+to the `hcv_profile_view_get()` function defined in `hcv_views.cc`. For now, it
+seems appropriate to redirect the user to the profile page, but we might decide
+to change this later.
+
