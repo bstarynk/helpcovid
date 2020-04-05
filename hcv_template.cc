@@ -95,9 +95,28 @@ Hcv_email_template_data::send_email()
   if (!pipmail)
     HCV_FATALOUT("Hcv_email_template_data::send_email #" << email_serial()
                  << " failed popen " << emailcmd);
-  HCV_FATALOUT("unimplemented Hcv_email_template_data::send_email #" << email_serial() << " to " << email_to()
-               << " about " << email_subject());
-#warning TODO: unimplemented Hcv_email_template_data::send_email
+  std::ifstream templinf(email_template_path());
+  HCV_DEBUGOUT("Hcv_email_template_data::send_email #" << email_serial()
+	       << " templatepath='" << email_template_path() << '"');
+  std::string mailstr = hcv_expand_template_input_stream(templinf, email_template_path().c_str(), this);
+  HCV_DEBUGOUT("Hcv_email_template_data::send_email #" << email_serial()
+	       << " mailsize=" << mailstr.size());
+  if (fwrite(mailstr.c_str(), mailstr.size(), 1, pipmail) <= 0)
+    HCV_FATALOUT("failed fwrite Hcv_email_template_data::send_email #" << email_serial() << " to " << email_to()
+		 << " about " << email_subject()
+		 << " for " << mailstr.size()
+		 << " bytes.");
+  int pstat = pclose(pipmail);
+  pipmail = nullptr;
+  if (pstat != 0)
+    HCV_FATALOUT("pclose failure Hcv_email_template_data::send_email #" << email_serial() << " to " << email_to()
+		 << " about " << email_subject()
+		 << " status=" << pstat);
+  HCV_DEBUGOUT("Hcv_email_template_data::send_email #" << email_serial()
+	       << " sent to " << email_to()
+               << " about " << email_subject()
+	       << " for " << mailstr.size()
+	       << " bytes.");
 } // end Hcv_email_template_data::send_email
 
 
