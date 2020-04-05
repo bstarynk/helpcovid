@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <!-- !HelpCoVidDynamic! file helpcovid/emailtempl/welcome-email.html -->
+  <!--  of github.com/bstarynk/helpcovid -->
+<head>
+    <meta charset="utf-8">
+    <title><?hcv msg EMAILWELCOME_TITLE email.Welcome to the HelpCovid application?></title>
+</head>
+<body>
+<p>
+<?hcv msg EMAILWELCOME_HELLO email.Hello?>
+<?hcv email_first_name?> <?hcv email_last_name?>
+</p>
+<p>
+<?hcv msg EMAILWELCOME_AUTOMATIC email: this is an automatic message.?>
+<?hcv msg EMAILWELCOME_SOMEONE email: someone, perhaps you, accessed?>
+<?hcv email_website?>. <br/>
+<?hcv msg EMAILWELCOME_CONFIRM email: if you want to register yourself, please follow the link:?>
+<?hcv email_hyperlink?> <br/>
+<?hcv msg EMAILWELCOME_OTHERWISE email: Otherwise ignore this message.....?>
+</p>
+
+<p>
+<?hcv msg EMAILWELCOME_EXTRAINFO email: extra information ....?>
+</p>
+</body>
+</html>

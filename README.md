@@ -356,6 +356,12 @@ The run `make localtest0`
 
 After that, use your browser, e.g. on `http://localhost:8089/` if that was the URL you configured for `helpcovid`
 
+## email sent by HelpCovid application
+
+See C++ class `Hcv_email_template_data` implemented in C++ file `hcv_template.cc` and configuration  `html_email_popen_command` in group `[helpcovid]`.
+See C++ functions `hcv_database_with_known_email`, `hcv_user_model_find_by_email`, etc...
+
+The emails are sent in HTML5 format and customized by files under `emailtempl/`  directory.
 
 ## communication
 
