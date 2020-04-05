@@ -290,8 +290,8 @@ class Generator:
 
 class Cmdline:
     def __init__(self):
-        prog = "admin.py"
-        desc = "Generates i18n PO files for HelpCovid"
+        prog = "generate-i18n.py"
+        desc = "Generates i18n and customizing PO files for HelpCovid; see https://github.com/bstarynk/helpcovid/"
         usage = "%(prog)s lang"
         help = ("language recognised by the Accept-Language header,"
                 "such as en-us, fr-fr, sv")
