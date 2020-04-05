@@ -15,6 +15,13 @@ The user browser should support HTML5, AJAX, and
 URL start with `/websocket/` and should be secure.
 
 
+## HTML5 files
+
+The `*.html` files under `webroot/html/` accept `<?hcv ...?>`
+processing instructions which are expanded with C++ code from source
+files `hcv_template.cc` and `hcv_views.cc`; see localization
+facilities in [README.md](README.md).
+
 ## HTTP cookies
 
 HelpCovid manage one single [web
