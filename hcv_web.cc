@@ -647,6 +647,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/status.json",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     if (reqcnt<=0)
       reqcnt=1;
@@ -659,6 +660,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/status.html",
                      [](const httplib::Request&req, httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     if (reqcnt<=0)
       reqcnt=1;
@@ -671,8 +673,9 @@ hcv_webserver_run(void)
   //////////////// /ajax/ serving
   hcv_webserver->Get
     ("/ajax/",
-                     [](const httplib::Request&req, httplib::Response&)
-		     {
+     [](const httplib::Request&req, httplib::Response&)
+     {
+       errno = 0;
        long reqcnt = hcv_incremented_request_counter();
        HCV_DEBUGOUT("ajax URL handling POST path '" << req.path
 		    << "' req#" << reqcnt);
@@ -686,6 +689,7 @@ hcv_webserver_run(void)
     ("/ajax/",
      [](const httplib::Request&req, httplib::Response&)
      {
+       errno = 0;
        long reqcnt = hcv_incremented_request_counter();
        HCV_DEBUGOUT("ajax URL handling POST path '" << req.path
 		    << "' req#" << reqcnt);
@@ -700,6 +704,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
@@ -712,6 +717,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
@@ -720,6 +726,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("^/?$", [](const httplib::Request& req,
                              httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("root URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
@@ -734,6 +741,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/login", [](const httplib::Request& req,
                                   httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("login URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);
@@ -748,6 +756,7 @@ hcv_webserver_run(void)
   hcv_webserver->Post("/ajax/login", [](const httplib::Request& req, 
                                    httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("login URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
@@ -775,6 +784,7 @@ hcv_webserver_run(void)
   hcv_webserver->Post("/register", [](const httplib::Request& req, 
                                    httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("register URL handling POST path '" << req.path
 		 << "' req#" << reqcnt);
@@ -790,6 +800,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/profile", [](const httplib::Request& req,
                                     httplib::Response& resp)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("profile GET URL: '" << req.path << "' req # " << reqcnt);
 
@@ -805,6 +816,7 @@ hcv_webserver_run(void)
   hcv_webserver->Get("/images/", [](const httplib::Request& req,
                                   httplib::Response&)
   {
+    errno = 0;
     long reqcnt = hcv_incremented_request_counter();
     HCV_DEBUGOUT("images URL handling GET path '" << req.path
 		 << "' req#" << reqcnt);

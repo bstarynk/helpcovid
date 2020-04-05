@@ -489,7 +489,9 @@ class Hcv_websocket_template_data : public Hcv_template_data
 #endif /*missing Hcv_websocket_template_data*/
 
 
-//////////////// email template
+//////////////// email template; we later could use
+//// https://www.vmime.org/ but currently prefer to popen a mail
+//// command.
 
 class Hcv_email_template_data : public Hcv_template_data
 {
