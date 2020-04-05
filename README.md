@@ -91,7 +91,8 @@ We use a [PostGreSQL](https://postgresql.org) relational database. See
 * [Abhishek Chakravarti](http://taranjali.org/aboutme), near [Kolkota](https://en.wikipedia.org/wiki/Kolkata), India; email `abhishek@taranjali.org` 
 
 
-* Niklas Rozencranz, Sweden, email `niklasro@gmail.com`
+* [Niklas Rosencrantz](https://github.com/montao/), from
+  [Stockholm](https://en.wikipedia.org/wiki/Stockholm), Sweden; email `niklasro@gmail.com`
 
 Captchas photos made by Basile Starynkevitch and resized by [Matthieu
 Starynkevitch](http://matthieu-starynkevitch.com/).
