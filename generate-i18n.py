@@ -34,7 +34,17 @@ class Generator:
 
 
     def en(self):
-        pass
+        tag = "<?hcv msg"
+        fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
+        path = self.po_dir + "helpcovid.en_US.UTF-8.po"
+        with open(path, "w") as dest_file:
+            for html_file in self.html_files:
+                with open(html_file, "r") as src_file:
+                    for line in src_file:
+                        if tag in line:
+                            msgid = line.split(tag)[1].split()[0]
+                            dest_file.write(fmt.format(msgid))
+
 
 
     def fr(self):
