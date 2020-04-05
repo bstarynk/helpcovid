@@ -8,17 +8,25 @@ import sys
 
 class Generator:
     def __init__(self):
-        self.root = None
+        self.root = self.po_dir = None
 
         try:
             with open(os.path.expanduser("~") + "/.helpcovidrc") as rcfile:
                 for line in rcfile:
                     if "root" in line:
-                        self.root = line.split("=")[1]
+                        self.root = line.split("=")[1].strip() + "/"
+                        self.po_dir = self.root + "i18n" + "/"
+                        if not os.path.exists(self.po_dir):
+                            os.makedirs(self.po_dir)
                         break
 
         except(FileNotFoundError):
-            print("~/.helpcovidrc file not found, run generate-config.py first")
+            if not self.root:
+                print("~/.helpcovidrc file not found, run generate-config.py"
+                        " first")
+            else:
+                print("Error in creating i18n directory!")
+
             sys.exit(1)
 
 
@@ -51,7 +59,7 @@ class Cmdline:
         elif self.args.lang == "fr":
             Generator().fr()
         else:
-            print("unrecognised language: " + args.lang)
+            print("unrecognised language: " + self.args.lang)
 
 
 
