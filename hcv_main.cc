@@ -363,18 +363,19 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
       return 0;
 
     case HCVPROGOPT_LOCALE:
-      {
-	char*newloc = setlocale(LC_ALL, arg);
-	if (newloc) {
+    {
+      char*newloc = setlocale(LC_ALL, arg);
+      if (newloc)
+        {
           HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid has set thru program argument LC_ALL locale to "
-			<< arg << " so " << newloc);
-	  hcv_current_locale.assign(newloc);
-	}
-	else
-          HCV_SYSLOGOUT(LOG_WARNING, "helpcovid failed to set locale to "
-			<< arg);
-      }
-      return 0;
+                        << arg << " so " << newloc);
+          hcv_current_locale.assign(newloc);
+        }
+      else
+        HCV_SYSLOGOUT(LOG_WARNING, "helpcovid failed to set locale to "
+                      << arg);
+    }
+    return 0;
 
     case HCVPROGOPT_WEBSSLCERT:
       progargs->hcvprog_opensslcert = std::string(arg);
@@ -718,6 +719,8 @@ hcv_config_handle_helpcovid_config_group(void)
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid is handling 'helpcovid' config group");
   hcv_config_do([&](const Glib::KeyFile*kf)
   {
+    ////////////////////////////////////////////////////////////////
+    /////////// the startup_popen_command configuration in [helpcovid]
     /// we have to be paranoid here.... This could be a cybersecurity risk.
     std::string startupcmd = kf->get_string("helpcovid","startup_popen_command");
     static constexpr double maxelapsedtime = 5.0;
@@ -767,18 +770,44 @@ hcv_config_handle_helpcovid_config_group(void)
         HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid did startup popen command " << cmd
                       << " in " << (hcv_monotonic_real_time() - startim) << " elapsed seconds");
       };
+    ////////////////////////////////////////////////////////////////
+    /////////// the html_email_popen_command configuration in [helpcovid]
     /// we have to be paranoid here.... This could be a cybersecurity risk.
-    std::string emailcmd = kf->get_string("helpcovid","html_email_popen_command");
-    if (emailcmd.empty())
-      HCV_SYSLOGOUT(LOG_WARNING,
-                    "helpcovid misses an html_email_popen_command in configuration file");
-    else
-      {
-        hcv_email_command = emailcmd;
-        HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use " << hcv_email_command << " to send emails");
-      }
+    {
+      std::string emailcmd = kf->get_string("helpcovid","html_email_popen_command");
+      if (emailcmd.empty())
+        HCV_SYSLOGOUT(LOG_WARNING,
+                      "helpcovid misses an html_email_popen_command in configuration file");
+      else
+        {
+          hcv_email_command = emailcmd;
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will use " << hcv_email_command << " to send emails");
+        }
+    }
+    ////////////////////////////////////////////////////////////////
+    /////////// the locale configuration in [helpcovid]
+    /// we have to be paranoid here.... This could be a cybersecurity risk.
+    {
+      std::string localestr = kf->get_string("helpcovid","locale");
+      if (localestr.empty())
+        HCV_SYSLOGOUT(LOG_WARNING,
+                      "helpcovid misses an locale in configuration file");
+      else
+        {
+          char*newloc = setlocale(LC_ALL,localestr.c_str());
+          if (newloc)
+            {
+              HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid has set thru configuration LC_ALL locale to "
+                            << localestr << " so " << newloc);
+              hcv_current_locale.assign(newloc);
+            }
+          else
+            HCV_SYSLOGOUT(LOG_WARNING, "helpcovid failed to set thru configuration locale to "
+                          << localestr);
+        }
+    }
   });
-
+  ////////////////
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid did handle 'helpcovid' config group");
 } // end hcv_config_handle_helpcovid_config_group
 

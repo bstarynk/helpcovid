@@ -81,8 +81,8 @@ Hcv_email_template_data::send_email()
   std::string emailcmd = hcv_get_html_email_command();
   if (emailcmd.empty())
     HCV_FATALOUT("Hcv_email_template_data::send_email #" << email_serial() << " to " << email_to()
-		 << " about " << email_subject()
-		 << " missing email command. configuration [helpcovid] html_email_popen_command");
+                 << " about " << email_subject()
+                 << " missing email command. configuration [helpcovid] html_email_popen_command");
   emailcmd += " ";
   std::string quotedsubject = Glib::shell_quote(_hcvemail_subject);
   emailcmd += quotedsubject;
@@ -90,11 +90,11 @@ Hcv_email_template_data::send_email()
   std::string destemail = Glib::shell_quote(_hcvemail_to);
   emailcmd += destemail;
   HCV_DEBUGOUT("Hcv_email_template_data::send_email #" << email_serial()
-	       << " emailcmd=" << emailcmd);
+               << " emailcmd=" << emailcmd);
   FILE* pipmail = popen(emailcmd.c_str(), "w");
   if (!pipmail)
     HCV_FATALOUT("Hcv_email_template_data::send_email #" << email_serial()
-		 << " failed popen " << emailcmd);
+                 << " failed popen " << emailcmd);
   HCV_FATALOUT("unimplemented Hcv_email_template_data::send_email #" << email_serial() << " to " << email_to()
                << " about " << email_subject());
 #warning TODO: unimplemented Hcv_email_template_data::send_email
