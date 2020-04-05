@@ -2,6 +2,9 @@
 
 See https://github.com/bstarynk/helpcovid/ for more about HelpCovid
 
+Our [README.md](README.md) contains instructions to setup the database
+on a pristine Debian system.
+
 ## requirements
 
 We need a [PostGreSQL](http://postgresql.org/) [relational
