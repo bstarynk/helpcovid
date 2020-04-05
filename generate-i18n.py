@@ -258,7 +258,8 @@ class Cmdline:
         prog = "admin.py"
         desc = "Generates i18n PO files for HelpCovid"
         usage = "%(prog)s lang"
-        help = "language to generate, such as en_US.UTF-8, fr_FR.UTF-8"
+        help = ("language recognised by the Accept-Language header,"
+                "such as en-us, fr-fr, sv")
 
         parser = argparse.ArgumentParser(prog = prog, description = desc, 
             usage = usage)
@@ -268,7 +269,7 @@ class Cmdline:
 
 
     def parse(self):
-        if self.args.lang == "en_US.UTF-8" or self.args.lang == "fr_FR.UTF-8":
+        if self.args.lang in ACCEPT_LANGUAGES:
             Generator().run(self.args.lang)
         else:
             print("unrecognised language: " + self.args.lang)
