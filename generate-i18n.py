@@ -1,12 +1,25 @@
 #!/bin/python3
 
 import argparse
+import os
+import sys
 
 
 
 class Generator:
     def __init__(self):
-        pass
+        self.root = None
+
+        try:
+            with open(os.path.expanduser("~") + "/.helpcovidrc") as rcfile:
+                for line in rcfile:
+                    if "root" in line:
+                        self.root = line.split("=")[1]
+                        break
+
+        except(FileNotFoundError):
+            print("~/.helpcovidrc file not found, run generate-config.py first")
+            sys.exit(1)
 
 
     def en(self):
