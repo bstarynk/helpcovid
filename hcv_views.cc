@@ -263,7 +263,7 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
       /// see http://man7.org/linux/man-pages/man7/locale.7.html
       /// see http://man7.org/linux/man-pages/man5/locale.5.html
       /// see http://man7.org/linux/man-pages/man3/dgettext.3.html
-      char* localizedmsg = gettext(msgidbuf);
+      char* localizedmsg = dgettext(HCV_DGETTEXT_DOMAIN, msgidbuf);
       if (localizedmsg && strcmp(localizedmsg, msgidbuf))
         {
           HCV_DEBUGOUT("hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno

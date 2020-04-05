@@ -831,6 +831,11 @@ hcv_get_html_email_command(void)
 } // end hcv_get_html_email_command
 
 
+const char*
+hcv_get_locale(void)
+{
+  return  hcv_current_locale.c_str();
+} // end hcv_get_locale
 
 
 ////////////////////////////////////////////////////////////////
@@ -977,6 +982,21 @@ main(int argc, char**argv)
   ////===================================================
   if (hcv_config_has_group("helpcovid"))
     hcv_config_handle_helpcovid_config_group();
+  ////===================================================
+  if (hcv_current_locale.empty() && getenv("HELPCOVID_LOCALE"))
+    {
+      const char*envlocale = getenv("HELPCOVID_LOCALE");
+      char*newloc = setlocale(LC_ALL, envlocale);
+      if (newloc)
+        {
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid has set thru $HELPCOVID_LOCALE LC_ALL locale to "
+                        << envlocale << " so " << newloc);
+          hcv_current_locale.assign(newloc);
+        }
+      else
+        HCV_SYSLOGOUT(LOG_WARNING, "helpcovid failed to  thru $HELPCOVID_LOCALE set locale to "
+                      << envlocale);
+    }
   /// write the pidfile
   if (!hcv_progargs.hcvprog_pidfile.empty() && hcv_progargs.hcvprog_pidfile != "-")
     {

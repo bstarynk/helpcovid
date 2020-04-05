@@ -91,6 +91,11 @@ We use a [PostGreSQL](https://postgresql.org) relational database. See
 * [Abhishek Chakravarti](http://taranjali.org/aboutme), near [Kolkota](https://en.wikipedia.org/wiki/Kolkata), India; email `abhishek@taranjali.org` 
 
 
+* Niklas Rozencranz, Sweden, email `niklasro@gmail.com`
+
+Captchas photos made by Basile Starynkevitch and resized by [Matthieu
+Starynkevitch](http://matthieu-starynkevitch.com/).
+
 ## dependencies
 
 * [libpq](https://www.postgresql.org/docs/11/libpq.html) from PostGreSQL 11 for the database.
@@ -294,6 +299,12 @@ It provides "global" settings
 
 * `threads`, the number of working threads. Overridable by `$HELPCOVID_NBWORKERTHREADS` or
   `--threads` option.
+
+* `locale`, for localization, see
+  [locale(7)](http://man7.org/linux/man-pages/man7/locale.7.html),
+  [setlocale(3)](http://man7.org/linux/man-pages/man3/setlocale.3.html),
+  [dggettext(3)](http://man7.org/linux/man-pages/man3/dgettext.3.html). Overridable
+  by `$HELPCOVID_LOCALE` or `--locale` option.
 
 #### `web` group
 
