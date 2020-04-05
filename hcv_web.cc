@@ -745,7 +745,7 @@ hcv_webserver_run(void)
     resp.set_content(htmlcont, "text/html");
   });
   ///////
-  hcv_webserver->Post("/login", [](const httplib::Request& req, 
+  hcv_webserver->Post("/ajax/login", [](const httplib::Request& req, 
                                    httplib::Response& resp)
   {
     long reqcnt = hcv_incremented_request_counter();
