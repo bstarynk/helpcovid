@@ -33,9 +33,9 @@ class Cmdline:
 
 
     def parse(self):
-        if self.args.cmd == "en":
+        if self.args.lang == "en":
             Generator().en()
-        elif self.args.cmd == "fr":
+        elif self.args.lang == "fr":
             Generator().fr()
         else:
             print("unrecognised language: " + args.lang)
