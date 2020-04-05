@@ -33,10 +33,10 @@ class Generator:
             sys.exit(1)
 
 
-    def en(self):
+    def run(self, lang):
         tag = "<?hcv msg"
         fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
-        path = self.po_dir + "helpcovid.en_US.UTF-8.po"
+        path = self.po_dir + "helpcovid." + lang + ".po"
         with open(path, "w") as dest_file:
             for html_file in self.html_files:
                 with open(html_file, "r") as src_file:
@@ -45,10 +45,7 @@ class Generator:
                             msgid = line.split(tag)[1].split()[0]
                             dest_file.write(fmt.format(msgid))
 
-
-
-    def fr(self):
-        pass
+        print("Generated " + path);
 
 
 
@@ -67,10 +64,8 @@ class Cmdline:
 
 
     def parse(self):
-        if self.args.lang == "en_US.UTF-8":
-            Generator().en()
-        elif self.args.lang == "fr_FR.UTF-8":
-            Generator().fr()
+        if self.args.lang == "en_US.UTF-8" or self.args.lang == "fr_FR.UTF-8":
+            Generator().run(self.args.lang)
         else:
             print("unrecognised language: " + self.args.lang)
 
