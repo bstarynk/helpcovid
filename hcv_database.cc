@@ -135,21 +135,10 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
       pqxx::work firsttransact(*hcv_dbconn);
       if (cleardata)
         {
-          // https://dba.stackexchange.com/a/154075/204015
-          firsttransact.exec0(R"cleardatabase(
-DO
-$$
-DECLARE
-  l_stmt text;
-BEGIN
-  SELECT 'truncate ' || string_agg(format('%I.%I', schemaname, tablename), ',')
-    INTO l_stmt
-  FROM pg_tables
-  WHERE schemaname IN ('public');
-  EXECUTE l_stmt;
-END;
-$$
-)cleardatabase");	  
+          // bad idea https://dba.stackexchange.com/a/154075/204015
+	  // better idea https://www.postgresql.org/docs/current/sql-dropdatabase.html
+          firsttransact.exec0(std::string("DROP DATABASE IF EXISTS ")
+			      + hcv_dbconn->dbname());	  
           HCV_SYSLOGOUT(LOG_NOTICE, "hcv_initialize_database cleared database");
         }
       ///================ add something into PostGreSQL log
