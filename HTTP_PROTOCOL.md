@@ -53,7 +53,7 @@ AJAX requests. The API URLs are prefixed with `/ajax/`.
 | /index          | GET    | HTML  | Display index page                |
 | /profile        | GET    | HTML  | Display user's profile page       |
 | /ajax/profile   | PUT    | JSON  | Update user's profile             |
-| /ajax/profile    | DELETE | JSON  | Delete user's profile             |
+| /ajax/profile   | DELETE | JSON  | Delete user's profile             |
 | /help           | GET    | HTML  | Display neighbours requiring help |
 | /ajax/help      | POST   | JSON  | Respond to neighbour needing help |
 | /helper         | GET    | HTML  | Display neighbours will to help   |
