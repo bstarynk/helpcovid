@@ -1,6 +1,7 @@
 #!/bin/python3
 
 import argparse
+import glob
 import os
 import sys
 
@@ -8,14 +9,16 @@ import sys
 
 class Generator:
     def __init__(self):
-        self.root = self.po_dir = None
+        self.root = self.html_files = self.po_dir = None
 
         try:
             with open(os.path.expanduser("~") + "/.helpcovidrc") as rcfile:
                 for line in rcfile:
                     if "root" in line:
-                        self.root = line.split("=")[1].strip() + "/"
+                        self.root = line.split("=")[1].strip()
+                        self.html_files = glob.glob(self.root + "html/*.html")
                         self.po_dir = self.root + "i18n" + "/"
+
                         if not os.path.exists(self.po_dir):
                             os.makedirs(self.po_dir)
                         break
