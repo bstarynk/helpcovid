@@ -239,15 +239,21 @@ class Generator:
 
     def run(self, lang):
         tag = "<?hcv msg"
+        msgids = []
+        for html_file in self.html_files:
+            with open(html_file, "r") as src_file:
+                for line in src_file:
+                    if tag in line:
+                        msgid = line.split(tag)[1].split()[0]
+                        msgids.append(msgid)
+
+        msgids = list(set(msgids))
+
         fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
         path = self.po_dir + "helpcovid." + lang + ".po"
         with open(path, "w") as dest_file:
-            for html_file in self.html_files:
-                with open(html_file, "r") as src_file:
-                    for line in src_file:
-                        if tag in line:
-                            msgid = line.split(tag)[1].split()[0]
-                            dest_file.write(fmt.format(msgid))
+            for msgid in msgids:
+                dest_file.write(fmt.format(msgid))
 
         print("Generated " + path);
 
