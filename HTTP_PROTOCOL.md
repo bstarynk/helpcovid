@@ -35,7 +35,7 @@ browser and in the database).
 The HelpCovid server interacts with the web browser through HTTP (or
 HTTPS) requests made by two categories of URLs. The standard URLs are
 `GET` requests returning HTML pages, and the API URLS are used to make
-AJAX requests. The API URLs are prefixed with `/api/`.
+AJAX requests. The API URLs are prefixed with `/ajax/`.
 
 | URL             | Method | MIME  | Purpose                           |
 | :-------------: |:------:|:-----:|-----------------------------------|
@@ -112,7 +112,7 @@ Conversely, in case of a login failure, the Javascript code expects a JSON
 response similar to the following:
 ```
 {
-  status: true,
+  status: false,
   message: "Your e-mail and password do not match! Please try again."
 }
 ```
