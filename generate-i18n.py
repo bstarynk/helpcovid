@@ -248,6 +248,7 @@ class Generator:
                         msgids.append(msgid)
 
         msgids = list(set(msgids))
+        msgids.sort()
 
         fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
         path = self.po_dir + "helpcovid." + lang + ".po"
