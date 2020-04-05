@@ -496,15 +496,18 @@ class Hcv_email_template_data : public Hcv_template_data
   long _hcvemail_serial; // unique serial number
   std::string _hcvemail_to; // email address of recipient
   std::string _hcvemail_subject; // subject of the email
+  /// see subdirectory helpcovid/emailtempl/ containing template files
+  std::string _hcvemail_template;		// path of HTML template file
   mutable std::ostringstream _hcvemail_outbody;  // output stream for email body
   static std::atomic<long> _hcvemail_counter_;
   static long incremented_email_counter(void);
 public:
-  Hcv_email_template_data(const std::string&toemail, const std::string& emailsubject)
+  Hcv_email_template_data(const std::string&toemail, const std::string& emailsubject, const std::string& templatepath)
     : Hcv_template_data(TmplKind_en::hcvtk_email),
       _hcvemail_serial(0),
       _hcvemail_to(toemail),
       _hcvemail_subject(emailsubject),
+      _hcvemail_template(templatepath),
       _hcvemail_outbody()
   {
     _hcvemail_serial = incremented_email_counter();
@@ -520,6 +523,10 @@ public:
   const std::string email_subject() const
   {
     return _hcvemail_subject;
+  };
+  const std::string email_template_path() const
+  {
+    return _hcvemail_template;
   };
   virtual std::ostream* output_stream() const
   {
