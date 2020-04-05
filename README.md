@@ -193,7 +193,7 @@ Edit the `Makefile` then run `make`. Run the `./generate-config.py` script to
 generate the configuration details for the web server and the PostgreSQL server.
 Subsequently run `make localtest0` to run the test web server, and point your
 browser to `http://localhost:8089/login` (replacing `http://localhost:8089` with
-the URL you had specified in the ./generate-config.py script).
+the URL you had specified in the `./generate-config.py` script).
 
 ## PostGreSQL database
 
