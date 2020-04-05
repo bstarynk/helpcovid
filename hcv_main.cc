@@ -44,7 +44,14 @@ bool hcv_should_clear_database;
 /// see also https://unix.stackexchange.com/a/15463/50557
 std::string hcv_email_command;
 
+/// the current locale, see http://man7.org/linux/man-pages/man7/locale.7.html
+/// and http://man7.org/linux/man-pages/man3/setlocale.3.html
+/// and http://man7.org/linux/man-pages/man3/gettext.3.html
+std::string hcv_current_locale;
 
+
+/// for thread local random number generation. See also
+/// http://man7.org/linux/man-pages/man7/random.7.html
 thread_local Hcv_Random Hcv_Random::_rand_thr_;
 
 static int hcv_main_argc;
@@ -66,6 +73,7 @@ enum hcv_progoption_en
   HCVPROGOPT_SETEUID='U',
   HCVPROGOPT_CONFIG='C',
   HCVPROGOPT_THREADS='T',
+  HCVPROGOPT_LOCALE='L',
   HCVPROGOPT_WRITEPID='p',
   HCVPROGOPT_DEBUG = 'D',
 
@@ -109,6 +117,14 @@ struct argp_option hcv_progoptions[] =
     /*arg:*/ "NBWORKERTHREADS", ///
     /*flags:*/0, ///
     /*doc:*/ "sets the number of worker threads, (defaults to $HELPCOVID_NBWORKERTHREADS), config: helpcovid/threads", ///
+    /*group:*/0 ///
+  },
+  /* ======= set the locale for user-visible messages ======= */
+  {/*name:*/ "locale", ///
+    /*key:*/ HCVPROGOPT_LOCALE, ///
+    /*arg:*/ "LOCALE", ///
+    /*flags:*/0, ///
+    /*doc:*/ "sets the locale for internationalization to LOCALE, see locale(7) and setlocale(3), (defaults to $HELPCOVID_LOCALE), config: helpcovid/locale", ///
     /*group:*/0 ///
   },
   /* ======= set the web document root ======= */
@@ -332,7 +348,7 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
         {
           openlog(progargs->hcvprog_progname.c_str(), LOG_PID, LOG_LOCAL0+lev);
           hcv_syslog_program_arguments ();
-          HCV_SYSLOGOUT(LOG_NOTICE, " logging " << progargs->hcvprog_progname << std::endl
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid logging " << progargs->hcvprog_progname << std::endl
                         <<  " version:" << hcv_versionmsg<< std::endl
                         << " at " << hcv_startimbuf
                         << " on " << hcv_hostname);
@@ -344,6 +360,20 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
 
     case HCVPROGOPT_WEBROOT:
       progargs->hcvprog_webroot = std::string(arg);
+      return 0;
+
+    case HCVPROGOPT_LOCALE:
+      {
+	char*newloc = setlocale(LC_ALL, arg);
+	if (newloc) {
+          HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid has set thru program argument LC_ALL locale to "
+			<< arg << " so " << newloc);
+	  hcv_current_locale.assign(newloc);
+	}
+	else
+          HCV_SYSLOGOUT(LOG_WARNING, "helpcovid failed to set locale to "
+			<< arg);
+      }
       return 0;
 
     case HCVPROGOPT_WEBSSLCERT:
