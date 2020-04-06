@@ -606,7 +606,7 @@ hcv_webserver_run(void)
   {
     int endpos= -1;
     memset(webhost,0,sizeof(webhost));
-    if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
+    if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.-]:%u%n", webhost, &webport, &endpos)>=2
 	&& endpos>0 && webhost[0] != (char)0 && webport>0)
       {
 	HCV_DEBUGOUT("helpcovid HTTP webhost='" << webhost << "' webport=" << webport);
@@ -614,7 +614,7 @@ hcv_webserver_run(void)
 		      << webhost << " webport=" << webport);
       }
     else if ((memset(webhost,0,sizeof(webhost))), (endpos= -1),
-	     sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
+	     sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.-]:%u%n", webhost, &webport, &endpos)>=2
 	     && endpos>0 && webhost[0] != (char)0 && webport>0)
       {
 	HCV_DEBUGOUT("helpcovid HTTPS webhost='" << webhost << "' webport=" << webport);
@@ -622,7 +622,7 @@ hcv_webserver_run(void)
 		      << webhost << " webport=" << webport);
       }
     else if ((memset(webhost,0,sizeof(webhost))), (endpos= -1),
-	     sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+	     sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.-]%n", webhost, &endpos)>=1
 	     && webhost[0] != (char)0 && endpos>0)
       {
 	webport = defaultwebport;
@@ -631,7 +631,7 @@ hcv_webserver_run(void)
 		      << webhost << " default webport=" << webport);
       }
     else if ((memset(webhost,0,sizeof(webhost))), (endpos= -1),
-	     sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+	     sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.-]%n", webhost, &endpos)>=1
 	     && webhost[0] != (char)0 && endpos>0)
       {
 	webport = defaultwebport;
