@@ -240,7 +240,9 @@ ACCEPT_LANGUAGES = [
 
 
 class Generator:
-    def __init__(self):
+    def __init__(self, lang):
+
+        self.lang = lang
 
         self.root = None
         self.__load_root()
@@ -281,11 +283,33 @@ class Generator:
 
 
     def __load_messages(self):
-        print("i18n directory found, loading existing messages...")
+        path = self.po_dir + "helpcovid." + self.lang + ".po"
+
+        try:
+            with open(path, "r") as po_file:
+                print(path + " found, loading existing messages...")
+                
+                msgid = None
+
+                for line in po_file:
+                    if "msgid" in line:
+                        msgid = line.split("msgid ")[1].strip().strip('"')
+                        continue
+
+                    if "msgstr" in line and msgid:
+                        msgstr = line.split("msgstr ")[1].strip().strip('"')
+                        self.messages[msgid] = msgstr
+                        msgid = None
+                        continue
+
+            print(self.messages)
+
+        except(FileNotFoundError):
+            return
 
 
 
-    def run(self, lang):
+    def run(self):
         tag = "<?hcv msg"
         msgids = []
         for html_file in self.html_files:
@@ -299,7 +323,7 @@ class Generator:
         msgids.sort()
 
         fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
-        path = self.po_dir + "helpcovid." + lang + ".po"
+        path = self.po_dir + "helpcovid." + self.lang + ".po"
         with open(path, "w") as dest_file:
             for msgid in msgids:
                 dest_file.write(fmt.format(msgid))
@@ -325,7 +349,7 @@ class Cmdline:
 
     def parse(self):
         if self.args.lang in ACCEPT_LANGUAGES:
-            Generator().run(self.args.lang)
+            Generator(self.args.lang)
         else:
             print("unrecognised language: " + self.args.lang)
 
