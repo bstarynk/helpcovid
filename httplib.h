@@ -1,9 +1,10 @@
 //
 //  httplib.h
 //
-//  from https://github.com/yhirose/cpp-httplib
-//
 //  Copyright (c) 2020 Yuji Hirose. All rights reserved.
+//
+//  From https://github.com/yhirose/cpp-httplib/
+//
 //  MIT License
 //
 
@@ -4034,17 +4035,16 @@ inline bool Client::process_request(Stream &strm, const Request &req,
 
   // Body
   if (req.method != "HEAD" && req.method != "CONNECT") {
-    ContentReceiver out = [&](const char *buf, size_t n) {
-      if (res.body.size() + n > res.body.max_size()) { return false; }
-      res.body.append(buf, n);
-      return true;
-    };
-
-    if (req.content_receiver) {
-      out = [&](const char *buf, size_t n) {
-        return req.content_receiver(buf, n);
-      };
-    }
+    auto out =
+        req.content_receiver
+            ? static_cast<ContentReceiver>([&](const char *buf, size_t n) {
+                return req.content_receiver(buf, n);
+              })
+            : static_cast<ContentReceiver>([&](const char *buf, size_t n) {
+                if (res.body.size() + n > res.body.max_size()) { return false; }
+                res.body.append(buf, n);
+                return true;
+              });
 
     int dummy_status;
     if (!detail::read_content(strm, res, (std::numeric_limits<size_t>::max)(),
@@ -4470,7 +4470,9 @@ inline bool process_and_close_socket_ssl(
     }
   }
 
-  SSL_shutdown(ssl);
+  if (ret) {
+    SSL_shutdown(ssl);		// shutdown only if not already closed by remote
+  }
   {
     std::lock_guard<std::mutex> guard(ctx_mutex);
     SSL_free(ssl);
