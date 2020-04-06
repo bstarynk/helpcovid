@@ -607,29 +607,32 @@ hcv_webserver_run(void)
     int endpos= -1;
     memset(webhost,0,sizeof(webhost));
     if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
-	&& endpos>0 && webport>0)
+	&& endpos>0 && webhost[0] != (char)0 && webport>0)
       {
 	HCV_DEBUGOUT("helpcovid HTTP webhost='" << webhost << "' webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " webport=" << webport);
       }
-    else if ((endpos= -1), sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
-	     && endpos>0 && webport>0)
+    else if ((memset(webhost,0,sizeof(webhost))), (endpos= -1),
+	     sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
+	     && endpos>0 && webhost[0] != (char)0 && webport>0)
       {
 	HCV_DEBUGOUT("helpcovid HTTPS webhost='" << webhost << "' webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " webport=" << webport);
       }
-    else if ((endpos= -1), sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
-	     && endpos>0)
+    else if ((memset(webhost,0,sizeof(webhost))), (endpos= -1),
+	     sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+	     && webhost[0] != (char)0 && endpos>0)
       {
 	webport = defaultwebport;
 	HCV_DEBUGOUT("helpcovid HTTP webhost='" << webhost << "' default webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " default webport=" << webport);
       }
-    else if ((endpos= -1), sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
-	     && endpos>0)
+    else if ((memset(webhost,0,sizeof(webhost))), (endpos= -1),
+	     sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+	     && webhost[0] != (char)0 && endpos>0)
       {
 	webport = defaultwebport;
 	HCV_DEBUGOUT("helpcovid HTTPS webhost='" << webhost << "' default webport=" << webport);
