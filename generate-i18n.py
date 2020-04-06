@@ -308,8 +308,7 @@ class Generator:
             return
 
 
-
-    def run(self):
+    def __scan_msgids_from_html(self):
         tag = "<?hcv msg"
         msgids = []
         for html_file in self.html_files:
@@ -322,13 +321,24 @@ class Generator:
         msgids = list(set(msgids))
         msgids.sort()
 
-        fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
-        path = self.po_dir + "helpcovid." + self.lang + ".po"
-        with open(path, "w") as dest_file:
-            for msgid in msgids:
-                dest_file.write(fmt.format(msgid))
+        return msgids
 
-        print("Generated " + path);
+
+    def run(self):
+        path = self.po_dir + "helpcovid." + self.lang + ".po"
+        msgids = self.__scan_msgids_from_html()
+
+        if len(self.messages):
+            print("Updating " + path + "...")
+            # TODO
+
+        else:
+            fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
+            with open(path, "w") as dest_file:
+                for msgid in msgids:
+                    dest_file.write(fmt.format(msgid))
+
+            print("Generated skeletal " + path);
 
 
 
@@ -349,7 +359,7 @@ class Cmdline:
 
     def parse(self):
         if self.args.lang in ACCEPT_LANGUAGES:
-            Generator(self.args.lang)
+            Generator(self.args.lang).run()
         else:
             print("unrecognised language: " + self.args.lang)
 
