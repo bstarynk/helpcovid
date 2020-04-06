@@ -302,8 +302,6 @@ class Generator:
                         msgid = None
                         continue
 
-            print(self.messages)
-
         except(FileNotFoundError):
             return
 
@@ -327,10 +325,12 @@ class Generator:
     def run(self):
         path = self.po_dir + "helpcovid." + self.lang + ".po"
         msgids = self.__scan_msgids_from_html()
+        print("MSGIDS = " + str(msgids))
 
         if len(self.messages):
             print("Updating " + path + "...")
-            # TODO
+            delta = list(set(msgids) - set(self.messages.keys()))
+            print("DELTA = " + str(delta))
 
         else:
             fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
