@@ -241,28 +241,48 @@ ACCEPT_LANGUAGES = [
 
 class Generator:
     def __init__(self):
-        self.root = self.html_files = self.po_dir = None
 
+        self.root = None
+        self.__load_root()
+
+        self.html_files = glob.glob(self.root + "html/*.html")
+        self.po_dir = self.root + "i18n" + "/"
+
+        self.messages = {}
+        if os.path.exists(self.po_dir):
+            self.__load_messages()
+        else:
+            self.__make_po_dir()
+
+
+    def __load_root(self):
         try:
             with open(os.path.expanduser("~") + "/.helpcovidrc") as rcfile:
                 for line in rcfile:
                     if "root" in line:
                         self.root = line.split("=")[1].strip()
-                        self.html_files = glob.glob(self.root + "html/*.html")
-                        self.po_dir = self.root + "i18n" + "/"
+                        return
 
-                        if not os.path.exists(self.po_dir):
-                            os.makedirs(self.po_dir)
-                        break
+            print("root key not found in ~/.helpcovidrc file, please run"
+                    "generate-config.py again")
 
         except(FileNotFoundError):
-            if not self.root:
-                print("~/.helpcovidrc file not found, run generate-config.py"
-                        " first")
-            else:
-                print("Error in creating i18n directory!")
-
+            print("~/.helpcovidrc file not found, run generate-configy.py")
             sys.exit(1)
+
+
+    def __make_po_dir(self):
+        try:
+            print("i18n directory not found, creating...")
+            os.makedirs(self.po_dir)
+
+        except(FileNotFoundError):
+            print("Error in creating i18n directory!")
+
+
+    def __load_messages(self):
+        print("i18n directory found, loading existing messages...")
+
 
 
     def run(self, lang):
