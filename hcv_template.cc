@@ -812,7 +812,7 @@ hcv_initialize_templates(void)
   ////////////////////////////////////////////////////////////////
   //////////////// for <?hcv confmsg ...?>
   hcv_register_template_expander_closure
-  ("msg",
+  ("confmsg",
    [](Hcv_template_data*templdata, const std::string &procinstr,
       const char*filename, int lineno,
       long offset)
