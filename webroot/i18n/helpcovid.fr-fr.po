@@ -1,5 +1,5 @@
 msgid "LOGIN_COOKIEAGREE"
-msgstr "Vous approuvez l'utilisation de cookies. Voir <a href='https://fr.wikipedia.org/wiki/Cookie_(informatique)'>pour les détails</a>"
+msgstr "Vous approuvez l'utilisation de cookies. Voir <a href='https://fr.wikipedia.org/wiki/Cookie_(informatique)'>ceci</a> pour les détails"
 
 msgid "LOGIN_COOKIECLOSE"
 msgstr "Fermer la fenêtre login"
@@ -71,13 +71,13 @@ msgid "LOGIN_WEUSECOOKIES"
 msgstr "Nous utilisons des cookies pour conserver l&apos;état de votre connexion"
 
 msgid "MAINPAGEPOST1"
-msgstr "Bienvenue sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+msgstr "⁂Bienvenue sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
 
 msgid "MAINPAGEPOST2"
-msgstr "Baratin sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+msgstr "⁂Baratin sur le site test de <a href='https://github.com/bstarynk/'>HelpCovid</a>"
 
 msgid "MAINPAGEPOST3"
-msgstr "Un peu plus sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+msgstr "⁂Un peu plus sur le site test de <a href='https://github.com/bstarynk/'>HelpCovid</a>"
 
 msgid "MAINPAGE_CLOSEBUT"
 msgstr "Fermer la fenêtre"
@@ -89,13 +89,13 @@ msgid "MAINPAGE_COOKIEALERT"
 msgstr "Vous acceptez l&apos;utilisation des cookies et l&apos;enregistrement des données que vous entrez ici."
 
 msgid "MAINPAGE_COOKIEMORE"
-msgstr ""
+msgstr "⁂C&apos;est juste une démo, les données seront jetées..."
 
 msgid "MAINPAGE_FOOTERPOST"
-msgstr ""
+msgstr "⁂Ceci est une démo qui plantera probablement"
 
 msgid "MAINPAGE_HEADING"
-msgstr ""
+msgstr "<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>, un site pour vous aider pendant la pandémie Covid19"
 
 msgid "MAINPAGE_HOME"
 msgstr ""
@@ -134,10 +134,10 @@ msgid "MAINPAGE_SEARCHGO"
 msgstr ""
 
 msgid "MAINPAGE_SECOND_HEADING"
-msgstr ""
+msgstr "⁂Un <a href='http://april.org/'>logiciel libre</a> déployé bénévolement et pas encore au point. Pour s&apos;entre-aider entre voisins pendant le confinement."
 
 msgid "MAINPAGE_SIDEBLURB"
-msgstr ""
+msgstr "⁂Ce site web risque fort de planter et perdre vos données. Soyez patients. Ce site est souvent indisponible, nous le mettons au point. <small>This website is for testing purposes only</small>"
 
 msgid "MAINPAGE_SIDEW"
 msgstr ""
