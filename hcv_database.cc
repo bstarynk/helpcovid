@@ -135,11 +135,11 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
       /// https://stackoverflow.com/a/27019316/841108
       if (cleardata)
         {
-	  pqxx::nontransaction clearwork(*hcv_dbconn);
+          pqxx::nontransaction clearwork(*hcv_dbconn);
           // bad idea https://dba.stackexchange.com/a/154075/204015
-	  // better idea https://www.postgresql.org/docs/current/sql-dropdatabase.html
+          // better idea https://www.postgresql.org/docs/current/sql-dropdatabase.html
           /*clearwork.exec0(std::string("DROP DATABASE IF EXISTS ")
-			      + hcv_dbconn->dbname());*/
+            + hcv_dbconn->dbname());*/
           clearwork.exec0(std::string("DROP OWNED BY CURRENT_USER CASCADE;"));
           HCV_SYSLOGOUT(LOG_NOTICE, "hcv_initialize_database cleared database");
         }
@@ -157,8 +157,8 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
         snprintf (logreqbuf, sizeof(logreqbuf),
                   "starting HelpCovid git %.22s (built %.80s, md5 %.20s...) %s on %.64s pid %d",
                   gitbuf, hcv_timestamp, hcv_md5sum,
-		  (cleardata?"cleared":"initialized"),
-		  hcv_get_hostname(), (int)getpid());
+                  (cleardata?"cleared":"initialized"),
+                  hcv_get_hostname(), (int)getpid());
         if (strchr(logreqbuf, '\'') || strchr(logreqbuf, ';') || strchr(logreqbuf, '\\'))
           HCV_FATALOUT("hcv_initialize_database invalid logreqbuf:" << logreqbuf);
         static char fullreqbuf[300];

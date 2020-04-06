@@ -585,11 +585,12 @@ hcv_webserver_run(void)
 {
   static double startcputime = hcv_process_cpu_time();
   static double startmonotonictime = hcv_monotonic_real_time();
-  unsigned webport;
+  unsigned webport=1000000;
+  unsigned defaultwebport=2000000;
   if (getuid() == 0)
-    webport = 80;
+    defaultwebport = webport = 80;
   else
-    webport = 8080;
+    defaultwebport= webport = 8080;
   if (!hcv_webserver)
     HCV_FATALOUT("no hcv_webserver");
   //
@@ -608,32 +609,38 @@ hcv_webserver_run(void)
     if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
 	&& endpos>0 && webport>0)
       {
+	HCV_DEBUGOUT("helpcovid HTTP webhost='" << webhost << "' webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " webport=" << webport);
       }
-    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
+    else if ((endpos= -1), sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]:%u%n", webhost, &webport, &endpos)>=2
 	     && endpos>0 && webport>0)
       {
+	HCV_DEBUGOUT("helpcovid HTTPS webhost='" << webhost << "' webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " webport=" << webport);
       }
-    else if (sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+    else if ((endpos= -1), sscanf(hcv_weburl.c_str(), "http://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
 	     && endpos>0)
       {
+	webport = defaultwebport;
+	HCV_DEBUGOUT("helpcovid HTTP webhost='" << webhost << "' default webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " default webport=" << webport);
       }
-    else if (sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
+    else if ((endpos= -1), sscanf(hcv_weburl.c_str(), "https://%60[a-zA-Z0-9_.]%n", webhost, &endpos)>=1
 	     && endpos>0)
       {
+	webport = defaultwebport;
+	HCV_DEBUGOUT("helpcovid HTTPS webhost='" << webhost << "' default webport=" << webport);
         HCV_SYSLOGOUT(LOG_INFO, "weburl=" << hcv_weburl << " listening on webhost=" //
 		      << webhost << " default webport=" << webport);
       }
     else
       HCV_FATALOUT("bad hcv_weburl " << hcv_weburl);
   }
-  HCV_DEBUGOUT("hcv_webserver_run webport=" << webport
-	       << " weburl= " << hcv_weburl);
+  HCV_DEBUGOUT("hcv_webserver_run with webport=" << webport
+	       << " weburl= '" << hcv_weburl<< "'..");
   hcv_webserver->set_error_handler
   ([](const httplib::Request& req,
       httplib::Response& resp)
