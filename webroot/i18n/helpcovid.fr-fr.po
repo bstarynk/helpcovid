@@ -98,7 +98,7 @@ msgid "MAINPAGE_HEADING"
 msgstr "<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>, un site pour vous aider pendant la pandémie Covid19"
 
 msgid "MAINPAGE_HOME"
-msgstr ""
+msgstr "page principale"
 
 msgid "MAINPAGE_NEWER"
 msgstr ""
@@ -140,119 +140,119 @@ msgid "MAINPAGE_SIDEBLURB"
 msgstr "⁂Ce site web risque fort de planter et perdre vos données. Soyez patients. Ce site est souvent indisponible, nous le mettons au point. <small>This website is for testing purposes only</small>"
 
 msgid "MAINPAGE_SIDEW"
-msgstr ""
+msgstr "À propos de ce site"
 
 msgid "MAINPAGE_SIGNIN"
-msgstr ""
+msgstr "SIGNIN"
 
 msgid "MAINPAGE_SIGNUP"
-msgstr ""
+msgstr "SIGNUP"
 
 msgid "MAINPAGE_STARTBOOTSTRAP"
-msgstr ""
+msgstr "⁇ MAINPAGE_STARTBOOTSTRAP"
 
 msgid "MAINPAGE_WELCOMEPOST"
-msgstr ""
+msgstr "⁇ MAINPAGE_WELCOMEPOST"
 
 msgid "REGISTER_BUTTON_COORDINATE"
-msgstr ""
+msgstr "⁇ REGISTER_BUTTON_COORDINATE"
 
 msgid "REGISTER_COOKIEAGREE"
-msgstr ""
+msgstr "⁇ REGISTER_COOKIEAGREE"
 
 msgid "REGISTER_COOKIENOTICE"
-msgstr ""
+msgstr "⁇ REGISTER_COOKIENOTICE"
 
 msgid "REGISTER_CURRENTLANG"
-msgstr ""
+msgstr "⁇ REGISTER_CURRENTLANG"
 
 msgid "REGISTER_EMAILAGREE"
-msgstr ""
+msgstr "⁇ REGISTER_EMAILAGREE"
 
 msgid "REGISTER_EMAILLAB"
-msgstr ""
+msgstr "⁇ REGISTER_EMAILLAB"
 
 msgid "REGISTER_EMAILPLACEH"
-msgstr ""
+msgstr "⁇ REGISTER_EMAILPLACEH"
 
 msgid "REGISTER_ENGLISH"
-msgstr ""
+msgstr "⁇ REGISTER_ENGLISH"
 
 msgid "REGISTER_FEMALE"
-msgstr ""
+msgstr "femme"
 
 msgid "REGISTER_FIRSTNAME"
-msgstr ""
+msgstr "prénom"
 
 msgid "REGISTER_FORM"
-msgstr ""
+msgstr "⁇ REGISTER_FORM"
 
 msgid "REGISTER_FRENCH"
-msgstr ""
+msgstr "⁇ REGISTER_FRENCH"
 
 msgid "REGISTER_GEOLOCATIONCOORD"
-msgstr ""
+msgstr "⁇ REGISTER_GEOLOCATIONCOORD"
 
 msgid "REGISTER_GOBUTTON"
-msgstr ""
+msgstr "⁇ REGISTER_GOBUTTON"
 
 msgid "REGISTER_HOME"
-msgstr ""
+msgstr "⁇ REGISTER_HOME"
 
 msgid "REGISTER_LASTNAME"
-msgstr ""
+msgstr "nom de famille"
 
 msgid "REGISTER_MALE"
-msgstr ""
+msgstr "homme"
 
 msgid "REGISTER_NOGEOLOCATION"
-msgstr ""
+msgstr "pas de géolocalisation"
 
 msgid "REGISTER_PHONE"
-msgstr ""
+msgstr "téléphone mobile"
 
 msgid "REGISTER_PLEASESIGNUP"
-msgstr ""
+msgstr "⁇ REGISTER_PLEASESIGNUP"
 
 msgid "REGISTER_PRIVACY"
-msgstr ""
+msgstr "⁇ REGISTER_PRIVACY"
 
 msgid "REGISTER_PRIVACYLINK"
-msgstr ""
+msgstr "⁇ REGISTER_PRIVACYLINK"
 
 msgid "REGISTER_PRIVACYPOLICY"
-msgstr ""
+msgstr "⁇ REGISTER_PRIVACYPOLICY"
 
 msgid "REGISTER_QUICKLINKS"
-msgstr ""
+msgstr "⁇ REGISTER_QUICKLINKS"
 
 msgid "REGISTER_REMINDEMAIL"
-msgstr ""
+msgstr "⁇ REGISTER_REMINDEMAIL"
 
 msgid "REGISTER_SEARCH"
-msgstr ""
+msgstr "rechercher..."
 
 msgid "REGISTER_SEARCHFOR"
-msgstr ""
+msgstr "à propos de..."
 
 msgid "REGISTER_SIDEBLURB"
-msgstr ""
+msgstr "⁂Ce site web est un test."
 
 msgid "REGISTER_SIDEWIDGET"
-msgstr ""
+msgstr "⁂Ce site web est à mettre au point"
 
 msgid "REGISTER_SIGNIN"
-msgstr ""
+msgstr "⁇ REGISTER_SIGNIN"
 
 msgid "REGISTER_SIGNUP"
-msgstr ""
+msgstr "⁇ REGISTER_SIGNUP"
 
 msgid "REGISTER_SUBMIT"
-msgstr ""
+msgstr "envoyer"
 
 msgid "REGISTER_TITLE"
-msgstr ""
+msgstr "page d&apos;enregistrement"
 
 msgid "REGISTER_TRANSGENDER"
-msgstr ""
+msgstr "transgenre ou non renseigné"
 
