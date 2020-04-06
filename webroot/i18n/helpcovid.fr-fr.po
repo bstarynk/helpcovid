@@ -1,0 +1,258 @@
+msgid "LOGIN_COOKIEAGREE"
+msgstr "Vous approuvez l'utilisation de cookies. Voir <a href='https://fr.wikipedia.org/wiki/Cookie_(informatique)'>pour les détails</a>"
+
+msgid "LOGIN_COOKIECLOSE"
+msgstr "Fermer la fenêtre login"
+
+msgid "LOGIN_COOKIEMORE"
+msgstr "Approbation"
+
+msgid "LOGIN_EMAILPLACEHOLDER"
+msgstr "adresse@courriel"
+
+msgid "LOGIN_ENGLISH1"
+msgstr "en anglais (in English)"
+
+msgid "LOGIN_ENGLISH2"
+msgstr "<span class="sr-only">(choix actuel)</span>"
+
+msgid "LOGIN_FRENCH"
+msgstr "en français (in French)"
+
+msgid "LOGIN_HEADING"
+msgstr "connexion à <a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>"
+
+msgid "LOGIN_HOME"
+msgstr "retour à la page d&apos;acceuil"
+
+msgid "LOGIN_LOGIN"
+msgstr "page de connexion"
+
+msgid "LOGIN_PASSWORDPLACEHOLDER"
+msgstr "votre_mot_de_passe_7rieux"
+
+msgid "LOGIN_PLEASESIGNIN"
+msgstr "Connexion avec votre adresse de courriel et mot de passe"
+
+msgid "LOGIN_PRIVACY"
+msgstr "À propos de vos droits (vie privée)"
+
+msgid "LOGIN_QUICKLINKS"
+msgstr "quelques liens rapides"
+
+msgid "LOGIN_REGISTER"
+msgstr "vous enregistrez sur ce site."
+
+msgid "LOGIN_REMEMBERME"
+msgstr "conserver les informations"
+
+msgid "LOGIN_SEARCH"
+msgstr "rechercher (ne fonctionne pas)"
+
+msgid "LOGIN_SEARCHGO"
+msgstr "chercher"
+
+msgid "LOGIN_SEARCHPLACEHOLDER"
+msgstr "ce que vous cherchez"
+
+msgid "LOGIN_SIDEMORE"
+msgstr "Encore un peu plus"
+
+msgid "LOGIN_SIDEWIDGET"
+msgstr "Pour en savoir plus"
+
+msgid "LOGIN_SUBMIT"
+msgstr "connexion!"
+
+msgid "LOGIN_TITLE"
+msgstr "Connexion à HelpCovid α"
+
+msgid "LOGIN_WEUSECOOKIES"
+msgstr "Nous utilisons des cookies pour conserver l&apos;état de votre connexion"
+
+msgid "MAINPAGEPOST1"
+msgstr "Bienvenue sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+
+msgid "MAINPAGEPOST2"
+msgstr "Baratin sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+
+msgid "MAINPAGEPOST3"
+msgstr "Un peu plus sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+
+msgid "MAINPAGE_CLOSEBUT"
+msgstr "Fermer la fenêtre"
+
+msgid "MAINPAGE_COOKIEAGREE"
+msgstr "Accepter les cookies"
+
+msgid "MAINPAGE_COOKIEALERT"
+msgstr "Vous acceptez l&apos;utilisation des cookies et l&apos;enregistrement des données que vous entrez ici."
+
+msgid "MAINPAGE_COOKIEMORE"
+msgstr ""
+
+msgid "MAINPAGE_FOOTERPOST"
+msgstr ""
+
+msgid "MAINPAGE_HEADING"
+msgstr ""
+
+msgid "MAINPAGE_HOME"
+msgstr ""
+
+msgid "MAINPAGE_NEWER"
+msgstr ""
+
+msgid "MAINPAGE_OLDER"
+msgstr ""
+
+msgid "MAINPAGE_POST_TITLE"
+msgstr ""
+
+msgid "MAINPAGE_PRIVACY"
+msgstr ""
+
+msgid "MAINPAGE_PRIVACYPOLICY"
+msgstr ""
+
+msgid "MAINPAGE_QUICK"
+msgstr ""
+
+msgid "MAINPAGE_READMORE"
+msgstr ""
+
+msgid "MAINPAGE_READMORE1"
+msgstr ""
+
+msgid "MAINPAGE_READMORE2"
+msgstr ""
+
+msgid "MAINPAGE_SEARCH"
+msgstr ""
+
+msgid "MAINPAGE_SEARCHGO"
+msgstr ""
+
+msgid "MAINPAGE_SECOND_HEADING"
+msgstr ""
+
+msgid "MAINPAGE_SIDEBLURB"
+msgstr ""
+
+msgid "MAINPAGE_SIDEW"
+msgstr ""
+
+msgid "MAINPAGE_SIGNIN"
+msgstr ""
+
+msgid "MAINPAGE_SIGNUP"
+msgstr ""
+
+msgid "MAINPAGE_STARTBOOTSTRAP"
+msgstr ""
+
+msgid "MAINPAGE_WELCOMEPOST"
+msgstr ""
+
+msgid "REGISTER_BUTTON_COORDINATE"
+msgstr ""
+
+msgid "REGISTER_COOKIEAGREE"
+msgstr ""
+
+msgid "REGISTER_COOKIENOTICE"
+msgstr ""
+
+msgid "REGISTER_CURRENTLANG"
+msgstr ""
+
+msgid "REGISTER_EMAILAGREE"
+msgstr ""
+
+msgid "REGISTER_EMAILLAB"
+msgstr ""
+
+msgid "REGISTER_EMAILPLACEH"
+msgstr ""
+
+msgid "REGISTER_ENGLISH"
+msgstr ""
+
+msgid "REGISTER_FEMALE"
+msgstr ""
+
+msgid "REGISTER_FIRSTNAME"
+msgstr ""
+
+msgid "REGISTER_FORM"
+msgstr ""
+
+msgid "REGISTER_FRENCH"
+msgstr ""
+
+msgid "REGISTER_GEOLOCATIONCOORD"
+msgstr ""
+
+msgid "REGISTER_GOBUTTON"
+msgstr ""
+
+msgid "REGISTER_HOME"
+msgstr ""
+
+msgid "REGISTER_LASTNAME"
+msgstr ""
+
+msgid "REGISTER_MALE"
+msgstr ""
+
+msgid "REGISTER_NOGEOLOCATION"
+msgstr ""
+
+msgid "REGISTER_PHONE"
+msgstr ""
+
+msgid "REGISTER_PLEASESIGNUP"
+msgstr ""
+
+msgid "REGISTER_PRIVACY"
+msgstr ""
+
+msgid "REGISTER_PRIVACYLINK"
+msgstr ""
+
+msgid "REGISTER_PRIVACYPOLICY"
+msgstr ""
+
+msgid "REGISTER_QUICKLINKS"
+msgstr ""
+
+msgid "REGISTER_REMINDEMAIL"
+msgstr ""
+
+msgid "REGISTER_SEARCH"
+msgstr ""
+
+msgid "REGISTER_SEARCHFOR"
+msgstr ""
+
+msgid "REGISTER_SIDEBLURB"
+msgstr ""
+
+msgid "REGISTER_SIDEWIDGET"
+msgstr ""
+
+msgid "REGISTER_SIGNIN"
+msgstr ""
+
+msgid "REGISTER_SIGNUP"
+msgstr ""
+
+msgid "REGISTER_SUBMIT"
+msgstr ""
+
+msgid "REGISTER_TITLE"
+msgstr ""
+
+msgid "REGISTER_TRANSGENDER"
+msgstr ""
+
