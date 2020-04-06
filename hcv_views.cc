@@ -294,7 +294,7 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
 
 extern "C" std::string  /// for <?hcv confmsg ...?>
 hcv_view_expand_confmsg(Hcv_http_template_data*tdata, const std::string &procinstr,
-                    const char*filename, int lineno, long offset)
+                        const char*filename, int lineno, long offset)
 {
   HCV_ASSERT(tdata != nullptr && tdata->request() != nullptr && tdata->response() != nullptr);
   HCV_DEBUGOUT("hcv_view_expand_msg " << procinstr << " @STARTMSG@ at "  << filename << ":" << lineno);
@@ -333,7 +333,7 @@ hcv_view_expand_confmsg(Hcv_http_template_data*tdata, const std::string &procins
       //////////@@@@@@@@@@@@@@TODO
 #warning TODO: unimplemented hcv_view_expand_confmsg
       HCV_FATALOUT("hcv_view_expand_confmsg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
-                        << " not implemented");
+                   << " not implemented");
     }
   else
     {

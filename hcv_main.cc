@@ -713,6 +713,25 @@ hcv_get_config_html(const std::string &name)
   return restr;
 } // end hcv_get_config_html
 
+
+/// useful for <?hcv confmsg MESSAGEID ....?>
+std::string
+hcv_get_config_message(const char*msgid)
+{
+  HCV_ASSERT(msgid != nullptr && msgid[0] != (char)0);
+  std::string msg;
+  hcv_config_do([&](const Glib::KeyFile*kf)
+  {
+    HCV_ASSERT(kf != nullptr);
+    if (kf->has_key("message", msgid))
+      msg = kf->get_string("message", msgid);
+  });
+  return msg;
+} // end hcv_get_config_message
+
+
+
+
 void
 hcv_config_handle_helpcovid_config_group(void)
 {

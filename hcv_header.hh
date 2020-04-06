@@ -252,6 +252,11 @@ extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 //// if missing, return an empty string.
 #define HCV_CONFIG_HTML_NAME_MAXLEN 60
 extern "C" std::string hcv_get_config_html(const std::string &name);
+
+//// get a string in [message] section of configuration file.
+//// if missing, return an empty string
+//// useful for <?hcv confmsg MESSAGEID ....?>
+extern "C" std::string hcv_get_config_message(const char*msgid);
 ////////////////////////////////////////////////////////////////
 
 class Hcv_PreparedStatement
@@ -840,7 +845,7 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
 /// expand a message from configuration file <?hcg confmsg MESSAGEID etc...?>
 extern "C" std::string
 hcv_view_expand_confmsg(Hcv_http_template_data*tdata, const std::string &procinstr,
-                    const char*filename, int lineno, long offset);
+                        const char*filename, int lineno, long offset);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Plugins. See files hcv_plugins.cc and PLUGINS.md
