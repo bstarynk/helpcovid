@@ -138,8 +138,9 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
 	  pqxx::nontransaction clearwork(*hcv_dbconn);
           // bad idea https://dba.stackexchange.com/a/154075/204015
 	  // better idea https://www.postgresql.org/docs/current/sql-dropdatabase.html
-          clearwork.exec0(std::string("DROP DATABASE IF EXISTS ")
-			      + hcv_dbconn->dbname());	  
+          /*clearwork.exec0(std::string("DROP DATABASE IF EXISTS ")
+			      + hcv_dbconn->dbname());*/
+          clearwork.exec0(std::string("DROP OWNED BY CURRENT_USER CASCADE;"));
           HCV_SYSLOGOUT(LOG_NOTICE, "hcv_initialize_database cleared database");
         }
       ///================ add something into PostGreSQL log
