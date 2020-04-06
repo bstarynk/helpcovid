@@ -325,12 +325,20 @@ class Generator:
     def run(self):
         path = self.po_dir + "helpcovid." + self.lang + ".po"
         msgids = self.__scan_msgids_from_html()
-        print("MSGIDS = " + str(msgids))
 
         if len(self.messages):
             print("Updating " + path + "...")
             delta = list(set(msgids) - set(self.messages.keys()))
-            print("DELTA = " + str(delta))
+
+            for msgid in delta:
+                self.messages[msgid] = ""
+
+            self.messages = dict(sorted(self.messages.items()))
+
+            fmt = "msgid \"{0}\"\nmsgstr \"{1}\"\n\n"
+            with open(path, "w") as dest_file:
+                for msgid, msgstr in self.messages.items():
+                    dest_file.write(fmt.format(msgid, msgstr))
 
         else:
             fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
