@@ -289,5 +289,62 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
     }
 } // end hcv_view_expand_msg
 
+
+
+
+extern "C" std::string  /// for <?hcv confmsg ...?>
+hcv_view_expand_confmsg(Hcv_http_template_data*tdata, const std::string &procinstr,
+                    const char*filename, int lineno, long offset)
+{
+  HCV_ASSERT(tdata != nullptr && tdata->request() != nullptr && tdata->response() != nullptr);
+  HCV_DEBUGOUT("hcv_view_expand_msg " << procinstr << " @STARTMSG@ at "  << filename << ":" << lineno);
+  char msgidbuf[40];
+  memset (msgidbuf, 0, sizeof(msgidbuf));
+  int endp = -1;
+  if (sscanf(procinstr.c_str(), "<?hcv confmsg %38[A-Za-z0-9_] %n", msgidbuf, &endp) >= 1
+      && endp > 0)
+    {
+      if (!isalpha(msgidbuf[0]))
+        HCV_FATALOUT("hcv_view_expand_confmsg " << procinstr << " at "  << filename << ":" << lineno
+                     << "invalid msgidbuf:" << msgidbuf);
+      HCV_DEBUGOUT("hcv_view_expand_confmsg " << procinstr << " at "  << filename << ":" << lineno
+                   << "msgidbuf:" << msgidbuf << ".");
+      const char*begmsg = procinstr.c_str() + endp;
+      const char*endmsg = strstr(begmsg, "?>");
+      HCV_ASSERT(endmsg != nullptr);
+#if 0 && not_implemented_hcv_view_expand_confmsg
+      char* localizedmsg = dgettext(HCV_DGETTEXT_DOMAIN, msgidbuf);
+      if (localizedmsg && strcmp(localizedmsg, msgidbuf))
+        {
+          HCV_DEBUGOUT("hcv_view_expand_confmsg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                       << " => " << localizedmsg);
+          return std::string(localizedmsg);
+        }
+      else
+        {
+          HCV_SYSLOGOUT(LOG_NOTICE, "hcv_view_expand_confmsg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                        << " not found");
+          std::string rawmsg(begmsg, endmsg-begmsg);
+          HCV_DEBUGOUT("hcv_view_expand_confmsg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                       << ":::" << rawmsg);
+          return rawmsg;
+        };
+#endif  0 && not_implemented_hcv_view_expand_confmsg
+      //////////@@@@@@@@@@@@@@TODO
+#warning TODO: unimplemented hcv_view_expand_confmsg
+      HCV_FATALOUT("hcv_view_expand_confmsg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                        << " not implemented");
+    }
+  else
+    {
+      HCV_SYSLOGOUT(LOG_WARNING,
+                    "hcv_view_expand_confmsg bad PI " << procinstr
+                    << " at " << filename << ":" << lineno << "@" << offset);
+      return "";
+    }
+} // end hcv_view_expand_confmsg
+
+
+
 //////////////////// end of file hcv_views.cc of github.com/bstarynk/helpcovid
 

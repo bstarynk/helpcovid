@@ -809,6 +809,45 @@ hcv_initialize_templates(void)
                     << filename << ":" << lineno<< " @" << offset
                     << std::endl << procinstr);
   }); // end  <?hcv msg ...?>
+  ////////////////////////////////////////////////////////////////
+  //////////////// for <?hcv confmsg ...?>
+  hcv_register_template_expander_closure
+  ("msg",
+   [](Hcv_template_data*templdata, const std::string &procinstr,
+      const char*filename, int lineno,
+      long offset)
+  {
+    if (!templdata || templdata->kind() == Hcv_template_data::TmplKind_en::hcvtk_none)
+      HCV_FATALOUT("no template data for '<?hcv confmsg ...?>' processing instruction "
+                   << procinstr <<" in "
+                   << filename << ":" << lineno);
+    HCV_DEBUGOUT("<?hcv confmsg ...?> at "<< filename << ":" << lineno << " " << procinstr);
+    if (auto pouts = templdata->output_stream())
+      {
+        try
+          {
+            std::string str =
+              hcv_view_expand_confmsg(dynamic_cast<Hcv_http_template_data*>(templdata), procinstr, filename, lineno, offset);
+            *pouts << str;
+            HCV_NEVEROUT("PI " << procinstr  << " @" << filename << ":" << lineno << " =>" << std::endl << str);
+          }
+        catch (std::exception& exc)
+          {
+            HCV_FATALOUT("PI " << procinstr << " @" << filename << ":" << lineno
+                         << " got standard exception " << exc.what());
+          }
+        catch (Glib::Exception &gex)
+          {
+            HCV_FATALOUT("PI " << procinstr << " @" << filename << ":" << lineno
+                         << " got Glib exception " << gex.what());
+          }
+        HCV_NEVEROUT("<?hcv confmsg ...?> at "<< filename << ":" << lineno << " done");
+      }
+    else
+      HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv confmsg ...?>' processing instruction in "
+                    << filename << ":" << lineno<< " @" << offset
+                    << std::endl << procinstr);
+  }); // end  <?hcv confmsg ...?>
 } // end hcv_initialize_templates =======================================
 
 /************* end of file hcv_template.cc in github.com/bstarynk/helpcovid *********/

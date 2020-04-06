@@ -132,16 +132,18 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
   {
     HCV_SYSLOGOUT(LOG_INFO, "hcv_initialize_database for connstr=" << connstr << " hcv_dbconn is " << hcv_dbconn.get());
     {
-      pqxx::work firsttransact(*hcv_dbconn);
+      /// https://stackoverflow.com/a/27019316/841108
       if (cleardata)
         {
+	  pqxx::nontransaction clearwork(*hcv_dbconn);
           // bad idea https://dba.stackexchange.com/a/154075/204015
 	  // better idea https://www.postgresql.org/docs/current/sql-dropdatabase.html
-          firsttransact.exec0(std::string("DROP DATABASE IF EXISTS ")
+          clearwork.exec0(std::string("DROP DATABASE IF EXISTS ")
 			      + hcv_dbconn->dbname());	  
           HCV_SYSLOGOUT(LOG_NOTICE, "hcv_initialize_database cleared database");
         }
       ///================ add something into PostGreSQL log
+      pqxx::work firsttransact(*hcv_dbconn);
       {
         /// see https://stackoverflow.com/a/60954480/841108
         char logreqbuf[256];

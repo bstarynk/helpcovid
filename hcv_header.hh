@@ -832,8 +832,14 @@ hcv_profile_view_get(const httplib::Request& req, httplib::Response& resp,
 ///////////////////////////////////////////////////////////////////////////////
 // message views - to emit some message (usually request specific, e.g. localized)
 ///////////////////////////////////////////////////////////////////////////////
+/// expand a message using locale(7) related tricks <?hcg msg MESSAGEID etc...?>
 extern "C" std::string
 hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
+                    const char*filename, int lineno, long offset);
+
+/// expand a message from configuration file <?hcg confmsg MESSAGEID etc...?>
+extern "C" std::string
+hcv_view_expand_confmsg(Hcv_http_template_data*tdata, const std::string &procinstr,
                     const char*filename, int lineno, long offset);
 
 ///////////////////////////////////////////////////////////////////////////////
