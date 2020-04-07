@@ -98,7 +98,7 @@ msgid "MAINPAGE_HEADING"
 msgstr "<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>, un site pour vous aider pendant la pandémie Covid19"
 
 msgid "MAINPAGE_HOME"
-msgstr "page principale"
+msgstr "page principale de <i>HelpCovid</i>"
 
 msgid "MAINPAGE_NEWER"
 msgstr "&larr; plus récent"
@@ -107,7 +107,7 @@ msgid "MAINPAGE_OLDER"
 msgstr "&larr; plus ancien"
 
 msgid "MAINPAGE_POST_TITLE"
-msgstr "⁂titre post"
+msgstr "⁂titre post HelpCovid"
 
 msgid "MAINPAGE_PRIVACY"
 msgstr "vie privée"
