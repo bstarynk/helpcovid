@@ -240,9 +240,10 @@ ACCEPT_LANGUAGES = [
 
 
 class Generator:
-    def __init__(self, lang):
+    def __init__(self, lang, subscript):
 
         self.lang = lang
+        self.subscript = subscript
 
         self.root = None
         self.__load_root()
@@ -324,6 +325,9 @@ class Generator:
 
 
     def __generate_serial_number(self, num, total):
+        if not self.subscript:
+            return ""
+
         padding = len(list(str(total))) - len(list(str(num)))
         if padding:
             padding = "0" * padding
@@ -415,7 +419,7 @@ class Cmdline:
 
     def parse(self):
         if self.args.lang in ACCEPT_LANGUAGES:
-            Generator(self.args.lang).run()
+            Generator(self.args.lang, self.args.subscript).run()
         else:
             print("unrecognised language: " + self.args.lang)
 
