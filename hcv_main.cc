@@ -59,6 +59,8 @@ static char** hcv_main_argv;
 
 static void hcv_syslog_program_arguments(void);
 
+static void hcv_initialize_curlpp(void);
+
 extern "C" void hcv_load_config_file(const char*);
 ////////////////////////////////////////////////////////////////
 /// https://www.gnu.org/software/libc/manual/html_node/Program-Arguments.html
@@ -891,6 +893,21 @@ Hcv_Random::deterministic_reseed(void)
   _rand_generator.seed(_rand_gen_deterministic_());
 } // end of Hcv_Random::deterministic_reseed
 
+
+////////////////////////////////////////////////////////////////
+/// initialize the curlpp C++ HTTP client library (wrapping libcurl)
+/// see https://github.com/jpbarrette/curlpp/blob/master/doc/guide.pdf
+/// and https://www.curlpp.org/
+void
+hcv_initialize_curlpp(void)
+{
+  HCV_DEBUGOUT("start of hcv_initialize_curlpp");
+  errno = 0;
+  cURLpp::initialize(CURL_GLOBAL_ALL);
+  HCV_SYSLOGOUT(LOG_NOTICE, "initialized curlpp version " << (cURLpp::libcurlVersion())
+		<< " - see www.curlpp.org for more." << std::endl);
+} // end hcv_initialize_curlpp
+/// 
 ////////////////////////////////////////////////////////////////
 int
 main(int argc, char**argv)
@@ -1048,6 +1065,8 @@ main(int argc, char**argv)
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri, hcv_should_clear_database);
   errno = 0;
   hcv_initialize_templates();
+  errno = 0;
+  hcv_initialize_curlpp();
   errno = 0;
   hcv_start_background_thread();
   errno = 0;

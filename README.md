@@ -10,7 +10,18 @@ for older neighbours (avoiding elder persons having to go out).
 Of course that application stores personal data in some
 [PostGreSQL](http://postgresql.org/) database, so is concerned by
 [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
-... It is expected to be used in good faith.
+... It is expected to be used in good faith. *HelpCovid* accepts
+[plug-ins](https://en.wikipedia.org/wiki/Plug-in_(computing)) having a
+[GPLv3+ compatible
+license](https://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses),
+and these are
+[dlopen(3)](http://man7.org/linux/man-pages/man3/dlopen.3.html) at
+startup time.
+
+*HelpCovid* may be configured to use
+[setuid](https://en.wikipedia.org/wiki/Setuid) techniques. Beware that
+using them incorrectly can ruin the cybersecurity of your entire Linux
+servers.
 
 If [RefPerSys](http://refpersys.org/) was ready, it should have been
 used instead.
@@ -105,6 +116,11 @@ Starynkevitch](http://matthieu-starynkevitch.com/).
 
 * [cpp-httplib](https://github.com/yhirose/cpp-httplib) for C++ [HTTPS](https://en.wikipedia.org/wiki/HTTPS) service.
 
+* [curlpp](https://www.curlpp.org/), a C++ wrapper around the famous
+  [libcurl](https://curl.haxx.se/libcurl/), which is an HTTP and HTTPS
+  client library. Some resources useful for *HelpCovid* may need to be
+  downloaded at startup time by `./helpcovid` or its plugins.
+
 * [Websocket++](https://github.com/zaphoyd/websocketpp) for [WebSockets](https://en.wikipedia.org/wiki/WebSocket).
 
 * [Twitter Bootstrap](https://github.com/twbs/bootstrap) for the responsive CSS framework.
@@ -115,7 +131,7 @@ Starynkevitch](http://matthieu-starynkevitch.com/).
 
 On  [Debian](https://debian.org/) (Buster) run:
 
-`sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev libconfig++-dev libglibmm-2.4-dev`
+`sudo aptitude install postgresql-server-dev-11 postgresql-client-11 postgresql-11 libpqxx-dev libconfig++-dev libglibmm-2.4-dev libcurlpp-dev`
 
 but both
 

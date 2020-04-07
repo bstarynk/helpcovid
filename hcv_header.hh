@@ -100,6 +100,10 @@ extern "C" unsigned hcv_http_payload_max;
 // JsonCPP https://github.com/open-source-parsers/jsoncpp
 #include "json/json.h"
 
+/// see  https://www.curlpp.org/ - an C++ wrapper around libcurl
+/// for HTTP and other protocol client libraries
+#include "curlpp/cURLpp.hpp"
+
 // Glibmm https://developer.gnome.org/glibmm/stable/
 #include "glibmm.h"
 #include "giomm.h"
