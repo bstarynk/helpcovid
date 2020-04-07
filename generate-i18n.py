@@ -323,18 +323,25 @@ class Generator:
 
 
     def __generate_serial_number(self, num, total):
-        # TODO: incomplete
         padding = len(list(str(total))) - len(list(str(num)))
         if padding:
             padding = "0" * padding
         else:
             padding = ""
 
-        s = str(num)
-        l = list(s)
-        j = "".join(l)
+        slno = padding + str(num)
+        slno = slno.replace("0", "\u2080")
+        slno = slno.replace("1", "\u2081")
+        slno = slno.replace("2", "\u2082")
+        slno = slno.replace("3", "\u2083")
+        slno = slno.replace("4", "\u2084")
+        slno = slno.replace("5", "\u2085")
+        slno = slno.replace("6", "\u2086")
+        slno = slno.replace("7", "\u2087")
+        slno = slno.replace("8", "\u2088")
+        slno = slno.replace("9", "\u2089")
 
-        return padding + j
+        return slno
 
 
     def run(self):
