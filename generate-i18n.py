@@ -294,6 +294,7 @@ class Generator:
                 for line in po_file:
                     if "msgid" in line:
                         msgid = line.split("msgid ")[1].strip().strip('"')
+                        msgid = self.__strip_serial_number(msgid)
                         continue
 
                     if "msgstr" in line and msgid:
@@ -342,6 +343,21 @@ class Generator:
         slno = slno.replace("9", "\u2089")
 
         return slno
+
+
+    def __strip_serial_number(self, msgid):
+        clean = msgid.replace("\u2080", "")
+        clean = clean.replace("\u2081", "")
+        clean = clean.replace("\u2082", "")
+        clean = clean.replace("\u2083", "")
+        clean = clean.replace("\u2084", "")
+        clean = clean.replace("\u2085", "")
+        clean = clean.replace("\u2086", "")
+        clean = clean.replace("\u2087", "")
+        clean = clean.replace("\u2088", "")
+        clean = clean.replace("\u2089", "")
+
+        return clean
 
 
     def run(self):
