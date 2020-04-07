@@ -407,6 +407,8 @@ class Cmdline:
         parser = argparse.ArgumentParser(prog = prog, description = desc, 
             usage = usage)
         parser.add_argument("lang", type = str, help = help)
+        parser.add_argument("-s", "--subscript", action="store_true",
+            help="subscript serial numbers to message ids")
 
         self.args = parser.parse_args()
 
