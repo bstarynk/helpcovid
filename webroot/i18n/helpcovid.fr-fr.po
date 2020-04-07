@@ -98,40 +98,40 @@ msgid "MAINPAGE_HEADING"
 msgstr "<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>, un site pour vous aider pendant la pandémie Covid19"
 
 msgid "MAINPAGE_HOME"
-msgstr "page principale"
+msgstr "page principale de <i>HelpCovid</i>"
 
 msgid "MAINPAGE_NEWER"
-msgstr ""
+msgstr "&larr; plus récent"
 
 msgid "MAINPAGE_OLDER"
-msgstr ""
+msgstr "&larr; plus ancien"
 
 msgid "MAINPAGE_POST_TITLE"
-msgstr ""
+msgstr "⁂titre post HelpCovid"
 
 msgid "MAINPAGE_PRIVACY"
-msgstr ""
+msgstr "vie privée"
 
 msgid "MAINPAGE_PRIVACYPOLICY"
-msgstr ""
+msgstr "politique sur les données privées"
 
 msgid "MAINPAGE_QUICK"
-msgstr ""
+msgstr "⁂rapidement ..."
 
 msgid "MAINPAGE_READMORE"
-msgstr ""
+msgstr "pour en savoir plus"
 
 msgid "MAINPAGE_READMORE1"
-msgstr ""
+msgstr "⁂ceci est un test"
 
 msgid "MAINPAGE_READMORE2"
-msgstr ""
+msgstr "⁂vos données seront perdues"
 
 msgid "MAINPAGE_SEARCH"
-msgstr ""
+msgstr "recherche"
 
 msgid "MAINPAGE_SEARCHGO"
-msgstr ""
+msgstr "rechercher"
 
 msgid "MAINPAGE_SECOND_HEADING"
 msgstr "⁂Un <a href='http://april.org/'>logiciel libre</a> déployé bénévolement et pas encore au point. Pour s&apos;entre-aider entre voisins pendant le confinement."
@@ -143,10 +143,10 @@ msgid "MAINPAGE_SIDEW"
 msgstr "À propos de ce site"
 
 msgid "MAINPAGE_SIGNIN"
-msgstr "SIGNIN"
+msgstr "⁇ SIGNIN"
 
 msgid "MAINPAGE_SIGNUP"
-msgstr "SIGNUP"
+msgstr "⁇ SIGNUP"
 
 msgid "MAINPAGE_STARTBOOTSTRAP"
 msgstr "⁇ MAINPAGE_STARTBOOTSTRAP"
