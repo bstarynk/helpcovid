@@ -322,13 +322,19 @@ class Generator:
         return msgids
 
 
-    def __generate_serial_number(self, num):
+    def __generate_serial_number(self, num, total):
         # TODO: incomplete
+        padding = len(list(str(total))) - len(list(str(num)))
+        if padding:
+            padding = "0" * padding
+        else:
+            padding = ""
+
         s = str(num)
         l = list(s)
         j = "".join(l)
 
-        return j
+        return padding + j
 
 
     def run(self):
@@ -347,18 +353,20 @@ class Generator:
             fmt = "msgid \"{0}{1}\"\nmsgstr \"{2}\"\n\n"
             with open(path, "w") as dest_file:
                 i = 0
+                total = len(self.messages.items())
                 for msgid, msgstr in self.messages.items():
                     i = i + 1
-                    slno = self.__generate_serial_number(i)
+                    slno = self.__generate_serial_number(i, total)
                     dest_file.write(fmt.format(slno, msgid, msgstr))
 
         else:
             fmt = "msgid \"{0}{1}\"\nmsgstr \"\"\n\n"
             with open(path, "w") as dest_file:
                 i = 0
+                total = len(msgids)
                 for msgid in msgids:
                     i = i + 1
-                    slno = self.__generate_serial_number(i)
+                    slno = self.__generate_serial_number(i, total)
                     dest_file.write(fmt.format(slno, msgid))
 
             print("Generated skeletal " + path);
