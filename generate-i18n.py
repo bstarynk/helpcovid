@@ -322,6 +322,15 @@ class Generator:
         return msgids
 
 
+    def __generate_serial_number(self, num):
+        # TODO: incomplete
+        s = str(num)
+        l = list(s)
+        j = "".join(l)
+
+        return j
+
+
     def run(self):
         path = self.po_dir + "helpcovid." + self.lang + ".po"
         msgids = self.__scan_msgids_from_html()
@@ -335,16 +344,22 @@ class Generator:
 
             self.messages = dict(sorted(self.messages.items()))
 
-            fmt = "msgid \"{0}\"\nmsgstr \"{1}\"\n\n"
+            fmt = "msgid \"{0}{1}\"\nmsgstr \"{2}\"\n\n"
             with open(path, "w") as dest_file:
+                i = 0
                 for msgid, msgstr in self.messages.items():
-                    dest_file.write(fmt.format(msgid, msgstr))
+                    i = i + 1
+                    slno = self.__generate_serial_number(i)
+                    dest_file.write(fmt.format(slno, msgid, msgstr))
 
         else:
-            fmt = "msgid \"{0}\"\nmsgstr \"\"\n\n"
+            fmt = "msgid \"{0}{1}\"\nmsgstr \"\"\n\n"
             with open(path, "w") as dest_file:
+                i = 0
                 for msgid in msgids:
-                    dest_file.write(fmt.format(msgid))
+                    i = i + 1
+                    slno = self.__generate_serial_number(i)
+                    dest_file.write(fmt.format(slno, msgid))
 
             print("Generated skeletal " + path);
 
