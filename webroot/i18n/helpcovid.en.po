@@ -1,258 +1,258 @@
-msgid "LOGIN_COOKIEAGREE"
+msgid "₀₁LOGIN_COOKIEAGREE"
 msgstr "You explicitly agree on usage of <a href='https://en.wikipedia.org/wiki/HTTP_cookie'>web cookies</a>"
 
-msgid "LOGIN_COOKIECLOSE"
+msgid "₀₂LOGIN_COOKIECLOSE"
 msgstr "Close the login window"
 
-msgid "LOGIN_COOKIEMORE"
+msgid "₀₃LOGIN_COOKIEMORE"
 msgstr "Approval of login"
 
-msgid "LOGIN_EMAILPLACEHOLDER"
+msgid "₀₄LOGIN_EMAILPLACEHOLDER"
 msgstr "your-email@address"
 
-msgid "LOGIN_ENGLISH1"
+msgid "₀₅LOGIN_ENGLISH1"
 msgstr "in English"
 
-msgid "LOGIN_ENGLISH2"
+msgid "₀₆LOGIN_ENGLISH2"
 msgstr "<span class="sr-only">(current)</span>"
 
-msgid "LOGIN_FRENCH"
+msgid "₀₇LOGIN_FRENCH"
 msgstr "in French (en français)"
 
-msgid "LOGIN_HEADING"
+msgid "₀₈LOGIN_HEADING"
 msgstr "connection to <a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>"
 
-msgid "LOGIN_HOME"
+msgid "₀₉LOGIN_HOME"
 msgstr "go to home page"
 
-msgid "LOGIN_LOGIN"
+msgid "₁₀LOGIN_LOGIN"
 msgstr "login page"
 
-msgid "LOGIN_PASSWORDPLACEHOLDER"
+msgid "₁₁LOGIN_PASSWORDPLACEHOLDER"
 msgstr "a_str0ng_Pa55word"
 
-msgid "LOGIN_PLEASESIGNIN"
+msgid "₁₂LOGIN_PLEASESIGNIN"
 msgstr "Login with email and password"
 
-msgid "LOGIN_PRIVACY"
+msgid "₁₃LOGIN_PRIVACY"
 msgstr "About your rights to privacy"
 
-msgid "LOGIN_QUICKLINKS"
+msgid "₁₄LOGIN_QUICKLINKS"
 msgstr "Some quick links"
 
-msgid "LOGIN_REGISTER"
+msgid "₁₅LOGIN_REGISTER"
 msgstr "Register yourself."
 
-msgid "LOGIN_REMEMBERME"
+msgid "₁₆LOGIN_REMEMBERME"
 msgstr "Keep information."
 
-msgid "LOGIN_SEARCH"
+msgid "₁₇LOGIN_SEARCH"
 msgstr "Search"
 
-msgid "LOGIN_SEARCHGO"
+msgid "₁₈LOGIN_SEARCHGO"
 msgstr "Go searching"
 
-msgid "LOGIN_SEARCHPLACEHOLDER"
+msgid "₁₉LOGIN_SEARCHPLACEHOLDER"
 msgstr "What you look for"
 
-msgid "LOGIN_SIDEMORE"
+msgid "₂₀LOGIN_SIDEMORE"
 msgstr "More ..."
 
-msgid "LOGIN_SIDEWIDGET"
+msgid "₂₁LOGIN_SIDEWIDGET"
 msgstr "Even more ..."
 
-msgid "LOGIN_SUBMIT"
+msgid "₂₂LOGIN_SUBMIT"
 msgstr "Log in"
 
-msgid "LOGIN_TITLE"
+msgid "₂₃LOGIN_TITLE"
 msgstr "Connection to HelpCovid α"
 
-msgid "LOGIN_WEUSECOOKIES"
+msgid "₂₄LOGIN_WEUSECOOKIES"
 msgstr "We do use web cookies regarding your connections"
 
-msgid "MAINPAGEPOST1"
+msgid "₂₅MAINPAGEPOST1"
 msgstr "⁂Welcome on the test site of <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
 
-msgid "MAINPAGEPOST2"
+msgid "₂₆MAINPAGEPOST2"
 msgstr "⁂Some blurb for test site of <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
 
-msgid "MAINPAGEPOST3"
+msgid "₂₇MAINPAGEPOST3"
 msgstr "⁂Even more blurb on <i>HelpCovid</i>"
 
-msgid "MAINPAGE_CLOSEBUT"
+msgid "₂₈MAINPAGE_CLOSEBUT"
 msgstr "Close window"
 
-msgid "MAINPAGE_COOKIEAGREE"
+msgid "₂₉MAINPAGE_COOKIEAGREE"
 msgstr "Accept web cookies"
 
-msgid "MAINPAGE_COOKIEALERT"
+msgid "₃₀MAINPAGE_COOKIEALERT"
 msgstr "You explicitly accept cookies usage and recording of every data you enter here."
 
-msgid "MAINPAGE_COOKIEMORE"
+msgid "₃₁MAINPAGE_COOKIEMORE"
 msgstr "⁂This is just a demo, data would be lost."
 
-msgid "MAINPAGE_FOOTERPOST"
+msgid "₃₂MAINPAGE_FOOTERPOST"
 msgstr "⁂This demo is likely to crash"
 
-msgid "MAINPAGE_HEADING"
+msgid "₃₃MAINPAGE_HEADING"
 msgstr "<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>,"
 
-msgid "MAINPAGE_HOME"
+msgid "₃₄MAINPAGE_HOME"
 msgstr "main home page of <i>HelpCovid</i>"
 
-msgid "MAINPAGE_NEWER"
+msgid "₃₅MAINPAGE_NEWER"
 msgstr "&larr; newer"
 
-msgid "MAINPAGE_OLDER"
+msgid "₃₆MAINPAGE_OLDER"
 msgstr "&larr; older"
 
-msggid "MAINPAGE_POST_TITLE"
-msgstr "⁂main post title"
+msgid "₃₇MAINPAGE_POST_TITLE"
+msgstr ""
 
-msgid "MAINPAGE_PRIVACY"
+msgid "₃₈MAINPAGE_PRIVACY"
 msgstr "about privacy"
 
-msgid "MAINPAGE_PRIVACYPOLICY"
+msgid "₃₉MAINPAGE_PRIVACYPOLICY"
 msgstr "our privacy policy"
 
-msgid "MAINPAGE_QUICK"
+msgid "₄₀MAINPAGE_QUICK"
 msgstr "⁂quick main..."
 
-msgid "MAINPAGE_READMORE"
+msgid "₄₁MAINPAGE_READMORE"
 msgstr "⁂main read more"
 
-msgid "MAINPAGE_READMORE1"
+msgid "₄₂MAINPAGE_READMORE1"
 msgstr "⁂main read even more, your data would be lost"
 
-msgid "MAINPAGE_READMORE2"
+msgid "₄₃MAINPAGE_READMORE2"
 msgstr "⁂main test site"
 
-msgid "MAINPAGE_SEARCH"
+msgid "₄₄MAINPAGE_SEARCH"
 msgstr ""
 
-msgid "MAINPAGE_SEARCHGO"
+msgid "₄₅MAINPAGE_SEARCHGO"
 msgstr ""
 
-msgid "MAINPAGE_SECOND_HEADING"
+msgid "₄₆MAINPAGE_SECOND_HEADING"
 msgstr ""
 
-msgid "MAINPAGE_SIDEBLURB"
+msgid "₄₇MAINPAGE_SIDEBLURB"
 msgstr ""
 
-msgid "MAINPAGE_SIDEW"
+msgid "₄₈MAINPAGE_SIDEW"
 msgstr ""
 
-msgid "MAINPAGE_SIGNIN"
+msgid "₄₉MAINPAGE_SIGNIN"
 msgstr ""
 
-msgid "MAINPAGE_SIGNUP"
+msgid "₅₀MAINPAGE_SIGNUP"
 msgstr ""
 
-msgid "MAINPAGE_STARTBOOTSTRAP"
+msgid "₅₁MAINPAGE_STARTBOOTSTRAP"
 msgstr ""
 
-msgid "MAINPAGE_WELCOMEPOST"
+msgid "₅₂MAINPAGE_WELCOMEPOST"
 msgstr ""
 
-msgid "REGISTER_BUTTON_COORDINATE"
+msgid "₅₃REGISTER_BUTTON_COORDINATE"
 msgstr ""
 
-msgid "REGISTER_COOKIEAGREE"
+msgid "₅₄REGISTER_COOKIEAGREE"
 msgstr ""
 
-msgid "REGISTER_COOKIENOTICE"
+msgid "₅₅REGISTER_COOKIENOTICE"
 msgstr ""
 
-msgid "REGISTER_CURRENTLANG"
+msgid "₅₆REGISTER_CURRENTLANG"
 msgstr ""
 
-msgid "REGISTER_EMAILAGREE"
+msgid "₅₇REGISTER_EMAILAGREE"
 msgstr ""
 
-msgid "REGISTER_EMAILLAB"
+msgid "₅₈REGISTER_EMAILLAB"
 msgstr ""
 
-msgid "REGISTER_EMAILPLACEH"
+msgid "₅₉REGISTER_EMAILPLACEH"
 msgstr ""
 
-msgid "REGISTER_ENGLISH"
+msgid "₆₀REGISTER_ENGLISH"
 msgstr ""
 
-msgid "REGISTER_FEMALE"
+msgid "₆₁REGISTER_FEMALE"
 msgstr ""
 
-msgid "REGISTER_FIRSTNAME"
+msgid "₆₂REGISTER_FIRSTNAME"
 msgstr ""
 
-msgid "REGISTER_FORM"
+msgid "₆₃REGISTER_FORM"
 msgstr ""
 
-msgid "REGISTER_FRENCH"
+msgid "₆₄REGISTER_FRENCH"
 msgstr ""
 
-msgid "REGISTER_GEOLOCATIONCOORD"
+msgid "₆₅REGISTER_GEOLOCATIONCOORD"
 msgstr ""
 
-msgid "REGISTER_GOBUTTON"
+msgid "₆₆REGISTER_GOBUTTON"
 msgstr ""
 
-msgid "REGISTER_HOME"
+msgid "₆₇REGISTER_HOME"
 msgstr ""
 
-msgid "REGISTER_LASTNAME"
+msgid "₆₈REGISTER_LASTNAME"
 msgstr ""
 
-msgid "REGISTER_MALE"
+msgid "₆₉REGISTER_MALE"
 msgstr ""
 
-msgid "REGISTER_NOGEOLOCATION"
+msgid "₇₀REGISTER_NOGEOLOCATION"
 msgstr ""
 
-msgid "REGISTER_PHONE"
+msgid "₇₁REGISTER_PHONE"
 msgstr ""
 
-msgid "REGISTER_PLEASESIGNUP"
+msgid "₇₂REGISTER_PLEASESIGNUP"
 msgstr ""
 
-msgid "REGISTER_PRIVACY"
+msgid "₇₃REGISTER_PRIVACY"
 msgstr ""
 
-msgid "REGISTER_PRIVACYLINK"
+msgid "₇₄REGISTER_PRIVACYLINK"
 msgstr ""
 
-msgid "REGISTER_PRIVACYPOLICY"
+msgid "₇₅REGISTER_PRIVACYPOLICY"
 msgstr ""
 
-msgid "REGISTER_QUICKLINKS"
+msgid "₇₆REGISTER_QUICKLINKS"
 msgstr ""
 
-msgid "REGISTER_REMINDEMAIL"
+msgid "₇₇REGISTER_REMINDEMAIL"
 msgstr ""
 
-msgid "REGISTER_SEARCH"
+msgid "₇₈REGISTER_SEARCH"
 msgstr ""
 
-msgid "REGISTER_SEARCHFOR"
+msgid "₇₉REGISTER_SEARCHFOR"
 msgstr ""
 
-msgid "REGISTER_SIDEBLURB"
+msgid "₈₀REGISTER_SIDEBLURB"
 msgstr ""
 
-msgid "REGISTER_SIDEWIDGET"
+msgid "₈₁REGISTER_SIDEWIDGET"
 msgstr ""
 
-msgid "REGISTER_SIGNIN"
+msgid "₈₂REGISTER_SIGNIN"
 msgstr ""
 
-msgid "REGISTER_SIGNUP"
+msgid "₈₃REGISTER_SIGNUP"
 msgstr ""
 
-msgid "REGISTER_SUBMIT"
+msgid "₈₄REGISTER_SUBMIT"
 msgstr ""
 
-msgid "REGISTER_TITLE"
+msgid "₈₅REGISTER_TITLE"
 msgstr ""
 
-msgid "REGISTER_TRANSGENDER"
+msgid "₈₆REGISTER_TRANSGENDER"
 msgstr ""
 
