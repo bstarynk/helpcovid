@@ -785,12 +785,20 @@ hcv_initialize_templates(void)
     HCV_DEBUGOUT("<?hcv msg ...?> at "<< filename << ":" << lineno << " " << procinstr);
     if (auto pouts = templdata->output_stream())
       {
+        /// temporary trick to get just 16 debug messages...
+        static std::atomic<std::uint32_t> atomic_count;
+        std::uint32_t curcount = atomic_count.fetch_add(1);
         try
           {
             std::string str =
               hcv_view_expand_msg(dynamic_cast<Hcv_http_template_data*>(templdata), procinstr, filename, lineno, offset);
             *pouts << str;
-            HCV_NEVEROUT("PI " << procinstr  << " @" << filename << ":" << lineno << " =>" << std::endl << str);
+            if (curcount > 16)
+              HCV_NEVEROUT("PI " << procinstr  << " @" << filename << ":" << lineno << " =>" << std::endl << str);
+            else
+              HCV_DEBUGOUT("PI " << procinstr  << " @" << filename << ":" << lineno << " count#" << curcount
+                           << " =>" << std::endl << str);
+
           }
         catch (std::exception& exc)
           {
@@ -802,7 +810,10 @@ hcv_initialize_templates(void)
             HCV_FATALOUT("PI " << procinstr << " @" << filename << ":" << lineno
                          << " got Glib exception " << gex.what());
           }
-        HCV_NEVEROUT("<?hcv msg ...?> at "<< filename << ":" << lineno << " done");
+        if (curcount > 16)
+          HCV_NEVEROUT("<?hcv msg ...?> at "<< filename << ":" << lineno << " done");
+        else
+          HCV_NEVEROUT("<?hcv msg ...?> at "<< filename << ":" << lineno << " done count#" << curcount);
       }
     else
       HCV_SYSLOGOUT(LOG_WARNING, "no output stream for '<?hcv msg ...?>' processing instruction in "

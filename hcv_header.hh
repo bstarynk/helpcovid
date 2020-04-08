@@ -100,6 +100,10 @@ extern "C" unsigned hcv_http_payload_max;
 // JsonCPP https://github.com/open-source-parsers/jsoncpp
 #include "json/json.h"
 
+/// see  https://www.curlpp.org/ - an C++ wrapper around libcurl
+/// for HTTP and other protocol client libraries
+#include "curlpp/cURLpp.hpp"
+
 // Glibmm https://developer.gnome.org/glibmm/stable/
 #include "glibmm.h"
 #include "giomm.h"
@@ -127,7 +131,8 @@ extern "C" const char*hcv_get_hostname(void);
 extern "C" const std::string& hcv_get_html_email_command(void);
 extern "C" const char*hcv_get_locale(void);
 /// see http://man7.org/linux/man-pages/man3/dgettext.3.html
-#define HCV_DGETTEXT_DOMAIN "HELPCOVID"
+/// and http://man7.org/linux/man-pages/man3/bindtextdomain.3.html
+#define HCV_DGETTEXT_DOMAIN "HelpCoviD"
 
 // mark unlikely conditions to help optimization
 #ifdef __GNUC__
@@ -278,9 +283,8 @@ private:
 
 
 //// PostGreSQL database
-extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
-extern "C" std::recursive_mutex hcv_dbmtx;
 extern "C" void hcv_initialize_database(const std::string&uri, bool cleardata);
+extern "C" void hcv_close_database(void);
 
 extern "C" const std::string hcv_postgresql_version(void);
 

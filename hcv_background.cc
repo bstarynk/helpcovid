@@ -221,9 +221,14 @@ hcv_stop_background_thread(void)
 void
 hcv_process_SIGTERM_signal(void)
 {
-  HCV_FATALOUT("hcv_process_SIGTERM_signal unimplemented");
-#warning hcv_process_SIGTERM_signal unimplemented
-  /* we should properly close the database */
+  HCV_DEBUGOUT("start of hcv_process_SIGTERM_signal");
+  hcv_stop_web();
+  hcv_close_database();
+  HCV_SYSLOGOUT(LOG_NOTICE, "HelpCovid terminating on " << hcv_get_hostname
+                << " process " << (int)getpid()
+                << " built " << hcv_timestamp << std::endl
+                << "... md5sum " << hcv_md5sum
+                << " lastgitcommit " << hcv_lastgitcommit);
 } // end hcv_process_SIGTERM_signal
 
 

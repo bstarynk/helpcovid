@@ -15,6 +15,16 @@ The user browser should support HTML5, AJAX, and
 URL start with `/websocket/` and should be secure.
 
 
+## HTTP client side
+
+Some resources may need to be downloaded from the Internet at startup
+time, perhaps by site specific [plugins](PLUGINS.md) (e.g. French
+postal code tables, available as [open
+data](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/),
+see our [README](README.md) for more). Hence we need
+[curlpp](https://www.curlpp.org/) ....
+
+
 ## HTML5 files
 
 The `*.html` files under `webroot/html/` accept `<?hcv ...?>`
