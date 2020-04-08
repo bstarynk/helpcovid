@@ -252,6 +252,14 @@ extern "C" void hcv_config_do(const std::function<void(const Glib::KeyFile*)>&do
 
 extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 
+//////////////// in file hcv_chunkmap.cc
+
+/// parse a file of chunk maps, inspired by C++ raw literal strings
+/// associating a message key to a multi-line message.
+extern "C" std::map<std::string,std::string>
+hcv_parse_chunk_map(const std::string& filepath);
+
+////////////////
 
 //// get a string in [html] section of configuration file.
 //// if missing, return an empty string.
