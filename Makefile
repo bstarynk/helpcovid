@@ -90,16 +90,21 @@ sanitized-helpcovid: $(HELPCOVID_SANITIZED_OBJECTS) __timestamp.o
 	$(RM) __timestamp.o
 
 %.sanit.o: %.cc
-	$(COMPILE.cc) $^ $(HELPCOVID_SANITIZE_CXXFLAGS) -o $@
+	 $^ $(HELPCOVID_SANITIZE_CXXFLAGS) -o $@
 
 %.so: %.cc
 	$(LINK.cc) -fPIC -shared $^ -o $@
 
+# to help debugging preprocessor macros
+%.ii: %.cc
+	 $(HELPCOVID_BUILD_CXX) -C -E $(CXXFLAGS) $^ | sed 's:^#://\0:g' > $@
+
+
 %_sanit.so: %.cc
-	$(LINK.cc) -fPIC -shared $(HELPCOVID_SANITIZE_CXXFLAGS) $^ -o $@
+	$(LINK.cc) -fPIC -shared $(HELPCOVID_SANITIZE_CXXFLAGS) $^ -o $<
 
 clean:
-	$(RM) *~ *% *.orig *.o helpcovid *tmp core*
+	$(RM) *~ *% *.orig *.o *.ii helpcovid *tmp core*
 
 indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS) $(HELPCOVID_PLUGINSOURCES)
