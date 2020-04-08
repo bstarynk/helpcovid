@@ -40,6 +40,11 @@ unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
 bool hcv_should_clear_database;
 
+extern "C" void hcv_release_locale_resources(void);
+
+
+extern "C" char*hcv_textdomain_dir;
+char*hcv_textdomain_dir;
 /// the email command to send HTML5 emails  is popen-ed as <command> <subject> <to_addr> ....
 /// see also https://unix.stackexchange.com/a/15463/50557
 std::string hcv_email_command;
@@ -812,7 +817,7 @@ hcv_config_handle_helpcovid_config_group(void)
       std::string localestr = kf->get_string("helpcovid","locale");
       if (localestr.empty())
         HCV_SYSLOGOUT(LOG_WARNING,
-                      "helpcovid misses an locale in configuration file");
+                      "helpcovid misses an locale= in configuration file [helpcovid] section");
       else
         {
           char*newloc = setlocale(LC_ALL,localestr.c_str());
@@ -825,6 +830,36 @@ hcv_config_handle_helpcovid_config_group(void)
           else
             HCV_SYSLOGOUT(LOG_WARNING, "helpcovid failed to set thru configuration locale to "
                           << localestr);
+        }
+    }
+    ////////////////////////////////////////////////////////////////
+    /////////// the locale text domain configuration in [helpcovid]
+    /// we have to be paranoid here.... This could be a cybersecurity risk.
+    {
+      std::string textdomstr = kf->get_string("helpcovid","text_domain");
+      if (textdomstr.empty())
+        HCV_SYSLOGOUT(LOG_WARNING,
+                      "helpcovid misses a text_domain= in configuration file [helpcovid] section");
+      else
+        {
+          char* textdomdir = realpath(textdomstr.c_str(), nullptr);
+          if (!textdomdir)
+            HCV_FATALOUT("hcv_config_handle_helpcovid_config_group failed to realpath the text_domain=" << textdomstr
+                         << " in configuration file [helpcovid] section");
+          struct stat textdomstat;
+          memset(&textdomstat, 0, sizeof(textdomstat));
+          if (stat(textdomdir, &textdomstat))
+            HCV_FATALOUT("hcv_config_handle_helpcovid_config_group failed to stat the real text_domain=" << textdomdir
+                         << " in configuration file [helpcovid] section");
+          if ((textdomstat.st_mode & S_IFMT) != S_IFDIR)
+            HCV_FATALOUT("hcv_config_handle_helpcovid_config_group failed the real text_domain=" << textdomdir
+                         << " is not a directory in configuration file [helpcovid] section");
+          hcv_textdomain_dir = bindtextdomain(HCV_DGETTEXT_DOMAIN, textdomdir);
+          if (!hcv_textdomain_dir)
+            HCV_FATALOUT("hcv_config_handle_helpcovid_config_group failed to bindtextdomain for  text_domain=" << textdomdir
+                         << " in configuration file [helpcovid] section");
+          HCV_SYSLOGOUT(LOG_INFO, "helpcovid did bindtextdomain " << hcv_textdomain_dir
+                        << " for text_domain=" << textdomstr << " in configuration file [helpcovid] section.");
         }
     }
   });
@@ -907,6 +942,23 @@ hcv_initialize_curlpp(void)
   HCV_SYSLOGOUT(LOG_NOTICE, "initialized curlpp version " << (cURLpp::libcurlVersion())
                 << " - see www.curlpp.org for more." << std::endl);
 } // end hcv_initialize_curlpp
+
+
+///
+////////////////////////////////////////////////////////////////
+void
+hcv_release_locale_resources(void)
+{
+#warning this could be wrong in hcv_release_locale_resources
+  // since it is unspecified about what bindtextdomain returns
+#if 0 && wrong_code_in_hcv_release_locale_resources
+  if (hcv_textdomain_dir)
+    free (hcv_textdomain_dir), hcv_textdomain_dir = nullptr;
+#endif
+} // end hcv_release_locale_resources
+
+
+
 ///
 ////////////////////////////////////////////////////////////////
 int
@@ -1077,7 +1129,9 @@ main(int argc, char**argv)
   hcv_start_background_thread();
   errno = 0;
   hcv_webserver_run();
-
+  errno = 0;
+  hcv_release_locale_resources();
+  errno = 0;
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
   hcv_main_argc = 0;
   hcv_main_argv = nullptr;
