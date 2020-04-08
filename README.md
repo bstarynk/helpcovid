@@ -9,8 +9,17 @@ for older neighbours (avoiding elder persons having to go out).
 
 The web server application runs on Linux (like most web servers). The
 users are using *recent* web browsers (Firefox, Chrome, mobile phones)
-on various computers, tablets, mobile phones connected to the [World
-Wide Web](https://en.wikipedia.org/wiki/World_Wide_Web).
+on various computers (perhaps running non-Linux based operating
+systems, such as Windows, MacOSX, etc...), tablets, mobile phones
+connected to the [World Wide
+Web](https://en.wikipedia.org/wiki/World_Wide_Web).
+
+## development help is wanted
+
+Please contact one of the authors by email. See email addresses
+elsewhere.
+
+-----
 
 Of course that application stores personal data in some
 [PostGreSQL](http://postgresql.org/) database, so is concerned by
