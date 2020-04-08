@@ -282,9 +282,8 @@ private:
 
 
 //// PostGreSQL database
-extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
-extern "C" std::recursive_mutex hcv_dbmtx;
 extern "C" void hcv_initialize_database(const std::string&uri, bool cleardata);
+extern "C" void hcv_close_database(void);
 
 extern "C" const std::string hcv_postgresql_version(void);
 

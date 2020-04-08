@@ -126,10 +126,12 @@ void hcv_initialize_web(const std::string&weburl, const std::string&webroot, con
 void
 hcv_stop_web()
 {
-  HCV_SYSLOGOUT(LOG_WARNING, "unimplemented hcv_stop_web with hcv_webserver@" << (void*)hcv_webserver);
+  HCV_DEBUGOUT("start of hcv_stop_web");
+  HCV_ASSERT(hcv_webserver);
+  hcv_webserver->stop();
   delete hcv_webserver;
   hcv_webserver = nullptr;
-#warning TODO: implement hcv_stop_web
+  HCV_SYSLOGOUT(LOG_NOTICE, "hcv_stop_web stopped the web service");
 } // end hcv_stop_web
 
 

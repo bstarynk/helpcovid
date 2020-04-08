@@ -32,6 +32,9 @@
 extern "C" const char hcv_database_gitid[] = HELPCOVID_GITID;
 extern "C" const char hcv_database_date[] = __DATE__;
 
+extern "C" std::unique_ptr<pqxx::connection> hcv_dbconn;
+extern "C" std::recursive_mutex hcv_dbmtx;
+
 /// the database connection
 std::unique_ptr<pqxx::connection> hcv_dbconn;
 
@@ -378,5 +381,17 @@ hcv_database_get_id_of_added_web_cookie(const std::string& randomstr, time_t exp
   return id;
 } // end hcv_database_get_id_of_added_web_cookie
 
+
+
+void
+hcv_close_database(void)
+{
+  HCV_DEBUGOUT("hcv_close_database start");
+  std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
+  HCV_ASSERT(hcv_dbconn);
+  std::string dbnamestr(hcv_dbconn->dbname());
+  hcv_dbconn.reset(nullptr);
+  HCV_SYSLOGOUT(LOG_NOTICE, "closed database " << dbnamestr);
+} // end hcv_close_database
 
 /////////// end of file hcv_database.cc in github.com/bstarynk/helpcovid

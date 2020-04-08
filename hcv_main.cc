@@ -905,9 +905,9 @@ hcv_initialize_curlpp(void)
   errno = 0;
   cURLpp::initialize(CURL_GLOBAL_ALL);
   HCV_SYSLOGOUT(LOG_NOTICE, "initialized curlpp version " << (cURLpp::libcurlVersion())
-		<< " - see www.curlpp.org for more." << std::endl);
+                << " - see www.curlpp.org for more." << std::endl);
 } // end hcv_initialize_curlpp
-/// 
+///
 ////////////////////////////////////////////////////////////////
 int
 main(int argc, char**argv)
