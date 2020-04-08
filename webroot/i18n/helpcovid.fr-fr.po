@@ -1,258 +1,258 @@
 msgid "LOGIN_COOKIEAGREE"
-msgstr "Vous approuvez l'utilisation de cookies. Voir <a href='https://fr.wikipedia.org/wiki/Cookie_(informatique)'>ceci</a> pour les détails"
+msgstr "₀₀₁Vous approuvez l'utilisation de cookies. Voir <a href='https://fr.wikipedia.org/wiki/Cookie_(informatique)'>ceci</a> pour les détails"
 
 msgid "LOGIN_COOKIECLOSE"
-msgstr "Fermer la fenêtre login"
+msgstr "₀₀₂Fermer la fenêtre login"
 
 msgid "LOGIN_COOKIEMORE"
-msgstr "Approbation"
+msgstr "₀₀₃Approbation"
 
 msgid "LOGIN_EMAILPLACEHOLDER"
-msgstr "adresse@courriel"
+msgstr "₀₀₄adresse@courriel"
 
 msgid "LOGIN_ENGLISH1"
-msgstr "en anglais (in English)"
+msgstr "₀₀₅en anglais (in English)"
 
 msgid "LOGIN_ENGLISH2"
-msgstr "<span class="sr-only">(choix actuel)</span>"
+msgstr "₀₀₆<span class="sr-only">(choix actuel)</span>"
 
 msgid "LOGIN_FRENCH"
-msgstr "en français (in French)"
+msgstr "₀₀₇en français (in French)"
 
 msgid "LOGIN_HEADING"
-msgstr "connexion à <a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>"
+msgstr "₀₀₈connexion à <a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>"
 
 msgid "LOGIN_HOME"
-msgstr "retour à la page d&apos;acceuil"
+msgstr "₀₀₉retour à la page d&apos;acceuil"
 
 msgid "LOGIN_LOGIN"
-msgstr "page de connexion"
+msgstr "₀₁₀page de connexion"
 
 msgid "LOGIN_PASSWORDPLACEHOLDER"
-msgstr "votre_mot_de_passe_7rieux"
+msgstr "₀₁₁votre_mot_de_passe_7rieux"
 
 msgid "LOGIN_PLEASESIGNIN"
-msgstr "Connexion avec votre adresse de courriel et mot de passe"
+msgstr "₀₁₂Connexion avec votre adresse de courriel et mot de passe"
 
 msgid "LOGIN_PRIVACY"
-msgstr "À propos de vos droits (vie privée)"
+msgstr "₀₁₃À propos de vos droits (vie privée)"
 
 msgid "LOGIN_QUICKLINKS"
-msgstr "quelques liens rapides"
+msgstr "₀₁₄quelques liens rapides"
 
 msgid "LOGIN_REGISTER"
-msgstr "vous enregistrez sur ce site."
+msgstr "₀₁₅vous enregistrez sur ce site."
 
 msgid "LOGIN_REMEMBERME"
-msgstr "conserver les informations"
+msgstr "₀₁₆conserver les informations"
 
 msgid "LOGIN_SEARCH"
-msgstr "rechercher (ne fonctionne pas)"
+msgstr "₀₁₇rechercher (ne fonctionne pas)"
 
 msgid "LOGIN_SEARCHGO"
-msgstr "chercher"
+msgstr "₀₁₈chercher"
 
 msgid "LOGIN_SEARCHPLACEHOLDER"
-msgstr "ce que vous cherchez"
+msgstr "₀₁₉ce que vous cherchez"
 
 msgid "LOGIN_SIDEMORE"
-msgstr "Encore un peu plus"
+msgstr "₀₂₀Encore un peu plus"
 
 msgid "LOGIN_SIDEWIDGET"
-msgstr "Pour en savoir plus"
+msgstr "₀₂₁Pour en savoir plus"
 
 msgid "LOGIN_SUBMIT"
-msgstr "connexion!"
+msgstr "₀₂₂connexion!"
 
 msgid "LOGIN_TITLE"
-msgstr "Connexion à HelpCovid α"
+msgstr "₀₂₃Connexion à HelpCovid α"
 
 msgid "LOGIN_WEUSECOOKIES"
-msgstr "Nous utilisons des cookies pour conserver l&apos;état de votre connexion"
+msgstr "₀₂₄Nous utilisons des cookies pour conserver l&apos;état de votre connexion"
 
 msgid "MAINPAGEPOST1"
-msgstr "⁂Bienvenue sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
+msgstr "₀₂₅⁂Bienvenue sur le site test de <a href='https://github.com/bstarynk/'>HelpCoVid</a>"
 
 msgid "MAINPAGEPOST2"
-msgstr "⁂Baratin sur le site test de <a href='https://github.com/bstarynk/'>HelpCovid</a>"
+msgstr "₀₂₆⁂Baratin sur le site test de <a href='https://github.com/bstarynk/'>HelpCovid</a>"
 
 msgid "MAINPAGEPOST3"
-msgstr "⁂Un peu plus sur le site test de <a href='https://github.com/bstarynk/'>HelpCovid</a>"
+msgstr "₀₂₇⁂Un peu plus sur le site test de <a href='https://github.com/bstarynk/'>HelpCovid</a>"
 
 msgid "MAINPAGE_CLOSEBUT"
-msgstr "Fermer la fenêtre"
+msgstr "₀₂₈Fermer la fenêtre"
 
 msgid "MAINPAGE_COOKIEAGREE"
-msgstr "Accepter les cookies"
+msgstr "₀₂₉Accepter les cookies"
 
 msgid "MAINPAGE_COOKIEALERT"
-msgstr "Vous acceptez l&apos;utilisation des cookies et l&apos;enregistrement des données que vous entrez ici."
+msgstr "₀₃₀Vous acceptez l&apos;utilisation des cookies et l&apos;enregistrement des données que vous entrez ici."
 
 msgid "MAINPAGE_COOKIEMORE"
-msgstr "⁂C&apos;est juste une démo, les données seront jetées..."
+msgstr "₀₃₁⁂C&apos;est juste une démo, les données seront jetées..."
 
 msgid "MAINPAGE_FOOTERPOST"
-msgstr "⁂Ceci est une démo qui plantera probablement"
+msgstr "₀₃₂⁂Ceci est une démo qui plantera probablement"
 
 msgid "MAINPAGE_HEADING"
-msgstr "<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>, un site pour vous aider pendant la pandémie Covid19"
+msgstr "₀₃₃<a href='https://github.com/bstarynk/helpcovid'>HelpCovid</a>, un site pour vous aider pendant la pandémie Covid19"
 
 msgid "MAINPAGE_HOME"
-msgstr "page principale de <i>HelpCovid</i>"
+msgstr "₀₃₄page principale de <i>HelpCovid</i>"
 
 msgid "MAINPAGE_NEWER"
-msgstr "&larr; plus récent"
+msgstr "₀₃₅&larr; plus récent"
 
 msgid "MAINPAGE_OLDER"
-msgstr "&larr; plus ancien"
+msgstr "₀₃₆&larr; plus ancien"
 
 msgid "MAINPAGE_POST_TITLE"
-msgstr "⁂titre post HelpCovid"
+msgstr "₀₃₇⁂titre post HelpCovid"
 
 msgid "MAINPAGE_PRIVACY"
-msgstr "vie privée"
+msgstr "₀₃₈vie privée"
 
 msgid "MAINPAGE_PRIVACYPOLICY"
-msgstr "politique sur les données privées"
+msgstr "₀₃₉politique sur les données privées"
 
 msgid "MAINPAGE_QUICK"
-msgstr "⁂rapidement ..."
+msgstr "₀₄₀⁂rapidement ..."
 
 msgid "MAINPAGE_READMORE"
-msgstr "pour en savoir plus"
+msgstr "₀₄₁pour en savoir plus"
 
 msgid "MAINPAGE_READMORE1"
-msgstr "⁂ceci est un test"
+msgstr "₀₄₂⁂ceci est un test"
 
 msgid "MAINPAGE_READMORE2"
-msgstr "⁂vos données seront perdues"
+msgstr "₀₄₃⁂vos données seront perdues"
 
 msgid "MAINPAGE_SEARCH"
-msgstr "recherche"
+msgstr "₀₄₄recherche"
 
 msgid "MAINPAGE_SEARCHGO"
-msgstr "rechercher"
+msgstr "₀₄₅rechercher"
 
 msgid "MAINPAGE_SECOND_HEADING"
-msgstr "⁂Un <a href='http://april.org/'>logiciel libre</a> déployé bénévolement et pas encore au point. Pour s&apos;entre-aider entre voisins pendant le confinement."
+msgstr "₀₄₆⁂Un <a href='http://april.org/'>logiciel libre</a> déployé bénévolement et pas encore au point. Pour s&apos;entre-aider entre voisins pendant le confinement."
 
 msgid "MAINPAGE_SIDEBLURB"
-msgstr "⁂Ce site web risque fort de planter et perdre vos données. Soyez patients. Ce site est souvent indisponible, nous le mettons au point. <small>This website is for testing purposes only</small>"
+msgstr "₀₄₇⁂Ce site web risque fort de planter et perdre vos données. Soyez patients. Ce site est souvent indisponible, nous le mettons au point. <small>This website is for testing purposes only</small>"
 
 msgid "MAINPAGE_SIDEW"
-msgstr "À propos de ce site"
+msgstr "₀₄₈À propos de ce site"
 
 msgid "MAINPAGE_SIGNIN"
-msgstr "⁇ SIGNIN"
+msgstr "₀₄₉⁇ SIGNIN"
 
 msgid "MAINPAGE_SIGNUP"
-msgstr "⁇ SIGNUP"
+msgstr "₀₅₀⁇ SIGNUP"
 
 msgid "MAINPAGE_STARTBOOTSTRAP"
-msgstr "⁇ MAINPAGE_STARTBOOTSTRAP"
+msgstr "₀₅₁⁇ MAINPAGE_STARTBOOTSTRAP"
 
 msgid "MAINPAGE_WELCOMEPOST"
-msgstr "⁇ MAINPAGE_WELCOMEPOST"
+msgstr "₀₅₂⁇ MAINPAGE_WELCOMEPOST"
 
 msgid "REGISTER_BUTTON_COORDINATE"
-msgstr "⁇ REGISTER_BUTTON_COORDINATE"
+msgstr "₀₅₃⁇ REGISTER_BUTTON_COORDINATE"
 
 msgid "REGISTER_COOKIEAGREE"
-msgstr "⁇ REGISTER_COOKIEAGREE"
+msgstr "₀₅₄⁇ REGISTER_COOKIEAGREE"
 
 msgid "REGISTER_COOKIENOTICE"
-msgstr "⁇ REGISTER_COOKIENOTICE"
+msgstr "₀₅₅⁇ REGISTER_COOKIENOTICE"
 
 msgid "REGISTER_CURRENTLANG"
-msgstr "⁇ REGISTER_CURRENTLANG"
+msgstr "₀₅₆⁇ REGISTER_CURRENTLANG"
 
 msgid "REGISTER_EMAILAGREE"
-msgstr "⁇ REGISTER_EMAILAGREE"
+msgstr "₀₅₇⁇ REGISTER_EMAILAGREE"
 
 msgid "REGISTER_EMAILLAB"
-msgstr "⁇ REGISTER_EMAILLAB"
+msgstr "₀₅₈⁇ REGISTER_EMAILLAB"
 
 msgid "REGISTER_EMAILPLACEH"
-msgstr "⁇ REGISTER_EMAILPLACEH"
+msgstr "₀₅₉⁇ REGISTER_EMAILPLACEH"
 
 msgid "REGISTER_ENGLISH"
-msgstr "⁇ REGISTER_ENGLISH"
+msgstr "₀₆₀⁇ REGISTER_ENGLISH"
 
 msgid "REGISTER_FEMALE"
-msgstr "femme"
+msgstr "₀₆₁femme"
 
 msgid "REGISTER_FIRSTNAME"
-msgstr "prénom"
+msgstr "₀₆₂prénom"
 
 msgid "REGISTER_FORM"
-msgstr "⁇ REGISTER_FORM"
+msgstr "₀₆₃⁇ REGISTER_FORM"
 
 msgid "REGISTER_FRENCH"
-msgstr "⁇ REGISTER_FRENCH"
+msgstr "₀₆₄⁇ REGISTER_FRENCH"
 
 msgid "REGISTER_GEOLOCATIONCOORD"
-msgstr "⁇ REGISTER_GEOLOCATIONCOORD"
+msgstr "₀₆₅⁇ REGISTER_GEOLOCATIONCOORD"
 
 msgid "REGISTER_GOBUTTON"
-msgstr "⁇ REGISTER_GOBUTTON"
+msgstr "₀₆₆⁇ REGISTER_GOBUTTON"
 
 msgid "REGISTER_HOME"
-msgstr "⁇ REGISTER_HOME"
+msgstr "₀₆₇⁇ REGISTER_HOME"
 
 msgid "REGISTER_LASTNAME"
-msgstr "nom de famille"
+msgstr "₀₆₈nom de famille"
 
 msgid "REGISTER_MALE"
-msgstr "homme"
+msgstr "₀₆₉homme"
 
 msgid "REGISTER_NOGEOLOCATION"
-msgstr "pas de géolocalisation"
+msgstr "₀₇₀pas de géolocalisation"
 
 msgid "REGISTER_PHONE"
-msgstr "téléphone mobile"
+msgstr "₀₇₁téléphone mobile"
 
 msgid "REGISTER_PLEASESIGNUP"
-msgstr "⁇ REGISTER_PLEASESIGNUP"
+msgstr "₀₇₂⁇ REGISTER_PLEASESIGNUP"
 
 msgid "REGISTER_PRIVACY"
-msgstr "⁇ REGISTER_PRIVACY"
+msgstr "₀₇₃⁇ REGISTER_PRIVACY"
 
 msgid "REGISTER_PRIVACYLINK"
-msgstr "⁇ REGISTER_PRIVACYLINK"
+msgstr "₀₇₄⁇ REGISTER_PRIVACYLINK"
 
 msgid "REGISTER_PRIVACYPOLICY"
-msgstr "⁇ REGISTER_PRIVACYPOLICY"
+msgstr "₀₇₅⁇ REGISTER_PRIVACYPOLICY"
 
 msgid "REGISTER_QUICKLINKS"
-msgstr "⁇ REGISTER_QUICKLINKS"
+msgstr "₀₇₆⁇ REGISTER_QUICKLINKS"
 
 msgid "REGISTER_REMINDEMAIL"
-msgstr "⁇ REGISTER_REMINDEMAIL"
+msgstr "₀₇₇⁇ REGISTER_REMINDEMAIL"
 
 msgid "REGISTER_SEARCH"
-msgstr "rechercher..."
+msgstr "₀₇₈rechercher..."
 
 msgid "REGISTER_SEARCHFOR"
-msgstr "à propos de..."
+msgstr "₀₇₉à propos de..."
 
 msgid "REGISTER_SIDEBLURB"
-msgstr "⁂Ce site web est un test."
+msgstr "₀₈₀⁂Ce site web est un test."
 
 msgid "REGISTER_SIDEWIDGET"
-msgstr "⁂Ce site web est à mettre au point"
+msgstr "₀₈₁⁂Ce site web est à mettre au point"
 
 msgid "REGISTER_SIGNIN"
-msgstr "⁇ REGISTER_SIGNIN"
+msgstr "₀₈₂⁇ REGISTER_SIGNIN"
 
 msgid "REGISTER_SIGNUP"
-msgstr "⁇ REGISTER_SIGNUP"
+msgstr "₀₈₃⁇ REGISTER_SIGNUP"
 
 msgid "REGISTER_SUBMIT"
-msgstr "envoyer"
+msgstr "₀₈₄envoyer"
 
 msgid "REGISTER_TITLE"
-msgstr "page d&apos;enregistrement"
+msgstr "₀₈₅page d&apos;enregistrement"
 
 msgid "REGISTER_TRANSGENDER"
-msgstr "transgenre ou non renseigné"
+msgstr "₀₈₆transgenre ou non renseigné"
 
