@@ -1,11 +1,14 @@
 # helpcovid
 
-A quick and dirty C++17 application (GPLv3+) to help neighbours making
+A quick and dirty C++17 web application (GPLv3+) to help neighbours making
 essential buying (food, medicine) during the [2019–20 coronavirus
 pandemic](https://en.wikipedia.org/wiki/2019–20_coronavirus_pandemic)
 for older neighbours (avoiding elder persons having to go out).
 
 **For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
+
+The web server application runs on Linux (like most web servers). The
+users are using recent web browsers (Firefox, Chrome, mobile phones).
 
 Of course that application stores personal data in some
 [PostGreSQL](http://postgresql.org/) database, so is concerned by
