@@ -1062,7 +1062,11 @@ main(int argc, char**argv)
         HCV_SYSLOGOUT(LOG_WARNING, "helpcovid unable to write builtin pidfile " << HCV_BUILTIN_PIDFILE);
     }
   errno = 0;
-  HCV_DEBUGOUT("helpcovid using textdomain " << textdomain(nullptr));
+  {
+    auto td = textdomain(HCV_DGETTEXT_DOMAIN);
+    HCV_DEBUGOUT("helpcovid using textdomain " << td
+		 << " and locale " << hcv_get_locale());
+  }
   errno = 0;
   hcv_initialize_database(hcv_progargs.hcvprog_postgresuri, hcv_should_clear_database);
   errno = 0;

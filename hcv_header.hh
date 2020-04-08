@@ -131,7 +131,7 @@ extern "C" const char*hcv_get_hostname(void);
 extern "C" const std::string& hcv_get_html_email_command(void);
 extern "C" const char*hcv_get_locale(void);
 /// see http://man7.org/linux/man-pages/man3/dgettext.3.html
-#define HCV_DGETTEXT_DOMAIN "HELPCOVID"
+#define HCV_DGETTEXT_DOMAIN "HelpCoviD"
 
 // mark unlikely conditions to help optimization
 #ifdef __GNUC__
