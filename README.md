@@ -8,7 +8,9 @@ for older neighbours (avoiding elder persons having to go out).
 **For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
 
 The web server application runs on Linux (like most web servers). The
-users are using recent web browsers (Firefox, Chrome, mobile phones).
+users are using *recent* web browsers (Firefox, Chrome, mobile phones)
+on various computers, tablets, mobile phones connected to the [World
+Wide Web](https://en.wikipedia.org/wiki/World_Wide_Web).
 
 Of course that application stores personal data in some
 [PostGreSQL](http://postgresql.org/) database, so is concerned by
