@@ -18,8 +18,12 @@ URL start with `/websocket/` and should be secure.
 ## HTTP client side
 
 Some resources may need to be downloaded from the Internet at startup
-time, perhaps by plugins (e.g. French postal code tables, available as
-open data, see our [README](README.md) for more). Hence we need [curlpp](htt
+time, perhaps by site specific [plugins](PLUGINS.md) (e.g. French
+postal code tables, available as [open
+data](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/),
+see our [README](README.md) for more). Hence we need
+[curlpp](https://www.curlpp.org/) ....
+
 
 ## HTML5 files
 
