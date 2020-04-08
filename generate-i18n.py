@@ -295,11 +295,11 @@ class Generator:
                 for line in po_file:
                     if "msgid" in line:
                         msgid = line.split("msgid ")[1].strip().strip('"')
-                        msgid = self.__strip_serial_number(msgid)
                         continue
 
                     if "msgstr" in line and msgid:
                         msgstr = line.split("msgstr ")[1].strip().strip('"')
+                        msgstr = self.__strip_serial_number(msgstr)
                         self.messages[msgid] = msgstr
                         msgid = None
                         continue
@@ -328,7 +328,11 @@ class Generator:
         if not self.subscript:
             return ""
 
-        padding = len(list(str(total))) - len(list(str(num)))
+        offset = len(list(str(total)))
+        if offset < 3:
+            offset = 3
+
+        padding = offset - len(list(str(num)))
         if padding:
             padding = "0" * padding
         else:
@@ -349,8 +353,8 @@ class Generator:
         return slno
 
 
-    def __strip_serial_number(self, msgid):
-        clean = msgid.replace("\u2080", "")
+    def __strip_serial_number(self, msgstr):
+        clean = msgstr.replace("\u2080", "")
         clean = clean.replace("\u2081", "")
         clean = clean.replace("\u2082", "")
         clean = clean.replace("\u2083", "")
@@ -377,24 +381,24 @@ class Generator:
 
             self.messages = dict(sorted(self.messages.items()))
 
-            fmt = "msgid \"{0}{1}\"\nmsgstr \"{2}\"\n\n"
+            fmt = "msgid \"{0}\"\nmsgstr \"{1}{2}\"\n\n"
             with open(path, "w") as dest_file:
                 i = 0
                 total = len(self.messages.items())
                 for msgid, msgstr in self.messages.items():
                     i = i + 1
                     slno = self.__generate_serial_number(i, total)
-                    dest_file.write(fmt.format(slno, msgid, msgstr))
+                    dest_file.write(fmt.format(msgid, slno, msgstr))
 
         else:
-            fmt = "msgid \"{0}{1}\"\nmsgstr \"\"\n\n"
+            fmt = "msgid \"{0}\"\nmsgstr \"{1}\"\n\n"
             with open(path, "w") as dest_file:
                 i = 0
                 total = len(msgids)
                 for msgid in msgids:
                     i = i + 1
                     slno = self.__generate_serial_number(i, total)
-                    dest_file.write(fmt.format(slno, msgid))
+                    dest_file.write(fmt.format(msgid, slno))
 
             print("Generated skeletal " + path);
 
