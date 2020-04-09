@@ -460,15 +460,14 @@ we are supposing
 [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)
 compliance, even if this software collects personal data.... (which is relevant for *deployment* not for coding). We don't have time to check for that compliance.
 
-First, one would **voluntarily** register
-himself/herself, with *first name*, *last name*, *birth year*,
-*email*, *phone*, *home-address* and optionally possibly more health
-related information (e.g. French [National Identification
-Number](https://en.wikipedia.org/wiki/National_identification_number)
-also known as [*numéro de Sécurité
-Sociale*](https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France)...).
+First, one would **voluntarily** register himself/herself, with *first
+name*, *last name*, *birth year* or approximate age (e.g. I am between
+50 and 55 years old), *email*, *phone*, *home-address* and optionally
+possibly more health related information.
 
-Then a user would -on his/her free will- add more information about himself/herself. We dream of providing an infrastructure where someone could on his free will declare:
+Then a user would -on his/her free will- add more information about
+himself/herself. We dream of providing an infrastructure where someone
+could on his free will declare:
 
 * I am health professional
 
@@ -498,8 +497,7 @@ même si bien sûr ce logiciel collecte des données personnelles (c'est
 pertinent au *déploiement*, pas au codage). Nous n'avons pas le temps de
 vérifier cette conformité.
 
-En premier lieu, un utilisateur s'enregistrerait **de son plein gré** avec ses *prénoms*, *nom de famille*, *année de naissance*, *lieu de résidence*, et peut-être même des informations liées à sa santé (notamment son  [*numéro de Sécurité
-Sociale*](https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_s%C3%A9curit%C3%A9_sociale_en_France)...).
+En premier lieu, un utilisateur s'enregistrerait **de son plein gré** avec ses *prénoms*, *nom de famille*, *année de naissance* (ou *tranche d'âge*), *lieu de résidence*, et peut-être même des informations liées à sa santé.
 
 Puis cet utilisateur ajouterait -de sa propre volonté- des informations supplémentaires. Nous rêvons de fournir une infrastructure permettant d'indiquer:
 
