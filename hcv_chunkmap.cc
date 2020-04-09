@@ -83,6 +83,7 @@ hcv_parse_chunk_map(const std::string& filepath)
       switch (state)
         {
         case HCVCHUNKSTATE_SKIPSPACES:
+        {
           if (linbuf.empty())
             continue;
           // lines starting with # are comments
@@ -98,8 +99,63 @@ hcv_parse_chunk_map(const std::string& filepath)
               };
           if (allspaces)
             continue;
-#warning very incomplete hcv_parse_chunk_map
+          if (linbuf.size() >= 3
+              && linbuf[0] == '!'
+              && isalpha(linbuf[1]))
+            {
+              state = HCVCHUNKSTATE_HEADERLINE;
+              goto parse_headerline;
+            }
+          else
+            HCV_FATALOUT("hcv_parse_chunk_map, in file " << filepath
+                         << ", line# " << lincnt
+                         << " is unexpected:" << linbuf);
+        };
+        break;
+        ////
         case HCVCHUNKSTATE_HEADERLINE:
+parse_headerline:
+          {
+            char chunknamebuf[64];
+            memset (chunknamebuf, 0, sizeof(chunknamebuf));
+            char endstrbuf[32];
+            memset(endstrbuf, 0, sizeof(endstrbuf));
+            int endpos= -1;
+            if (linbuf.size() >= 3
+                && linbuf[0] == '!'
+                && isalpha(linbuf[1]))
+              {
+                if (sscanf(linbuf.c_str(),
+                           "!%60[A-Za-z0-9_]'%n", chunknamebuf, &endpos) >= 1
+                    && endpos>2 && linbuf[endpos-1]=='\'')
+                  {
+                    /**
+                     * single-line chunk line such as
+                     * !FOO'some chunk on single line up to end-of-line
+                     **/
+                  }
+                else if (sscanf(linbuf.c_str(),
+                                "!%60[A-Za-z0-9_]\"%30[A-Za-z0-9_](%n",
+                                chunknamebuf, endstrbuf, &endpos) >= 2
+                         && endpos>4 && isalpha(endstrbuf[0])
+                         && linbuf[endpos-1]=='(')
+                  {
+                    /**
+                     * multi-line chunk line starting with
+                     * !MULTIBAR"abc(
+                     **/
+                  }
+                else goto badheaderline;
+              }
+            else
+badheaderline:
+              HCV_FATALOUT("hcv_parse_chunk_map line#" << lincnt
+                           << " bad header line state=" << statenames[state]
+                           << " line:" << linbuf);
+          }
+          break;
+          ////
+#warning very incomplete hcv_parse_chunk_map
         case HCVCHUNKSTATE__NONE:
           HCV_FATALOUT("hcv_parse_chunk_map line#" << lincnt
                        << " unimplemented state=" << statenames[state]
