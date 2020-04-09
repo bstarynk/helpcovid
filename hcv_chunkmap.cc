@@ -42,6 +42,7 @@ static constexpr unsigned hcv_max_chunkmap_linelen = 65536;
 std::map<std::string,std::string>
 hcv_parse_chunk_map(const std::string& filepath)
 {
+#define HCVSTATE_ENDLABEL_LEN 32
   std::map<std::string,std::string> resultmap;
   HCV_DEBUGOUT("hcv_parse_chunk_map start filepath=" << filepath);
   if (access(filepath.c_str(), R_OK))
@@ -75,7 +76,7 @@ hcv_parse_chunk_map(const std::string& filepath)
   std::string chunkbody;
   for (std::string linbuf; (off=inp.tellg()), std::getline(inp, linbuf); )
     {
-      char endstrbuf[32]; // that size appears in sscanf below
+      char endstrbuf[HCVSTATE_ENDLABEL_LEN]; // that size appears in sscanf below
       memset(endstrbuf, 0, sizeof(endstrbuf));
       lincnt++;
       if (lincnt>=hcv_max_chunkmap_linelen)
@@ -182,6 +183,25 @@ badheaderline:
           break;
         ////
         case HCVCHUNKSTATE_INSIDECHUNK:
+          /**
+           * Inside a chunk started with something like !MULTIBAR"abc(
+           *
+           * which should be ended by )abc"
+           **/
+        {
+          int endpos= -1;
+          char parsendstrbuf[HCVSTATE_ENDLABEL_LEN]; // that size appears in sscanf below
+          memset (parsendstrbuf, 0, sizeof(parsendstrbuf));
+          if (sscanf(linbuf.c_str(), ")%30[A-Za-z0-9_]%n", parsendstrbuf, &endpos) >= 1
+              && endpos>2 && isalpha(parsendstrbuf[0]))
+            {
+#warning missing code in hcv_parse_chunk_map for end of chunk
+            }
+          else
+            {
+            }
+          //
+        }
           // not implemented
           ////
 #warning very incomplete hcv_parse_chunk_map
