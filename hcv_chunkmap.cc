@@ -70,7 +70,7 @@ hcv_parse_chunk_map(const std::string& filepath)
   enum hcvchunkstate_en state = HCVCHUNKSTATE__NONE;
   std::ifstream inp(filepath);
   int lincnt = 0;
-  long off=0;
+  long off = 0;
   state = HCVCHUNKSTATE_SKIPSPACES;
   std::string chunkname;
   std::string chunkbody;
@@ -79,7 +79,7 @@ hcv_parse_chunk_map(const std::string& filepath)
       char endstrbuf[HCVSTATE_ENDLABEL_LEN]; // that size appears in sscanf below
       memset(endstrbuf, 0, sizeof(endstrbuf));
       lincnt++;
-      if (lincnt>=hcv_max_chunkmap_linelen)
+      if (lincnt >= (int)hcv_max_chunkmap_linelen)
         HCV_FATALOUT("hcv_parse_chunk_map  " << filepath << " has too many lines " << lincnt);
       if (off >  hcv_max_chunkmap_size)
         HCV_FATALOUT("hcv_parse_chunk_map  " << filepath << " has too many bytes " << off);
@@ -162,7 +162,7 @@ parse_headerline:
                      **/
                     chunkname.assign(chunknamebuf);
                     chunkbody.clear();
-                    if (linbuf.size() > endpos
+                    if ((int)linbuf.size() > endpos
                         && !isspace(linbuf[endpos]))
                       chunkbody.assign(linbuf.c_str()+endpos);
                     HCV_DEBUGOUT("hcv_parse_chunk_map line#" << lincnt
@@ -192,13 +192,21 @@ badheaderline:
           int endpos= -1;
           char parsendstrbuf[HCVSTATE_ENDLABEL_LEN]; // that size appears in sscanf below
           memset (parsendstrbuf, 0, sizeof(parsendstrbuf));
-          if (sscanf(linbuf.c_str(), ")%30[A-Za-z0-9_]%n", parsendstrbuf, &endpos) >= 1
-              && endpos>2 && isalpha(parsendstrbuf[0]))
+          if (sscanf(linbuf.c_str(), ")%30[A-Za-z0-9_] %n", parsendstrbuf, &endpos) >= 1
+              && endpos>2 && isalpha(parsendstrbuf[0])
+              && !strncmp(parsendstrbuf, endstrbuf, HCVSTATE_ENDLABEL_LEN))
             {
-#warning missing code in hcv_parse_chunk_map for end of chunk
+              // end of chunk
+              resultmap.insert({chunkname,chunkbody});
+              state = HCVCHUNKSTATE_SKIPSPACES;
+              continue;
+
             }
           else
             {
+              chunkbody += linbuf;
+#warning should hcv_parse_chunk_map add a newline here to chunkbody?
+              continue;
             }
           //
         }
@@ -213,6 +221,11 @@ badheaderline:
     };				// end for linbuf....
   HCV_DEBUGOUT("hcv_parse_chunk_map end filepath=" << filepath
                << " with " << resultmap.size() << " keys");
+  if (state != HCVCHUNKSTATE_SKIPSPACES)
+    HCV_SYSLOGOUT(LOG_WARNING, "hcv_parse_chunk_map line#" << lincnt
+                  << " of " << filepath
+                  << " is not a space line, in state " << statenames[state]
+                  << std::endl);
   return resultmap;
 } // end hcv_parse_chunk_map
 
