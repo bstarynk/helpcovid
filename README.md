@@ -1,9 +1,16 @@
 # helpcovid
 
-A quick and dirty C++17 web application (GPLv3+) to help neighbours making
-essential buying (food, medicine) during the [2019–20 coronavirus
+A quick and dirty C++17 web application ([free
+software](https://www.gnu.org/philosophy/free-sw.en.html),
+[GPLv3+](https://www.gnu.org/licenses/gpl-3.0.en.html)) to help
+neighbours making essential buying (food, medicine) during the
+[2019–20 coronavirus
 pandemic](https://en.wikipedia.org/wiki/2019–20_coronavirus_pandemic)
-for older neighbours (avoiding elder persons having to go out).
+for older neighbours (avoiding elder persons having to go out,
+improving the necessary
+[confinement](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public),
+assuming users are well behaved and wantinng to help or needing
+help).
 
 **For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
 
@@ -14,10 +21,20 @@ systems, such as Windows, MacOSX, etc...), tablets, mobile phones
 connected to the [World Wide
 Web](https://en.wikipedia.org/wiki/World_Wide_Web).
 
+The `helpcovid` web server application is extensible thru
+[plugins](https://en.wikipedia.org/wiki/Plug-in_(computing)). See our
+file [PLUGINS.md](PLUGINS.md). So site-specific extensions are
+possible. In particular because different countries have different
+regulations.
+
 ## development help is wanted
 
 Please contact one of the authors by email. See email addresses
 elsewhere.
+
+If you read French, see also
+[this](https://lists.debian.org/debian-user-french/2020/04/msg00063.html)
+and the [CNIL](https://www.cnil.fr/) agency.
 
 -----
 
