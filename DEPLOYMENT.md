@@ -8,7 +8,7 @@
 3. Create SSL certificate (optional)
 4. Adjust Firewall settings
 5. Install PostgreSQL
-6. Clone `helpcovid`
+6. Clone and build `helpcovid`
 7. Generate configuration file
 8. Run `helpcovid`
 
@@ -69,4 +69,17 @@ sudo passwd postgres
 sudo vim /etc/postgresql/11/main/pg_hba.conf
 ```
 Change "trust" to "md5"
+
+
+## Cloning and building HelpCovid
+
+```
+sudo apt install build-essential
+sudo apt install g++
+sudo apt install git
+sudo apt install libjsoncpp-dev
+cd ~/helpcovidu
+git clone https://github.com/bstarynk/helpcovid.git
+make
+```
 
