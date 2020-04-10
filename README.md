@@ -539,6 +539,10 @@ See [HTTP_PROTOCOL.md](https://github.com/bstarynk/helpcovid/blob/master/HTTP_PR
 
 We provide the software, not the data.
 
+## Deploying HelpCovid
+
+See [DEPLOYMENT.md](https://github.com/bstarynk/helpcovid/blob/master/DEPLOYMENT.md)
+
 ## testing
 
 Once you run `make` you might try something like `./helpcovid -W
