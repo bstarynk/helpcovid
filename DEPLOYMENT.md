@@ -26,6 +26,21 @@ sudo openssl req -new -x509 -days 365 -nodes \
 sudo chmod 600 /etc/ssl/localcerts/helpcovid*
 ```
 
+A series of questions will be asked, which would need to be answered. An example
+is given below.
+
+```
+Output
+Country Name (2 letter code) [AU]:FR
+State or Province Name (full name) [Some-State]:Paris
+Locality Name (eg, city) []:Bourg Le Reine
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:HelpCovid
+Organizational Unit Name (eg, section) []:HelpCovid
+Common Name (e.g. server FQDN or YOUR name) []:your_domain_or_server_IP_address
+Email Address []:admin@your_domain.com
+```
+
+
 or
 
 ```
