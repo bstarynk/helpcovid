@@ -6,10 +6,11 @@
 1. Spin up a virtual machine running Debian
 2. Create a `helpcovid`` user and group
 3. Create SSL certificate (optional)
-4. Install PostgreSQL
-5. Clone `helpcovid`
-6. Generate configuration file
-7. Run `helpcovid`
+4. Adjust Firewall settings
+5. Install PostgreSQL
+6. Clone `helpcovid`
+7. Generate configuration file
+8. Run `helpcovid`
 
 
 
