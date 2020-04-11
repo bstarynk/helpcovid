@@ -15,7 +15,7 @@
 
 
 
-## 3. Creating a self-signed certificate
+## 3. Installing an SSL Certificate
 
 Although running HelpCovid as an HTTPS service is option, it is highly
 recommended. If it is to be run as an HTTPS service, HelpCovid requires that an 
@@ -29,12 +29,26 @@ However, it is important to note that although HelpCovid will be able to run as
 an HTTPS service using self-signed certificates, users running HelpCovid in
 their web browser will receive a warning message.
 
+Another option is to create an SSL certificate through the free and open 
+Let's Encrypt Certificate Authority provided by the Internet Security Research
+Group (ISRG). Arguably, this is a better option than a self-signed certificate,
+since web browsers trust certificates issued by Let's Encrypt. 
+
+We will explore both options in this section. Section 3.1 discusses how to 
+create a self-signed certficate, and Section 3.2 shows how to generate a
+certificate through Let's Encrypt. Ideally, a self-signed certificate could be
+used while testing HelpCovid, and a certificate issued by Let's Encrypt could be
+used in the production environment.
+
+
+### 3.1 Creating a Self-Signed Certificate
+
 On Debian, there are two ways to create a self-signed certificate. The first
 option is more involved, but gives greater control on the generation of the
 certificate. In contrast, the latter option is simpler, but gives less control
 over the generation of the certificate. We will discuss both options.
 
-### 3.1 Using the `openssl` package
+#### 3.1.1 Using the `openssl` package
 
 ```
 sudo apt install openssl
@@ -49,7 +63,6 @@ A series of questions will be asked, which would need to be answered. An
 illustrative set of answers is shown below.
 
 ```
-Output
 Country Name (2 letter code) [AU]:FR
 State or Province Name (full name) [Some-State]:Paris
 Locality Name (eg, city) []:Bourg Le Reine
@@ -62,7 +75,7 @@ Email Address []:admin@your_domain.com
 The most important questions that need to be answered are the last two, so
 please be sure to provide appropriate answers.
 
-### 3.2 Using the `ssl-cert` package
+#### 3.1.2 Using the `ssl-cert` package
 
 ```
 sudo apt install openssl
@@ -77,33 +90,44 @@ command: `sudo make-ssl-cert generate-default-snakeoil --force-overwrite`
 
 
 ### Using Let's Encrypt
+
 ```
 sudo git clone https://github.com/letsencrypt/letsencrypt /opt/letsencrypt
 cd /opt/letsencrypt
-sudo -H ./letsencrypt-auto certonly --standalone -d example.com -d www.example.com
+sudo -H ./letsencrypt-auto certonly --standalone -d example.com \
+ -d www.example.com
 ```
 
-When prompted, specify an administrative email address. This will allow you to 
-regain control of a lost certificate and receive urgent security notices if 
-necessary. Press ENTER or RETURN to save.
+The `-d` flag specifies the name of the (sub)domains for which to generate the
+certificate file. The same certificate can be used for multiple domains that you
+own. For illustrative purposes, we are using the fictitious `example.com` domain
+and `www.example.com` subdomain.
 
-Agree to the Terms of Service and specify if you would like to share your email 
-address with EFF:
+When prompted, you would need to specify an administrative e-mail address which
+will be used for important communication such as security notices and for
+regaining control of lost certificates. You will also need to agree to accept
+the Terms of Service, and can optionally share your e-mail address with the
+Electronic Frontier Foundation (EFF).
 
-/etc/letsencrypt/live/example.com/fullchain.pem
-/etc/letsencrypt/live/example.com/privkey.pem
+Once done, the certificate file will be saved to 
+`/etc/letsencrypt/live/example.com/fullchain.pem and the private key to
+`/etc/letsencrypt/live/example.com/privkey.pem`. Although other `*.pem` files
+are to be found in the directory, it is strongly recommended **not** to use any
+of the other certificates.
 
-** don't use the other *.pem files **
+In order to optionally renew certificates automatically, a crontab rule needs to
+be set up.
 
-auto renew certificates
-
+```
 cd /opt/letsencrypt
 ./letsencrypt-auto renew
 sudo crontab -e
 ```
 
 Add the following to the end of the crontab file:
-`0 0 1 * * /opt/letsencrypt/letsencrypt-auto renew`
+```
+0 0 1 * * /opt/letsencrypt/letsencrypt-auto renew
+```
 
 ## 4. Adjust Firewall Settings
 
