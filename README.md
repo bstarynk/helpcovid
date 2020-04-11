@@ -313,13 +313,14 @@ That configuration file is a [Glib key-value
 file](https://developer.gnome.org/glib/stable/glib-Key-value-file-parser.html)
 and cannot be world-readable. It is read by the `hcv_load_config_file`
 C++ function and can be accessed by C++ functions
-`hcv_config_has_group`, `hcv_config_has_key`, `hcv_config_do`.
+`hcv_config_has_group`, `hcv_config_has_key`, `hcv_config_do`. 
 
 ### configuration groups
 
 #### `helpcovid` group
 
-It provides "global" settings
+It provides "global" settings. See our C++ function
+`hcv_config_handle_helpcovid_config_group`.
 
 * `log_message`, a string giving some log message.
 
@@ -355,6 +356,12 @@ It provides "global" settings
   by `$HELPCOVID_LOCALE` or `--locale` option. See C++ functions
   `hcv_view_expand_msg` in file `hcv_views.cc` and `hcv_get_locale` in
   file `hcv_main.cc` ...
+
+* `custom_messages_file` for customized messages organized in a
+  chunkfile. See also [CUSTOMIZATION.md](CUSTOMIZATION.md). That file
+  path is tilde- and dollar- expanded (like shells do) using
+  [wordexp(3)](http://man7.org/linux/man-pages/man3/wordexp.3.html).
+
 
 #### `web` group
 

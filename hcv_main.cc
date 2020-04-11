@@ -862,6 +862,29 @@ hcv_config_handle_helpcovid_config_group(void)
                         << " for text_domain=" << textdomstr << " in configuration file [helpcovid] section.");
         }
     }
+    ////////////////////////////////////////////////////////////////
+    /////////// the custom_messages_file configuration in [helpcovid]
+    /// we have to be careful
+    {
+      std::string custmsgpath;
+      custmsgpath = kf->get_string("helpcovid","custom_messages_file");
+      if (custmsgpath.empty())
+        HCV_SYSLOGOUT(LOG_NOTICE,
+                      "helpcovid without custom_messages_file= in configuration file [helpcovid] section");
+      else
+        {
+          HCV_DEBUGOUT("helpcovid configured [helpcovid] custom_messages_file=" << custmsgpath);
+#warning unimplemented configured [helpcovid] custom_messages_file
+          // we should use http://man7.org/linux/man-pages/man3/wordexp.3.html
+          wordexp_t wx;
+          memset (&wx, 0, sizeof(wx));
+          HCV_SYSLOGOUT(LOG_WARNING,
+                        "helpcovid unimplemented custom_messages_file="
+                        << custmsgpath
+                        <<" in configuration file [helpcovid] section");
+        }
+    };
+    //// end of  hcv_config_do with kf
   });
   ////////////////
   HCV_SYSLOGOUT(LOG_INFO, "helpcovid did handle 'helpcovid' config group");

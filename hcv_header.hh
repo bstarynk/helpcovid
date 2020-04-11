@@ -80,6 +80,7 @@
 #include <poll.h>
 #include <elf.h>
 #include <libintl.h>
+#include <wordexp.h>
 
 
 
