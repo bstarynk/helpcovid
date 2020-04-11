@@ -15,7 +15,26 @@
 
 
 
-## Creating a self-signed certificate
+## 3. Creating a self-signed certificate
+
+Although running HelpCovid as an HTTPS service is option, it is highly
+recommended. If it is to be run as an HTTPS service, HelpCovid requires that an 
+SSL certificate and its corresponding private key be available. Typically, such
+certificates and private keys are obtained from a registered Certificate
+Authority (CA).
+
+However, in case an SSL certificate from a Certificate Authority is not
+available, there is always the option of creating a self-signed certificate.
+However, it is important to note that although HelpCovid will be able to run as
+an HTTPS service using self-signed certificates, users running HelpCovid in
+their web browser will receive a warning message.
+
+On Debian, there are two ways to create a self-signed certificate. The first
+option is more involved, but gives greater control on the generation of the
+certificate. In contrast, the latter option is simpler, but gives less control
+over the generation of the certificate. We will discuss both options.
+
+### 3.1 Using the `openssl` package
 
 ```
 sudo apt install openssl
@@ -26,8 +45,8 @@ sudo openssl req -new -x509 -days 365 -nodes \
 sudo chmod 600 /etc/ssl/localcerts/helpcovid*
 ```
 
-A series of questions will be asked, which would need to be answered. An example
-is given below.
+A series of questions will be asked, which would need to be answered. An
+illustrative set of answers is shown below.
 
 ```
 Output
@@ -40,8 +59,10 @@ Common Name (e.g. server FQDN or YOUR name) []:your_domain_or_server_IP_address
 Email Address []:admin@your_domain.com
 ```
 
+The most important questions that need to be answered are the last two, so
+please be sure to provide appropriate answers.
 
-or
+### 3.2 Using the `ssl-cert` package
 
 ```
 sudo apt install openssl
