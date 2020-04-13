@@ -238,7 +238,7 @@ hcv_profile_view_get(const httplib::Request& req, httplib::Response& resp,
 
 
 ///////////////////////////
-// message views - to emit some message (usually request specific, e.g. localized)
+// message views - to emit some message (usually request specific, e.g. localized, or customized)
 ///////////////////////////////////////////////////////////////////////////////
 extern "C" std::string  /// for <?hcv msg ...?>
 hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
@@ -260,6 +260,13 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
       const char*begmsg = procinstr.c_str() + endp;
       const char*endmsg = strstr(begmsg, "?>");
       HCV_ASSERT(endmsg != nullptr);
+      std::string chunkent = hcv_get_chunkmap_entry(std::string(msgidbuf));
+      if (!chunkent.empty())
+        {
+          HCV_DEBUGOUT("hcv_view_expand_msg chunked msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                       << " => " << chunkent);
+          return chunkent;
+        }
       /// see http://man7.org/linux/man-pages/man7/locale.7.html
       /// see http://man7.org/linux/man-pages/man5/locale.5.html
       /// see http://man7.org/linux/man-pages/man3/dgettext.3.html

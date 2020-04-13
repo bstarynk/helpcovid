@@ -13,7 +13,8 @@ The `./generate-i18n.py` script of
 `--help` and `--subscript` program argument. The later is for
 debugging purposes and should write subscript serial numbers like `₀₆`
 in `msgstr`. Since `<?hcv msg` processing instructions in our
-`webroot/html/*.html` files are expanded with
+`webroot/html/*.html` files are expanded using
+`hcv_get_chunkmap_entry` or else with
 [dgettext(3)](http://man7.org/linux/man-pages/man3/dgettext.3.html) :
 see our C++ file `hcv_views.cc` function `hcv_view_expand_msg`.
 
@@ -38,7 +39,8 @@ See C++ file `hcv_chunkmap.cc` and its C++ function
 `hcv_parse_chunk_map` with `hcv_add_chunkmap_file` and
 `hcv_get_chunkmap_entry` and also our [README](README.md).
 
-We want to have chunkmap files to customize local multi-line messages.
+We want to have chunkmap files to customize local multi-line messages,
+or short single line ones. This is for site-specific messages.
 
 Blank lines or those starting with `#` are skipped.
 
