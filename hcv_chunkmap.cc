@@ -37,6 +37,8 @@ extern "C" const char hcv_chunkmap_date[] = __DATE__;
 static constexpr unsigned hcv_max_chunkmap_size = 512*1024;
 static constexpr unsigned hcv_max_chunkmap_linelen = 65536;
 
+extern "C" std::mutex hcv_globchunkmap_mtx;
+extern "C" std::map<std::string,std::string> hcv_globchunk_map;
 
 /// see documentation in CUSTOMIZATION.md
 std::map<std::string,std::string>
@@ -229,5 +231,53 @@ badheaderline:
   return resultmap;
 } // end hcv_parse_chunk_map
 
+
+
+
+
+////////////////////////////////////////////////////////////////
+/******* global chunk map *********/
+
+std::mutex hcv_globchunkmap_mtx;
+std::map<std::string,std::string> hcv_globchunk_map;
+
+void
+hcv_add_chunkmap_file(const std::string& filepath)
+{
+  if (filepath.empty())
+    HCV_FATALOUT("hcv_add_chunkmap_file got empty path");
+  if (access(filepath.c_str(), R_OK))
+    HCV_FATALOUT("hcv_add_chunkmap_file got unreadable file "
+                 << Glib::shell_quote(filepath));
+  if (!isalnum(filepath[filepath.size()-1]))
+    HCV_FATALOUT("hcv_add_chunkmap_file with file path "
+                 << Glib::shell_quote(filepath) << " not ending with letter or digit");
+  HCV_DEBUGOUT("hcv_add_chunkmap_file should parse "
+               << Glib::shell_quote(filepath));
+  std::map<std::string,std::string> gotmap =  hcv_parse_chunk_map(filepath);
+  HCV_DEBUGOUT("hcv_add_chunkmap_file parsed "
+               << Glib::shell_quote(filepath)
+               << " with " << gotmap.size() << " entries.");
+  std::lock_guard<std::mutex> gu(hcv_globchunkmap_mtx);
+  hcv_globchunk_map.merge(gotmap);
+  HCV_DEBUGOUT("hcv_add_chunkmap_file merged "
+               << Glib::shell_quote(filepath)
+               << " so cumulating " << gotmap.size() << " entries.");
+} // end hcv_add_chunkmap_file
+
+
+
+
+const std::string
+hcv_get_chunkmap_entry(const std::string&chunkname)
+{
+  if (chunkname.empty())
+    return "";
+  std::lock_guard<std::mutex> gu(hcv_globchunkmap_mtx);
+  auto it = hcv_globchunk_map.find(chunkname);
+  if (it != hcv_globchunk_map.end())
+    return it->second;
+  return "";
+} // end hcv_get_chunkmap_entry
 
 /// end of file hcv_chunkmap.cc

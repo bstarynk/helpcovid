@@ -260,6 +260,11 @@ extern "C" void hcv_load_config_file(const char*configfile=nullptr);
 extern "C" std::map<std::string,std::string>
 hcv_parse_chunk_map(const std::string& filepath);
 
+/// add a given chunkmap file to the global chunk map
+extern "C" void hcv_add_chunkmap_file(const std::string& filepath);
+
+/// retrieve safely an entry into the global chunk map
+extern "C" const std::string hcv_get_chunkmap_entry(const std::string&chunkname);
 ////////////////
 
 //// get a string in [html] section of configuration file.

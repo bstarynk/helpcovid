@@ -887,11 +887,11 @@ hcv_config_handle_helpcovid_config_group(void)
             {
               int nbf = wx.we_wordc;
               if (nbf <= 0)
-                HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
                              << custmsgpath << " expanded to no files by wordexp(3)");
               if (nbf>1)
-                HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
-                             << custmsgpath << " ambiguously expanded to at least "
+                HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
+                             << custmsgpath << " ambiguously expanded by wordexp(3) to at least "
                              << wx.we_wordv[0] << " and " << wx.we_wordv[1]);
 #warning unimplemented wordexp [helpcovid] custom_messages_file
               HCV_SYSLOGOUT(LOG_WARNING,
@@ -901,16 +901,16 @@ hcv_config_handle_helpcovid_config_group(void)
             }
             break;
             case WRDE_BADCHAR:
-              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+              HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
                            << custmsgpath << " has bad characters for wordexp(3)");
             case WRDE_BADVAL:
-              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+              HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
                            << custmsgpath << " has undefined shell variable for wordexp(3)");
             case WRDE_CMDSUB:
-              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+              HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
                            << custmsgpath << " has wrong command substitution for wordexp(3)");
             case WRDE_SYNTAX:
-              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+              HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
                            << custmsgpath << " has shell syntax error for wordexp(3)");
             default: // should not happen
               HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
