@@ -889,15 +889,20 @@ hcv_config_handle_helpcovid_config_group(void)
               if (nbf <= 0)
                 HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
                              << custmsgpath << " expanded to no files by wordexp(3)");
-              if (nbf>1)
-                HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
-                             << custmsgpath << " ambiguously expanded by wordexp(3) to at least "
-                             << wx.we_wordv[0] << " and " << wx.we_wordv[1]);
-#warning unimplemented wordexp [helpcovid] custom_messages_file
-              HCV_SYSLOGOUT(LOG_WARNING,
-                            "helpcovid unimplemented custom_messages_file="
-                            << custmsgpath << " wordexp(3) expanded to: '" << wx.we_wordv[0] << "'");
-
+              for (int ix=0; ix<nbf; ix++)
+                {
+                  std::string curpath = wx.we_wordv[ix];
+                  if (curpath.empty())
+                    HCV_FATALOUT("configuration [helpcovid] custom_messages_file="
+                                 << custmsgpath << "  expanded by wordexp(3) to empty for ix#" << ix);
+                  HCV_DEBUGOUT("configuration [helpcovid] custom_messages_file="
+                               << custmsgpath
+                               << " ix#" << ix
+                               << " adding current chunkmap file " << Glib::shell_quote(curpath));
+                  hcv_add_chunkmap_file(curpath);
+                  HCV_SYSLOGOUT(LOG_INFO, "added chunkmap file " << Glib::shell_quote(curpath)
+                                << " ix#" << ix);
+                }
             }
             break;
             case WRDE_BADCHAR:
@@ -916,10 +921,7 @@ hcv_config_handle_helpcovid_config_group(void)
               HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
                            << custmsgpath << " has error#" << resw << " for wordexp(3)");
             }
-          HCV_SYSLOGOUT(LOG_WARNING,
-                        "helpcovid unimplemented custom_messages_file="
-                        << custmsgpath
-                        <<" in configuration file [helpcovid] section");
+          wordfree (&wx);
         }
     };
     //// end of  hcv_config_do with kf

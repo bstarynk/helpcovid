@@ -357,10 +357,16 @@ It provides "global" settings. See our C++ function
   `hcv_view_expand_msg` in file `hcv_views.cc` and `hcv_get_locale` in
   file `hcv_main.cc` ...
 
-* `custom_messages_file` for customized messages organized in a
-  chunkfile. See also [CUSTOMIZATION.md](CUSTOMIZATION.md). That file
-  path is tilde- and dollar- expanded (like shells do) using
-  [wordexp(3)](http://man7.org/linux/man-pages/man3/wordexp.3.html).
+* `custom_messages_file` for customized messages organized in one or
+  several chunkfiles. See also
+  [CUSTOMIZATION.md](CUSTOMIZATION.md). That file path is tilde- and
+  dollar- expanded (like shells do,
+  e.g. [globbing](https://en.wikipedia.org/wiki/Glob_(programming)))
+  to *several* files using
+  [wordexp(3)](http://man7.org/linux/man-pages/man3/wordexp.3.html)
+  (see also
+  [glob(7)](http://man7.org/linux/man-pages/man7/glob.7.html)...).
+  These chunk files should have a name ending with a letter or digit.
 
 
 #### `web` group

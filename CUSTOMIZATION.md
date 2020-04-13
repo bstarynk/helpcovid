@@ -34,7 +34,9 @@ function `hcv_config_handle_helpcovid_config_group` in C++ file
 
 ## chunkmap files
 
-*Work in progress,* see C++ file `hcv_chunkmap.cc` and its C++ function `hcv_parse_chunk_map`.
+See C++ file `hcv_chunkmap.cc` and its C++ function
+`hcv_parse_chunk_map` with `hcv_add_chunkmap_file` and
+`hcv_get_chunkmap_entry` and also our [README](README.md).
 
 We want to have chunkmap files to customize local multi-line messages.
 
