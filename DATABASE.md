@@ -59,23 +59,16 @@ In every SQL table, columns names share a common prefix. For example
 columns of `tb_user` start with `user_`.
 
 
-## SQL tables, indexes and prepared statements.
+## SQL tables, indices and prepared statements.
+
+In this section, we discuss in some detail the tables, indices, and prepared
+statements in the HelpCovid database.
+
+### Table `tb_user`
 
 The `tb_user` table contains information about human users of
 HelpCovid, with indexes `ix_user_familyname`, `ix_user_email`,
 `ix_user_crtime`. See prepared statements `user_create_pstm`, etc...
-
-The `tb_password` table should store passwords, encrypted using
-[crypt(3)](http://man7.org/linux/man-pages/man3/crypt.3.html). See
-prepared statements `user_get_password_by_email_pstm`, etc...
-
-The `tb_web_cookie` table store web cookies, each having a randomly
-generated key. Associated indexes are `ix_cookie_random` and
-`ix_cookie_exptime`. See prepared statements `add_web_cookie_pstm`,
-etc...
-
-
-### Table `tb_user`
 
 | Column | Type | Constraints | Synopsis |
 | --- |:---:| --- | --- |
@@ -90,6 +83,10 @@ etc...
 
 ### Table `tb_password`
 
+The `tb_password` table should store passwords, encrypted using
+[crypt(3)](http://man7.org/linux/man-pages/man3/crypt.3.html). See
+prepared statements `user_get_password_by_email_pstm`, etc...
+
 | Column | Type | Constraints | Synopsis |
 | --- |:---:| --- | --- |
 | passw_id | serial | primary key | unique key in this table |
@@ -97,6 +94,20 @@ etc...
 | passw_encr | varchar (62) | not null | the encrypted password |
 | passw_mtime | timestamp | default | the last time that password was modified |
 
+
+### Table `tb_webcookie`
+
+The `tb_web_cookie` table store web cookies, each having a randomly
+generated key. Associated indexes are `ix_cookie_random` and
+`ix_cookie_exptime`. See prepared statements `add_web_cookie_pstm`,
+etc...
+
+| Column | Type | Constraints | Synopsis |
+| --- |:---:| --- | --- |
+| wcookie_id | serial | primary key | unique key in this table |
+| wcookie_random | char (24) | not null, index | a random key, hopefully usually unique |
+| wcookie_exptime | timestamp | not null, index | the cookie expiration time |
+| wcookie_webagenthash | int | not null | a quick hashcode of the browser's User-Agent |
 
 ## Testing the database
 
