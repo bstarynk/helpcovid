@@ -81,11 +81,21 @@ etc...
 | --- |:---:| --- | --- |
 | user_id | serial | primary key | unique user ID |
 | user_firstname | varchar (31) | not null | first name, in capitals, UTF8 |
-| user_familyname | varchar (62) | not null | family name, in capitals, UTF8 |
-| user_email | varchar (71) | not null | email in lowercase, UTF8 |
+| user_familyname | varchar (62) | not null, index | family name, in capitals, UTF8 |
+| user_email | varchar (71) | not null, index | email in lowercase, UTF8 |
 | user_telephone | varchar (23) | not null | telephone number (digits, +, - or space) |
 | user_gender | char (1) | not null | 'F' or 'M' or '?' |
-| user_crtime | timestamp | not null, default | user entry creation time |
+| user_crtime | timestamp | not null, default, index | user entry creation time |
+
+
+### Table `tb_password`
+
+| Column | Type | Constraints | Synopsis |
+| --- |:---:| --- | --- |
+| passw_id | serial | primary key | unique key in this table |
+| passw_userid | int | not null | the user ID whose password we store |
+| passw_encr | varchar (62) | not null | the encrypted password |
+| passw_mtime | timestamp | default | the last time that password was modified |
 
 
 ## Testing the database
