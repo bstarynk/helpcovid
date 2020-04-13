@@ -75,6 +75,8 @@ generated key. Associated indexes are `ix_cookie_random` and
 etc...
 
 
+### Table `tb_user`
+
 | Column | Type | Constraints | Synopsis |
 | --- |:---:| --- | --- |
 | user_id | serial | primary key | unique user ID |
