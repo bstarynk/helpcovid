@@ -131,7 +131,9 @@ struct argp_option hcv_progoptions[] =
     /*key:*/ HCVPROGOPT_LOCALE, ///
     /*arg:*/ "LOCALE", ///
     /*flags:*/0, ///
-    /*doc:*/ "sets the locale for internationalization to LOCALE, see locale(7) and setlocale(3), (defaults to $HELPCOVID_LOCALE), config: helpcovid/locale", ///
+    /*doc:*/ "sets the locale for internationalization to LOCALE, see locale(7) and setlocale(3),\n"
+    "... (defaults to $HELPCOVID_LOCALE), config: [helpcovid] locale;\n"
+    "... see also config: [helpcovid] custom_messages_file.", ///
     /*group:*/0 ///
   },
   /* ======= set the web document root ======= */
@@ -874,10 +876,46 @@ hcv_config_handle_helpcovid_config_group(void)
       else
         {
           HCV_DEBUGOUT("helpcovid configured [helpcovid] custom_messages_file=" << custmsgpath);
-#warning unimplemented configured [helpcovid] custom_messages_file
           // we should use http://man7.org/linux/man-pages/man3/wordexp.3.html
           wordexp_t wx;
           memset (&wx, 0, sizeof(wx));
+          int resw = wordexp(custmsgpath.c_str(), &wx,
+                             WRDE_SHOWERR | WRDE_UNDEF);
+          switch (resw)
+            {
+            case 0: // wordexp succeeded
+            {
+              int nbf = wx.we_wordc;
+              if (nbf <= 0)
+                HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                             << custmsgpath << " expanded to no files by wordexp(3)");
+              if (nbf>1)
+                HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                             << custmsgpath << " ambiguously expanded to at least "
+                             << wx.we_wordv[0] << " and " << wx.we_wordv[1]);
+#warning unimplemented wordexp [helpcovid] custom_messages_file
+              HCV_SYSLOGOUT(LOG_WARNING,
+                            "helpcovid unimplemented custom_messages_file="
+                            << custmsgpath << " wordexp(3) expanded to: '" << wx.we_wordv[0] << "'");
+
+            }
+            break;
+            case WRDE_BADCHAR:
+              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                           << custmsgpath << " has bad characters for wordexp(3)");
+            case WRDE_BADVAL:
+              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                           << custmsgpath << " has undefined shell variable for wordexp(3)");
+            case WRDE_CMDSUB:
+              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                           << custmsgpath << " has wrong command substitution for wordexp(3)");
+            case WRDE_SYNTAX:
+              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                           << custmsgpath << " has shell syntax error for wordexp(3)");
+            default: // should not happen
+              HCV_FATALOUT("configuration  [helpcovid] custom_messages_file="
+                           << custmsgpath << " has error#" << resw << " for wordexp(3)");
+            }
           HCV_SYSLOGOUT(LOG_WARNING,
                         "helpcovid unimplemented custom_messages_file="
                         << custmsgpath
