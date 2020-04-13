@@ -74,3 +74,10 @@ generated key. Associated indexes are `ix_cookie_random` and
 `ix_cookie_exptime`. See prepared statements `add_web_cookie_pstm`,
 etc...
 
+
+## Testing the database
+
+Testing is achieved through the [`pgtap`](https://pgtap.org/) utility. This 
+utility is used to run the unit tests related to the schema of the HelpCovid 
+database.
+
