@@ -80,6 +80,12 @@ HelpCovid, with indexes `ix_user_familyname`, `ix_user_email`,
 | user_gender | char (1) | not null | 'F' or 'M' or '?' |
 | user_crtime | timestamp | not null, default, index | user entry creation time |
 
+| Index | Column | 
+| --- | --- |
+| ix_user_familyname | user_familyname | 
+| ix_user_email | user_email |
+| ix_user_crtime | user_crtime |
+
 
 ### Table `tb_password`
 
@@ -108,6 +114,11 @@ etc...
 | wcookie_random | char (24) | not null, index | a random key, hopefully usually unique |
 | wcookie_exptime | timestamp | not null, index | the cookie expiration time |
 | wcookie_webagenthash | int | not null | a quick hashcode of the browser's User-Agent |
+
+| Index | Column | 
+| --- | --- |
+| ix_cookie_random | user_familyname | 
+| ix_cookie_exptime | user_email |
 
 ## Testing the database
 
