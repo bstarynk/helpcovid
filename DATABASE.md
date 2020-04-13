@@ -75,6 +75,17 @@ generated key. Associated indexes are `ix_cookie_random` and
 etc...
 
 
+| Column | Type | Constraints | Synopsis |
+| --- |:---:| --- | --- |
+| user_id | serial | primary key | unique user ID |
+| user_firstname | varchar (31) | not null | first name, in capitals, UTF8 |
+| user_familyname | varchar (62) | not null | family name, in capitals, UTF8 |
+| user_email | varchar (71) | not null | email in lowercase, UTF8 |
+| user_telephone | varchar (23) | not null | telephone number (digits, +, - or space) |
+| user_gender | char (1) | not null | 'F' or 'M' or '?' |
+| user_crtime | timestamp | not null, default | user entry creation time |
+
+
 ## Testing the database
 
 Testing is achieved through the [`pgtap`](https://pgtap.org/) utility. This 
