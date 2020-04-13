@@ -141,6 +141,9 @@ def create_temp_sql():
         config_dict['database'])
     sql_file.write(sql)
 
+    sql = 'create extension if not exists pgtap;'
+    sql_file.write(sql)
+
     # https://stackoverflow.com/questions/8092086/
     sql_file.write('DO $$\n BEGIN\n')
     sql_file.write('CREATE USER ')
@@ -178,6 +181,8 @@ def create_database(sql_path):
     print('Creating database...')
     os.system('sudo -u postgres /usr/bin/psql -f ' + sql_path)
     os.system('sudo /bin/rm -v ' + sql_path)
+    os.system('psql -d {0} -U {1} -f pgtap.sql'.format(config_dict['database'],
+        config_dict['user']))
     # os.remove(sql_path) <-- encounters permission error
 
 
