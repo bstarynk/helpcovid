@@ -210,6 +210,30 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
         end;
         $func$ language plpgsql;
     )sqluserstatus");
+   
+    // Enumerator for gender types. We need to be flexible about gender because
+    // different legal jurisdictions may recognise genders other than the
+    // standard ones
+    transact.exec0(R"sqlusergender(
+        create or replace function fn_user_gender(_tag varchar) 
+                returns integer as
+        $func$ 
+        declare
+            gender_code integer;
+        begin
+            case
+                when _tag = 'MALE' then gender_code = 0;
+                when _tag = 'FEMALE' then gender_code = 1;
+                when _tag = 'OTHER' then gender_code = 2;
+                when _tag = 'UNDISCLOSED' then gender_code = 3;
+                when _tag = '__MIN__' then gender_code = 0;
+                when _tag = '__MAX__' then gender_code = 3;
+            end case;
+
+            return gender_code;
+        end;
+        $func$ language plpgsql;
+    )sqlusergender");
 
     ////================ user table and indexes, with mandatory data
     transact.exec0(R"crusertab(
@@ -220,10 +244,11 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_familyname VARCHAR(62) NOT NULL, -- family name, in capitals, UTF8
   user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
   user_telephone VARCHAR(23) NOT NULL,  -- telephone number (digits, +, - or space)
-  user_gender CHAR(1) NOT NULL,         -- 'F' | 'M' | '?'
+  user_gender integer NOT NULL,         -- 'F' | 'M' | '?'
   user_status integer not null default fn_user_status ('INACTIVE'), -- user status
   user_crtime TIMESTAMP DEFAULT current_timestamp, -- user entry creation time
-  check (user_status between fn_user_status ('__MIN__') and fn_user_status ('__MAX__'))
+  check(user_gender between fn_user_gender('__MIN__') and fn_user_gender('__MAX__')),
+  check(user_status between fn_user_status('__MIN__') and fn_user_status('__MAX__'))
 ); --- end TABLE tb_user
 )crusertab");
     transact.exec0(R"cruserfamix(
