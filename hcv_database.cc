@@ -211,9 +211,6 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
         $func$ language plpgsql;
     )sqluserstatus");
 
-
-
-
     ////================ user table and indexes, with mandatory data
     transact.exec0(R"crusertab(
 ---- TABLE tb_user
@@ -286,6 +283,28 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
     ON tb_web_cookie(wcookie_exptime);
 --- end INDEX ix_cookie_exptime
 )crcookietimeix");
+
+
+    // the fn_user_create() SQL function creates a new user, taking care to
+    // ensure that the password is encrypted with an MD5 hashed salt.
+    // TODO: add checks for integrity of gender
+    transact.exec0(R"sqlusercreate(
+        create or replace function fn_user_create(_email varchar, 
+                _password text, _firstname varchar, _familyname varchar, 
+                _telephone varchar, _gender char) returns integer 
+        as $func$
+        begin
+            insert into tb_user(user_firstname, user_familyname, user_email,
+                    user_telphone, user_gender) values(_firstname, _familyname,
+                    _telephone, _gender);
+            insert into tb_password(passw_userid, passw_encr) values(
+                    (select currval(pg_get_serial_sequence('tb_user', 'id'))), 
+                    crypt(_password, gen_salt('md5')));
+            return (select currval(pg_get_serial_sequence('tb_user', 'id')));
+        end;
+        $func$ language plpgsql;
+    )sqlusercreate");
+
     transact.commit();
   }
   HCV_DEBUGOUT("hcv_initialize_database before preparing statements in " << connstr);
