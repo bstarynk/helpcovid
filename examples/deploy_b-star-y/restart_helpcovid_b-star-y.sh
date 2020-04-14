@@ -4,6 +4,7 @@
 # shell script restart_helpcovid_b-star-y.sh
 # to be run every five minutes from crontab
 # to be installed as $HOME/bin/restart_helpcovid_b-star-y.sh
+# by some symlink
 # for user helpcovidu
 # see also the crontab file in same directory
 HELPCOVIDRUN_PIDFILE=/tmp/helpcovidrun.pid
@@ -99,3 +100,7 @@ if [ ! -x "$HELPCOVIDRUN_SRCDIR/helpcovid" ]; then
 fi
 
 nohup $HELPCOVIDRUN_SRCDIR/helpcovid $HELPCOVIDRUN_FLAGS --threads=$HELPCOVIDRUN_THREADS --write-pid=$HELPCOVIDRUN_PIDFILE < /dev/null &
+
+helpcovidrun_log_info done  $0 in $(time)
+
+#end of file examples/deploy_b-star-y/restart_helpcovid_b-star-y.sh
