@@ -5,5 +5,5 @@
 # and http://man7.org/linux/man-pages/man1/crontab.1.html
 #  min hour  dom  mon  dow   command
 ## to be run every five minutes
-*/5     *     *    *    *     $HOME/bin/restart_helpcovid_b-star-y.sh >> $HOME/tmp/$(/bin/date +helpcovid_%Y_%b_%d).out 2>&1
+*/5     *     *    *    *     $HOME/bin/restart_helpcovid_b-star-y.sh >> $HOME/tmp/$(/bin/date +helpcovid_%Y_%b_%d.out) 2>&1
 # end of file examples/deploy_b-star-y/crontab

@@ -38,6 +38,7 @@ helpcovidrun_log_warning() {
 
 #### logging start
 helpcovidrun_log_notice starting $0 at "$HELPCOVIDRUN_TIME" inside "$HELPCOVIDRUN_PWD" on "$HELPCOVIDRUN_HOST"
+echo '#-start'  $0 at "$HELPCOVIDRUN_TIME" inside "$HELPCOVIDRUN_PWD" on "$HELPCOVIDRUN_HOST"
 
 #### sourcing site-specific parameters
 if [ -f "$HOME/helpcovidrun_settings" ]; then    
