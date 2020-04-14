@@ -218,7 +218,7 @@ CREATE TABLE IF NOT EXISTS tb_user (
 CREATE TABLE IF NOT EXISTS tb_password (
   passw_id SERIAL PRIMARY KEY NOT NULL, -- unique key in this table
   passw_userid INT NOT NULL,            -- the user id whose password we store
-  passw_encr VARCHAR(62) NOT NULL,      -- the encrypted password
+  passw_encr text NOT NULL,             -- the encrypted password
   passw_mtime  TIMESTAMP DEFAULT current_timestamp  -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");

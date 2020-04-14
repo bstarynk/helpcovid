@@ -113,9 +113,12 @@ prepared statements `user_get_password_by_email_pstm`, etc...
 | --- |:---:| --- | --- |
 | passw_id | serial | primary key | unique key in this table |
 | passw_userid | int | not null | the user ID whose password we store |
-| passw_encr | varchar (62) | not null | the encrypted password |
+| passw_encr | text | not null | the encrypted password |
 | passw_mtime | timestamp | default | the last time that password was modified |
 
+The `passw_encr` attribute is stored as an encrypted value with an MD5 salt. The
+salt helps prevent identification of two users who may coincidentally have the
+same password.
 
 ### Table `tb_webcookie`
 
