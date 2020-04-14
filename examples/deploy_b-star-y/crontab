@@ -1,0 +1,8 @@
+# project https://github.com/bstarynk/helpcovid
+# in directory examples/deploy_b-star-y/
+# file crontab for user helpcovidu on host b-star-y.tech
+# see http://man7.org/linux/man-pages/man5/crontab.5.html
+# and http://man7.org/linux/man-pages/man1/crontab.1.html
+#  min hour  dom  mon  dow   command
+## to be run every five minutes
+*/5     *     *    *    *     $HOME/bin/restart_helpcovid_b-star-y.sh >> $HOME/tmp/$(/bin/date +helpcovid_%Y_%b_%d).out 2>&1
