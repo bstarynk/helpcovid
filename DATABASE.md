@@ -13,6 +13,16 @@ Linux. Version 11 at least. That server could run on a different Linux
 system than `./helpcovid` in the same data center. Most deployements
 would run it on `localhost` in practice.
 
+Currently, we are using the following PostgreSQL extensions:
+
+| Extension | Synopsis |
+| --- | --- |
+| pgtap | Testing for correct database schema creation |
+| pgcrypto | Encryption of sensitive data such as identity and password |
+
+Please see [DEPLOYMENT.md]() for details on how to install these extensions
+along with PostgreSQL.
+
 Our `generate-config.py` [Python](https://python.org/) script is generating configuration files and asking about details.
 
 Our `backup-database.py` [Python](https://python.org/) script is dumping the database.
