@@ -181,6 +181,39 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     }
     ////================ create tables if they are missing
     pqxx::work transact(*hcv_dbconn);
+
+    // We need a means to enumerate in the database the status of a user.
+    // On registering, a user is initially inactive, and becomes active after
+    // confirming her e-mail address. After a certain period of time has elapsed
+    // without the user not having logged in (e.g. 3 months) the user would then
+    // be set as inactive, and would then again need to confirm by e-mail their
+    // registration and willingess to use the application.
+    // Since SQL doesn't support enumerations as such, we simulate it through
+    // an SQL function that accepts a string and returns the corresponding
+    // integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
+    // constraints.
+    transact.exec0(R"sqluserstatus(
+        create or replace function user_status (_tag varchar) 
+                returns integer as
+        $func$ 
+        declare
+            status_code integer;
+        begin
+            case
+                when _tag = 'INACTIVE' then status_code = 0;
+                when _tag = 'ACTIVE' then status_code = 1;
+                when _tag = '__MIN__' then status_code = 0;
+                when _tag = '__MAX__' then status_code = 1;
+            end case;
+
+            return status_code;
+        end;
+        $func$ language plpgsql;
+    )sqluserstatus");
+
+
+
+
     ////================ user table and indexes, with mandatory data
     transact.exec0(R"crusertab(
 ---- TABLE tb_user
