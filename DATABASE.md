@@ -20,8 +20,14 @@ Currently, we are using the following PostgreSQL extensions:
 | pgtap | Testing for correct database schema creation |
 | pgcrypto | Encryption of sensitive data such as identity and password |
 
-Please see [DEPLOYMENT.md]() for details on how to install these extensions
-along with PostgreSQL.
+Since data integrity and security are prime considerations in HelpCovid, these
+extensions help us in achieving the same. It is important to note that even
+though we are implementing encryption in the application layer (e.g. through the
+`crypt()` C function`, it is still important to encrypt in the database layer in
+order to safeguard against database theft and / or malicious administrators.
+
+Please see [DEPLOYMENT.md](https://github.com/bstarynk/helpcovid/blob/master/DEPLOYMENT.md) 
+for details on how to install these extensions along with PostgreSQL.
 
 Our `generate-config.py` [Python](https://python.org/) script is generating configuration files and asking about details.
 

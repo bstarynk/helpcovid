@@ -7,7 +7,7 @@
 2. Create a `helpcovid`` user and group
 3. Create SSL certificate (optional)
 4. Adjust Firewall settings
-5. Install PostgreSQL
+5. Install PostgreSQL and extensions
 6. Clone and build `helpcovid`
 7. Generate configuration file
 8. Run `helpcovid`
@@ -146,7 +146,9 @@ sudo ufw status
 ```
 
 
-## Installing PostgreSQL
+## 5. Installing PostgreSQL and Extensions
+
+### 5.1 Install PostgreSQL
 
 ```
 sudo apt install postgresql postgresql-client
@@ -154,7 +156,33 @@ sudo pg_isready
 sudo systemctl status postgresql
 ```
 
-### Securing PostgreSQL
+### 5.2 Install `pgcrypto` Extension
+
+The `pgcrypto` extension is used for encrypting sensitive data such as passwords
+and personally identifiable data (including medical records). The `pgcrypto`
+extension supports both hashing and encryption algorithms, and is part of the
+`postgresql-contrib` package. Install it like so:
+
+```
+sudo apt install postgresql-contrib
+```
+
+### 5.3 Install `pgtap` Extension
+
+The `pgtap` extension is a unit testing framework implementing the Test Anything
+Protocol (TAP) for PostgreSQL. `pgtap` is particularly useful in checking
+whether the database schema has been created correctly.
+
+```
+git clone https://github.com/theory/pgtap.git
+cd pgtap
+make
+make install
+cpan App::cpanminus
+sudo cpan TAP::Parser::SourceHandler::pgTAP
+```
+
+### 5.4 Securing PostgreSQL
 ```
 sudo passwd postgres
 sudo vim /etc/postgresql/11/main/pg_hba.conf
