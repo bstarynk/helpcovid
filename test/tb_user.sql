@@ -1,5 +1,5 @@
 begin;
-    select plan (24);
+    select plan (30);
     
     --
     -- check user_id column properties
@@ -44,6 +44,17 @@ begin;
     select has_column ('tb_user', 'user_gender');
     select col_type_is ('tb_user', 'user_gender', 'character(1)');
     select col_not_null ('tb_user', 'user_gender');
+
+    --
+    -- check user_status column properties
+    --
+    select has_column ('tb_user', 'user_status');
+    select col_type_is ('tb_user', 'user_status', 'integer');
+    select col_not_null ('tb_user', 'user_status');
+    select col_has_default ('tb_user', 'user_status');
+    select col_default_is ('tb_user', 'user_status', 
+            'fn_user_status(''INACTIVE''::character varying)');
+    select col_has_check ('tb_user', 'user_status');
 
     --
     -- check user_crtime column properties

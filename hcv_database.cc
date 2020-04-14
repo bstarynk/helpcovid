@@ -193,7 +193,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     // integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
     // constraints.
     transact.exec0(R"sqluserstatus(
-        create or replace function user_status (_tag varchar) 
+        create or replace function fn_user_status (_tag varchar) 
                 returns integer as
         $func$ 
         declare
@@ -224,7 +224,9 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
   user_telephone VARCHAR(23) NOT NULL,  -- telephone number (digits, +, - or space)
   user_gender CHAR(1) NOT NULL,         -- 'F' | 'M' | '?'
-  user_crtime TIMESTAMP DEFAULT current_timestamp -- user entry creation time
+  user_status integer not null default fn_user_status ('INACTIVE'), -- user status
+  user_crtime TIMESTAMP DEFAULT current_timestamp, -- user entry creation time
+  check (user_status between fn_user_status ('__MIN__') and fn_user_status ('__MAX__'))
 ); --- end TABLE tb_user
 )crusertab");
     transact.exec0(R"cruserfamix(
