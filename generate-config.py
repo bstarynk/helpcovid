@@ -143,6 +143,8 @@ def create_temp_sql():
 
     sql = 'create extension if not exists pgtap;'
     sql_file.write(sql)
+    sql = 'create extension if not exists pgcrypto;'
+    sql_file.write(sql)
 
     # https://stackoverflow.com/questions/8092086/
     sql_file.write('DO $$\n BEGIN\n')
