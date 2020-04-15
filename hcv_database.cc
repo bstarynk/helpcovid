@@ -222,12 +222,12 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
             gender_code integer;
         begin
             case
-                when _tag = 'MALE' then gender_code = 0;
-                when _tag = 'FEMALE' then gender_code = 1;
-                when _tag = 'OTHER' then gender_code = 2;
-                when _tag = 'UNDISCLOSED' then gender_code = 3;
-                when _tag = '__MIN__' then gender_code = 0;
-                when _tag = '__MAX__' then gender_code = 3;
+                when _tag = 'GENDER_MALE' then gender_code = 0;
+                when _tag = 'GENDER_FEMALE' then gender_code = 1;
+                when _tag = 'GENDER_OTHER' then gender_code = 2;
+                when _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
+                when _tag = 'GENDER_MIN_' then gender_code = 0;
+                when _tag = 'GENDER_MAX_' then gender_code = 3;
             end case;
 
             return gender_code;
@@ -251,24 +251,28 @@ CREATE TABLE IF NOT EXISTS tb_user (
   check(user_status between fn_user_status('__MIN__') and fn_user_status('__MAX__'))
 ); --- end TABLE tb_user
 )crusertab");
+
     transact.exec0(R"cruserfamix(
 ---- INDEX ix_user_familyname
   CREATE INDEX IF NOT EXISTS ix_user_familyname 
     ON tb_user(user_familyname);
 --- end INDEX ix_user_familyname
 )cruserfamix");
+
     transact.exec0(R"cruseremailix(
 ---- INDEX ix_user_email
   CREATE INDEX IF NOT EXISTS ix_user_email 
     ON tb_user(user_email);
 --- end INDEX ix_user_email
 )cruseremailix");
+
     transact.exec0(R"crusertimeix(
 ---- INDEX ix_user_crtime 
   CREATE INDEX IF NOT EXISTS ix_user_crtime 
     ON tb_user(user_crtime);
 --- end INDEX ix_user_crtime
 )crusertimeix");
+
     ////================ password table
     transact.exec0(R"crpasswdtab(
 ---- TABLE tb_password
@@ -279,6 +283,7 @@ CREATE TABLE IF NOT EXISTS tb_password (
   passw_mtime  TIMESTAMP DEFAULT current_timestamp  -- the last time that password was modified
 ); --- end TABLE tb_password
 )crpasswdtab");
+
     ////================ web cookie table, related to web cookies
     // see https://www.postgresql.org/docs/current/datatype-net-types.html
     // read https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
@@ -296,12 +301,14 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
   wcookie_webagenthash INT NOT NULL        -- a quick hashcode of the browser's User-Agent:
 ); --- end TABLE tb_web_cookie
 )crwebcookietab");
+
     transact.exec0(R"crcookierandomix(
 ---- INDEX ix_cookie_random
   CREATE INDEX IF NOT EXISTS ix_cookie_random
     ON tb_web_cookie(wcookie_random);
 --- end INDEX ix_cookie_random
 )crcookierandomix");
+
     transact.exec0(R"crcookietimeix(
 ---- INDEX ix_cookie_exptime
   CREATE INDEX IF NOT EXISTS ix_cookie_exptime
