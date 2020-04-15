@@ -121,6 +121,7 @@ define_get_status_id(pqxx::work& transact)
             status_code integer;
         begin
             case
+                when _tag = 'STATUS_REJECTED' then status_code = -2;
                 when _tag = 'STATUS_EXPIRED' then status_code = -1;
                 when _tag = 'STATUS_PENDING' then status_code = 0;
                 when _tag = 'STATUS_VERIFIED' then status_code = 1;
@@ -288,6 +289,53 @@ define_create_new_user(pqxx::work& transact)
 }
 
 
+// the verify_email_token() stored function determines if a UUID e-mail token
+// generated at the time of registration is valid. This function is used to
+// verify a user's e-mail address.
+static void
+define_verify_email_token(pqxx::work& transact)
+{
+    transact.exec0(R"sql(
+        create or replace function verify_email_token(
+            _user_id integer,
+            _token uuid) returns integer
+        as $func$
+        declare
+            expires timestamp;
+            check_id integer;
+        begin
+            select expiry from tb_email_confirmation where user_id = _user_id
+                into expires;
+
+            if not found then
+                raise exception 'e-mail token not generated';
+            end if;
+
+            if expires >= current_timestamp then
+                update tb_user 
+                    set user_status = get_status_id('STATUS_EXPIRED');
+                return get_status_id('STATUS_EXPIRED');
+            end if;
+
+            select user_id from tb_email_confirmation where token = _token
+                into check_id;
+
+            if check_id = _userid then
+                update tb_user 
+                    set user_status = get_status_id('STATUS_VERIFIED');
+                delete from tb_email_confirmation where user_id - _user_id;
+                return get_status_id('STATUS_VERIFIED');
+            else
+                update tb_user 
+                    set user_status = get_status_id('STATUS_REJECTED');
+                return get_status_id('STATUS_REJECTED');
+            end if;
+        end;
+        $func$ language plpgsql;
+    )sql");
+}
+
+
 void
 hcv_initialize_database(const std::string&uri, bool cleardata)
 {
@@ -376,6 +424,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     define_tb_email_confirmation(transact);
     define_tb_password(transact);
     define_create_new_user(transact);
+    define_verify_email_token(transact);
 
     transact.commit();
   }
