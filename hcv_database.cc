@@ -131,7 +131,7 @@ sql_get_status_id(pqxx::work& transact)
 
             return status_code;
         end;
-        $func$ language plpgsql;
+        $func$ language plpgsql immutable;
     )sqluserstatus");
 }
 
@@ -160,7 +160,7 @@ sql_get_gender_id(pqxx::work& transact)
 
             return gender_code;
         end;
-        $func$ language plpgsql;
+        $func$ language plpgsql immutable;
     )sqlusergender");
 }
 
