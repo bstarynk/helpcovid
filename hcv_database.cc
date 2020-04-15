@@ -166,15 +166,15 @@ static void
 define_tb_user(pqxx::work& transact)
 {
     transact.exec0(R"crusertab(
-        CREATE TABLE IF NOT EXISTS tb_user (
-            user_id SERIAL PRIMARY KEY NOT NULL,
-            user_firstname VARCHAR(31) NOT NULL,
-            user_familyname VARCHAR(62) NOT NULL,
-            user_email VARCHAR(71) NOT NULL,
-            user_telephone VARCHAR(23) NOT NULL,
-            user_gender integer NOT NULL,
+        create table if not exists tb_user (
+            user_id serial primary key not null,
+            user_firstname varchar(31) not null,
+            user_familyname varchar(62) not null,
+            user_email varchar(71) not null,
+            user_telephone varchar(23) not null,
+            user_gender integer not null,
             user_status integer not null default get_status_id('INACTIVE'), 
-            user_crtime TIMESTAMP DEFAULT current_timestamp,
+            user_crtime timestamp default current_timestamp,
             check(user_gender between get_gender_id('_MIN_') 
                 and get_gender_id('_MAX_')),
             check(user_status between get_status_id('_MIN_') 
@@ -188,6 +188,23 @@ define_tb_user(pqxx::work& transact)
             on tb_user(user_crtime);
     )crusertab");
 }
+
+
+static void
+define_tb_email_confirmation(pqxx::work& transact)
+{
+    transact.exec0(R"sql(
+        create table if not exists define_tb_email_confirmation(
+            id serial primary key not null,
+            user_id integer not null references tb_user(user_id) 
+                on delete cascade,
+            token uuid not null,
+            expiry timestamp not null default current_timestamp 
+                + interval '1 hour'
+        );
+    )sql");
+}
+
 
 static void
 define_tb_password(pqxx::work& transact)
@@ -354,6 +371,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     define_get_status_id(transact);
     define_get_gender_id(transact);
     define_tb_user(transact);
+    define_tb_email_confirmation(transact);
     define_tb_password(transact);
     define_create_new_user(transact);
 
