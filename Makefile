@@ -63,7 +63,7 @@ all:
 	$(RM) __timestamp.o __timestamp.c
 	$(MAKE) $(MAKEFLAGS) helpcovid
 	$(MAKE) $(MAKEFLAGS) plugins
-
+	sync
 
 
 ## The usual program
