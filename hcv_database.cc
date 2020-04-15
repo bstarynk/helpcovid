@@ -121,8 +121,9 @@ define_get_status_id(pqxx::work& transact)
             status_code integer;
         begin
             case
-                when _tag = 'INACTIVE' then status_code = 0;
-                when _tag = 'ACTIVE' then status_code = 1;
+                when _tag = 'STATUS_EXPIRED' then status_code = -1;
+                when _tag = 'STATUS_PENDING' then status_code = 0;
+                when _tag = 'STATUS_VERIFIED' then status_code = 1;
                 when _tag = '_MIN_' then status_code = 0;
                 when _tag = '_MAX_' then status_code = 1;
             end case;
@@ -173,7 +174,8 @@ define_tb_user(pqxx::work& transact)
             user_email varchar(71) not null,
             user_telephone varchar(23) not null,
             user_gender integer not null,
-            user_status integer not null default get_status_id('INACTIVE'), 
+            user_status integer 
+                not null default get_status_id('STATUS_PENDING'), 
             user_crtime timestamp default current_timestamp,
             check(user_gender between get_gender_id('_MIN_') 
                 and get_gender_id('_MAX_')),
