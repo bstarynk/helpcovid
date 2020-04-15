@@ -111,7 +111,7 @@ hcv_postgresql_version(void)
 // integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
 // constraints.
 static void
-define_get_status_id(pqxx::work& transact)
+sql_get_status_id(pqxx::work& transact)
 {
     transact.exec0(R"sqluserstatus(
         create or replace function get_status_id(_tag varchar) 
@@ -140,7 +140,7 @@ define_get_status_id(pqxx::work& transact)
 // different legal jurisdictions may recognise genders other than the
 // standard ones
 static void
-define_get_gender_id(pqxx::work& transact)
+sql_get_gender_id(pqxx::work& transact)
 {
     transact.exec0(R"sqlusergender(
         create or replace function get_gender_id(_tag varchar) 
@@ -165,7 +165,7 @@ define_get_gender_id(pqxx::work& transact)
 }
 
 static void
-define_tb_user(pqxx::work& transact)
+sql_tb_user(pqxx::work& transact)
 {
     transact.exec0(R"crusertab(
         create table if not exists tb_user (
@@ -194,7 +194,7 @@ define_tb_user(pqxx::work& transact)
 
 
 static void
-define_tb_email_confirmation(pqxx::work& transact)
+sql_tb_email_confirmation(pqxx::work& transact)
 {
     transact.exec0(R"sql(
         create table if not exists define_tb_email_confirmation(
@@ -210,7 +210,7 @@ define_tb_email_confirmation(pqxx::work& transact)
 
 
 static void
-define_tb_password(pqxx::work& transact)
+sql_tb_password(pqxx::work& transact)
 {
     transact.exec0(R"sql(
         create table if not exists tb_password(
@@ -232,7 +232,7 @@ define_tb_password(pqxx::work& transact)
 /// we are aware that the browser IP is unreliable information
 /// see https://stackoverflow.com/q/527638/841108
 static void
-define_tb_web_cookie(pqxx::work& transact)
+sql_tb_web_cookie(pqxx::work& transact)
 {
     transact.exec0(R"sql(
         create table if not exists tb_web_cookie(
@@ -252,7 +252,7 @@ define_tb_web_cookie(pqxx::work& transact)
 // the create_new_user() SQL function creates a new user, taking care to
 // ensure that the password is encrypted with an MD5 hashed salt.
 static void
-define_create_new_user(pqxx::work& transact)
+sql_create_new_user(pqxx::work& transact)
 {
     transact.exec0(R"sql(
         create or replace function create_new_user(
@@ -293,7 +293,7 @@ define_create_new_user(pqxx::work& transact)
 // generated at the time of registration is valid. This function is used to
 // verify a user's e-mail address.
 static void
-define_verify_email_token(pqxx::work& transact)
+sql_verify_email_token(pqxx::work& transact)
 {
     transact.exec0(R"sql(
         create or replace function verify_email_token(
@@ -329,6 +329,36 @@ define_verify_email_token(pqxx::work& transact)
                 update tb_user 
                     set user_status = get_status_id('STATUS_REJECTED');
                 return get_status_id('STATUS_REJECTED');
+            end if;
+        end;
+        $func$ language plpgsql;
+    )sql");
+}
+
+
+static void
+sql_get_email_verification_token(pqxx::work& transact)
+{
+    transact.exec0(R"sql(
+        create or replace function get_email_verification_token(
+            _user_id integer) returns uuid
+        as $func$
+        declare
+            check_id integer;
+        begin
+            select user_id from tb_user where user_id = _user_id into check_id;
+            if not check_id = _user_id then
+                raise exception 'user ID does not exist: %', _user_id;
+            end if;
+
+            return(select token from tb_email_confirmation 
+                where user_id = _user_id);
+
+            if not found then
+                insert into tb_email_confirmation(user_id, token) values(
+                    _user_id, gen_random_uuid());
+                return(select token from tb_email_confirmation
+                    where user_id = _user_id);
             end if;
         end;
         $func$ language plpgsql;
@@ -417,14 +447,14 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     ////================ create tables if they are missing
     pqxx::work transact(*hcv_dbconn);
 
-
-    define_get_status_id(transact);
-    define_get_gender_id(transact);
-    define_tb_user(transact);
-    define_tb_email_confirmation(transact);
-    define_tb_password(transact);
-    define_create_new_user(transact);
-    define_verify_email_token(transact);
+    sql_get_status_id(transact);
+    sql_get_gender_id(transact);
+    sql_tb_user(transact);
+    sql_tb_email_confirmation(transact);
+    sql_tb_password(transact);
+    sql_create_new_user(transact);
+    sql_verify_email_token(transact);
+    sql_get_email_verification_token(transact);
 
     transact.commit();
   }
