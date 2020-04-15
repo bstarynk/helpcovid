@@ -193,7 +193,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     // integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
     // constraints.
     transact.exec0(R"sqluserstatus(
-        create or replace function fn_user_status (_tag varchar) 
+        create or replace function get_status_id(_tag varchar) 
                 returns integer as
         $func$ 
         declare
@@ -202,8 +202,8 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
             case
                 when _tag = 'INACTIVE' then status_code = 0;
                 when _tag = 'ACTIVE' then status_code = 1;
-                when _tag = '__MIN__' then status_code = 0;
-                when _tag = '__MAX__' then status_code = 1;
+                when _tag = '_MIN_' then status_code = 0;
+                when _tag = '_MAX_' then status_code = 1;
             end case;
 
             return status_code;
@@ -215,7 +215,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     // different legal jurisdictions may recognise genders other than the
     // standard ones
     transact.exec0(R"sqlusergender(
-        create or replace function fn_user_gender(_tag varchar) 
+        create or replace function get_gender_id(_tag varchar) 
                 returns integer as
         $func$ 
         declare
@@ -226,8 +226,8 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
                 when _tag = 'GENDER_FEMALE' then gender_code = 1;
                 when _tag = 'GENDER_OTHER' then gender_code = 2;
                 when _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
-                when _tag = 'GENDER_MIN_' then gender_code = 0;
-                when _tag = 'GENDER_MAX_' then gender_code = 3;
+                when _tag = '_MIN_' then gender_code = 0;
+                when _tag = '_MAX_' then gender_code = 3;
             end case;
 
             return gender_code;
@@ -245,10 +245,10 @@ CREATE TABLE IF NOT EXISTS tb_user (
   user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
   user_telephone VARCHAR(23) NOT NULL,  -- telephone number (digits, +, - or space)
   user_gender integer NOT NULL,         -- 'F' | 'M' | '?'
-  user_status integer not null default fn_user_status ('INACTIVE'), -- user status
+  user_status integer not null default get_status_id('INACTIVE'), -- user status
   user_crtime TIMESTAMP DEFAULT current_timestamp, -- user entry creation time
-  check(user_gender between fn_user_gender('__MIN__') and fn_user_gender('__MAX__')),
-  check(user_status between fn_user_status('__MIN__') and fn_user_status('__MAX__'))
+  check(user_gender between get_gender_id('_MIN_') and get_gender_id('_MAX_')),
+  check(user_status between get_status_id('_MIN_') and get_status_id('_MAX_'))
 ); --- end TABLE tb_user
 )crusertab");
 
@@ -321,18 +321,34 @@ CREATE TABLE IF NOT EXISTS tb_web_cookie (
     // ensure that the password is encrypted with an MD5 hashed salt.
     // TODO: add checks for integrity of gender
     transact.exec0(R"sqlusercreate(
-        create or replace function fn_user_create(_email varchar, 
-                _password text, _firstname varchar, _familyname varchar, 
-                _telephone varchar, _gender char) returns integer 
+        create or replace function create_new_user(
+                _email varchar, 
+                _password text, 
+                _firstname varchar, 
+                _familyname varchar, 
+                _telephone varchar, 
+                _gender varchar) returns integer 
         as $func$
         begin
-            insert into tb_user(user_firstname, user_familyname, user_email,
-                    user_telphone, user_gender) values(_firstname, _familyname,
-                    _telephone, _gender);
-            insert into tb_password(passw_userid, passw_encr) values(
-                    (select currval(pg_get_serial_sequence('tb_user', 'id'))), 
+            insert into tb_user(
+                    user_firstname, 
+                    user_familyname, 
+                    user_email,
+                    user_telephone, 
+                    user_gender) values(
+                    _firstname, 
+                    _familyname,
+                    _email,
+                    _telephone, 
+                    get_gender_id(_gender));
+
+            insert into tb_password(
+                    passw_userid, 
+                    passw_encr) values(
+                    (select user_id from tb_user where user_email = _email),
                     crypt(_password, gen_salt('md5')));
-            return (select currval(pg_get_serial_sequence('tb_user', 'id')));
+
+            return (select user_id from tb_user where user_email = _email);
         end;
         $func$ language plpgsql;
     )sqlusercreate");
