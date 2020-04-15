@@ -100,6 +100,174 @@ hcv_postgresql_version(void)
 } // end  hcv_postgresql_version
 
 
+// We need a means to enumerate in the database the status of a user.
+// On registering, a user is initially inactive, and becomes active after
+// confirming her e-mail address. After a certain period of time has elapsed
+// without the user not having logged in (e.g. 3 months) the user would then
+// be set as inactive, and would then again need to confirm by e-mail their
+// registration and willingess to use the application.
+// Since SQL doesn't support enumerations as such, we simulate it through
+// an SQL function that accepts a string and returns the corresponding
+// integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
+// constraints.
+static void
+define_get_status_id(pqxx::work& transact)
+{
+    transact.exec0(R"sqluserstatus(
+        create or replace function get_status_id(_tag varchar) 
+                returns integer as
+        $func$ 
+        declare
+            status_code integer;
+        begin
+            case
+                when _tag = 'INACTIVE' then status_code = 0;
+                when _tag = 'ACTIVE' then status_code = 1;
+                when _tag = '_MIN_' then status_code = 0;
+                when _tag = '_MAX_' then status_code = 1;
+            end case;
+
+            return status_code;
+        end;
+        $func$ language plpgsql;
+    )sqluserstatus");
+}
+
+
+// Enumerator for gender types. We need to be flexible about gender because
+// different legal jurisdictions may recognise genders other than the
+// standard ones
+static void
+define_get_gender_id(pqxx::work& transact)
+{
+    transact.exec0(R"sqlusergender(
+        create or replace function get_gender_id(_tag varchar) 
+                returns integer as
+        $func$ 
+        declare
+            gender_code integer;
+        begin
+            case
+                when _tag = 'GENDER_MALE' then gender_code = 0;
+                when _tag = 'GENDER_FEMALE' then gender_code = 1;
+                when _tag = 'GENDER_OTHER' then gender_code = 2;
+                when _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
+                when _tag = '_MIN_' then gender_code = 0;
+                when _tag = '_MAX_' then gender_code = 3;
+            end case;
+
+            return gender_code;
+        end;
+        $func$ language plpgsql;
+    )sqlusergender");
+}
+
+static void
+define_tb_user(pqxx::work& transact)
+{
+    transact.exec0(R"crusertab(
+        CREATE TABLE IF NOT EXISTS tb_user (
+            user_id SERIAL PRIMARY KEY NOT NULL,
+            user_firstname VARCHAR(31) NOT NULL,
+            user_familyname VARCHAR(62) NOT NULL,
+            user_email VARCHAR(71) NOT NULL,
+            user_telephone VARCHAR(23) NOT NULL,
+            user_gender integer NOT NULL,
+            user_status integer not null default get_status_id('INACTIVE'), 
+            user_crtime TIMESTAMP DEFAULT current_timestamp,
+            check(user_gender between get_gender_id('_MIN_') 
+                and get_gender_id('_MAX_')),
+            check(user_status between get_status_id('_MIN_') 
+                and get_status_id('_MAX_'))
+        );
+        create index if not exists ix_user_familyname 
+            on tb_user(user_familyname);
+        create index if not exists ix_user_email 
+            on tb_user(user_email);
+        create index if not exists ix_user_crtime 
+            on tb_user(user_crtime);
+    )crusertab");
+}
+
+static void
+define_tb_password(pqxx::work& transact)
+{
+    transact.exec0(R"sql(
+        create table if not exists tb_password(
+            passw_id serial primary key not null,
+            passw_userid int not null,
+            passw_encr text not null,
+            passw_mtime timestamp default current_timestamp 
+        );
+    )sql");
+}
+
+
+////================ web cookie table, related to web cookies
+// see https://www.postgresql.org/docs/current/datatype-net-types.html
+// read https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+// see http://man7.org/linux/man-pages/man2/getsockname.2.html
+// see http://man7.org/linux/man-pages/man7/ip.7.html
+// and http://man7.org/linux/man-pages/man7/ipv6.7.html
+/// we are aware that the browser IP is unreliable information
+/// see https://stackoverflow.com/q/527638/841108
+static void
+define_tb_web_cookie(pqxx::work& transact)
+{
+    transact.exec0(R"sql(
+        create table if not exists tb_web_cookie(
+            wcookie_id serial primary  key not null,
+            wcookie_random char(24) not null,
+            wcookie_exptime timestamp not null,
+            wcookie_webagenthash int not null
+        );
+        create index if not exists ix_cookie_random
+            on tb_web_cookie(wcookie_random);
+        create index if not exists ix_cookie_exptime
+            on tb_web_cookie(wcookie_exptime);
+    )sql");
+}
+
+
+// the create_new_user() SQL function creates a new user, taking care to
+// ensure that the password is encrypted with an MD5 hashed salt.
+static void
+define_create_new_user(pqxx::work& transact)
+{
+    transact.exec0(R"sql(
+        create or replace function create_new_user(
+                _email varchar, 
+                _password text, 
+                _firstname varchar, 
+                _familyname varchar, 
+                _telephone varchar, 
+                _gender varchar) returns integer 
+        as $func$
+        begin
+            insert into tb_user(
+                    user_firstname, 
+                    user_familyname, 
+                    user_email,
+                    user_telephone, 
+                    user_gender) values(
+                    _firstname, 
+                    _familyname,
+                    _email,
+                    _telephone, 
+                    get_gender_id(_gender));
+
+            insert into tb_password(
+                    passw_userid, 
+                    passw_encr) values(
+                    (select user_id from tb_user where user_email = _email),
+                    crypt(_password, gen_salt('md5')));
+
+            return (select user_id from tb_user where user_email = _email);
+        end;
+        $func$ language plpgsql;
+    )sql");
+}
+
 
 void
 hcv_initialize_database(const std::string&uri, bool cleardata)
@@ -182,176 +350,12 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     ////================ create tables if they are missing
     pqxx::work transact(*hcv_dbconn);
 
-    // We need a means to enumerate in the database the status of a user.
-    // On registering, a user is initially inactive, and becomes active after
-    // confirming her e-mail address. After a certain period of time has elapsed
-    // without the user not having logged in (e.g. 3 months) the user would then
-    // be set as inactive, and would then again need to confirm by e-mail their
-    // registration and willingess to use the application.
-    // Since SQL doesn't support enumerations as such, we simulate it through
-    // an SQL function that accepts a string and returns the corresponding
-    // integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
-    // constraints.
-    transact.exec0(R"sqluserstatus(
-        create or replace function get_status_id(_tag varchar) 
-                returns integer as
-        $func$ 
-        declare
-            status_code integer;
-        begin
-            case
-                when _tag = 'INACTIVE' then status_code = 0;
-                when _tag = 'ACTIVE' then status_code = 1;
-                when _tag = '_MIN_' then status_code = 0;
-                when _tag = '_MAX_' then status_code = 1;
-            end case;
 
-            return status_code;
-        end;
-        $func$ language plpgsql;
-    )sqluserstatus");
-   
-    // Enumerator for gender types. We need to be flexible about gender because
-    // different legal jurisdictions may recognise genders other than the
-    // standard ones
-    transact.exec0(R"sqlusergender(
-        create or replace function get_gender_id(_tag varchar) 
-                returns integer as
-        $func$ 
-        declare
-            gender_code integer;
-        begin
-            case
-                when _tag = 'GENDER_MALE' then gender_code = 0;
-                when _tag = 'GENDER_FEMALE' then gender_code = 1;
-                when _tag = 'GENDER_OTHER' then gender_code = 2;
-                when _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
-                when _tag = '_MIN_' then gender_code = 0;
-                when _tag = '_MAX_' then gender_code = 3;
-            end case;
-
-            return gender_code;
-        end;
-        $func$ language plpgsql;
-    )sqlusergender");
-
-    ////================ user table and indexes, with mandatory data
-    transact.exec0(R"crusertab(
----- TABLE tb_user
-CREATE TABLE IF NOT EXISTS tb_user (
-  user_id SERIAL PRIMARY KEY NOT NULL,  -- unique user_id
-  user_firstname VARCHAR(31) NOT NULL,  -- first name, in capitals, UTF8
-  user_familyname VARCHAR(62) NOT NULL, -- family name, in capitals, UTF8
-  user_email VARCHAR(71) NOT NULL,      -- email, in lowercase, UTF8
-  user_telephone VARCHAR(23) NOT NULL,  -- telephone number (digits, +, - or space)
-  user_gender integer NOT NULL,         -- 'F' | 'M' | '?'
-  user_status integer not null default get_status_id('INACTIVE'), -- user status
-  user_crtime TIMESTAMP DEFAULT current_timestamp, -- user entry creation time
-  check(user_gender between get_gender_id('_MIN_') and get_gender_id('_MAX_')),
-  check(user_status between get_status_id('_MIN_') and get_status_id('_MAX_'))
-); --- end TABLE tb_user
-)crusertab");
-
-    transact.exec0(R"cruserfamix(
----- INDEX ix_user_familyname
-  CREATE INDEX IF NOT EXISTS ix_user_familyname 
-    ON tb_user(user_familyname);
---- end INDEX ix_user_familyname
-)cruserfamix");
-
-    transact.exec0(R"cruseremailix(
----- INDEX ix_user_email
-  CREATE INDEX IF NOT EXISTS ix_user_email 
-    ON tb_user(user_email);
---- end INDEX ix_user_email
-)cruseremailix");
-
-    transact.exec0(R"crusertimeix(
----- INDEX ix_user_crtime 
-  CREATE INDEX IF NOT EXISTS ix_user_crtime 
-    ON tb_user(user_crtime);
---- end INDEX ix_user_crtime
-)crusertimeix");
-
-    ////================ password table
-    transact.exec0(R"crpasswdtab(
----- TABLE tb_password
-CREATE TABLE IF NOT EXISTS tb_password (
-  passw_id SERIAL PRIMARY KEY NOT NULL, -- unique key in this table
-  passw_userid INT NOT NULL,            -- the user id whose password we store
-  passw_encr text NOT NULL,             -- the encrypted password
-  passw_mtime  TIMESTAMP DEFAULT current_timestamp  -- the last time that password was modified
-); --- end TABLE tb_password
-)crpasswdtab");
-
-    ////================ web cookie table, related to web cookies
-    // see https://www.postgresql.org/docs/current/datatype-net-types.html
-    // read https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-    // see http://man7.org/linux/man-pages/man2/getsockname.2.html
-    // see http://man7.org/linux/man-pages/man7/ip.7.html
-    // and http://man7.org/linux/man-pages/man7/ipv6.7.html
-    /// we are aware that the browser IP is unreliable information
-    /// see https://stackoverflow.com/q/527638/841108
-    transact.exec0(R"crwebcookietab(
----- TABLE tb_web_cookie
-CREATE TABLE IF NOT EXISTS tb_web_cookie (
-  wcookie_id SERIAL PRIMARY  KEY NOT NULL, -- unique key in this table
-  wcookie_random CHAR(24) NOT NULL,        -- a random key, hopefully usually unique
-  wcookie_exptime TIMESTAMP NOT NULL,      -- the cookie expiration time
-  wcookie_webagenthash INT NOT NULL        -- a quick hashcode of the browser's User-Agent:
-); --- end TABLE tb_web_cookie
-)crwebcookietab");
-
-    transact.exec0(R"crcookierandomix(
----- INDEX ix_cookie_random
-  CREATE INDEX IF NOT EXISTS ix_cookie_random
-    ON tb_web_cookie(wcookie_random);
---- end INDEX ix_cookie_random
-)crcookierandomix");
-
-    transact.exec0(R"crcookietimeix(
----- INDEX ix_cookie_exptime
-  CREATE INDEX IF NOT EXISTS ix_cookie_exptime
-    ON tb_web_cookie(wcookie_exptime);
---- end INDEX ix_cookie_exptime
-)crcookietimeix");
-
-
-    // the fn_user_create() SQL function creates a new user, taking care to
-    // ensure that the password is encrypted with an MD5 hashed salt.
-    // TODO: add checks for integrity of gender
-    transact.exec0(R"sqlusercreate(
-        create or replace function create_new_user(
-                _email varchar, 
-                _password text, 
-                _firstname varchar, 
-                _familyname varchar, 
-                _telephone varchar, 
-                _gender varchar) returns integer 
-        as $func$
-        begin
-            insert into tb_user(
-                    user_firstname, 
-                    user_familyname, 
-                    user_email,
-                    user_telephone, 
-                    user_gender) values(
-                    _firstname, 
-                    _familyname,
-                    _email,
-                    _telephone, 
-                    get_gender_id(_gender));
-
-            insert into tb_password(
-                    passw_userid, 
-                    passw_encr) values(
-                    (select user_id from tb_user where user_email = _email),
-                    crypt(_password, gen_salt('md5')));
-
-            return (select user_id from tb_user where user_email = _email);
-        end;
-        $func$ language plpgsql;
-    )sqlusercreate");
+    define_get_status_id(transact);
+    define_get_gender_id(transact);
+    define_tb_user(transact);
+    define_tb_password(transact);
+    define_create_new_user(transact);
 
     transact.commit();
   }
