@@ -469,7 +469,7 @@ INSERT INTO tb_helpcovidinstance
        << transact.quote(curexepath) << "," //= hcvinst_execelf
        << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
        << (long)nowt <<", " //=hcvinst_startime
-       << hcv_timelong << ", "
+       << (long)hcv_timelong << ", "
        << transact.quote(std::string{cwdpath}) << ", "
        << transact.quote(std::string{hcv_topdirectory}) << ", -- @! " << __FILE__ << ":" << __LINE__ << std::endl
        << transact.quote(std::string{hcv_gitid}) << ", " 
