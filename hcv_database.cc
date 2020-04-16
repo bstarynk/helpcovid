@@ -471,7 +471,7 @@ INSERT INTO tb_helpcovidinstance
        << (long)nowt <<", " //=hcvinst_startime
        << hcv_timelong << ", "
        << transact.quote(std::string{cwdpath}) << ", "
-       << transact.quote(std::string{hcv_topdirectory}) << ", "
+       << transact.quote(std::string{hcv_topdirectory}) << ", -- @! " << __FILE__ << ":" << __LINE__ << std::endl
        << transact.quote(std::string{hcv_gitid}) << ", " 
        << transact.quote(std::string{hcv_md5sum}) << ","
        << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
@@ -483,6 +483,7 @@ INSERT INTO tb_helpcovidinstance
        << (int)mygid << ", "  //=hcvinst_linuxgid, hcvinst_linuxegid
        << (int)myefgid << ", "
        << transact.quote(std::string{hcv_cxx_compiler}) //=hcvinst_compiler_version
+       << " )"
        << std::endl;
   std::string osqlstr = osql.str();
   HCV_DEBUGOUT("sql_register_helpcovid_instance osqlstr::" << std::endl
