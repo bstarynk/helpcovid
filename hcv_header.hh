@@ -111,7 +111,7 @@ extern "C" unsigned hcv_http_payload_max;
 
 // in generated __timestamp.c
 extern "C" const char hcv_timestamp[];
-extern "C" const unsigned long hcv_timelong[];
+extern "C" const unsigned long hcv_timelong;
 extern "C" const char hcv_topdirectory[];
 extern "C" const char hcv_gitid[];
 extern "C" const char hcv_lastgittag[];
