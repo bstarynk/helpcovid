@@ -423,7 +423,64 @@ CREATE INDEX IF NOT EXISTS ix_helpcovinst_md5
 ------------------------ end of indexes related to tb_helpcovidinstance
 )sqlcrhelpcovid");
   long helpcovidinstserial = -1;
-#warning sql_register_helpcovid_instance should INSERT into TABLE tb_helpcovidinstance
+  ////////////////
+  ///// insert into tb_helpcovidinstance a single row describing the current helpcovid process.
+  char curexepath[200];
+  memset (curexepath, 0, sizeof(curexepath));
+  auto lsz = readlink("/proc/self/exe", curexepath, sizeof(curexepath));
+  if (lsz < 0 || (int)lsz >= (int)sizeof(curexepath)-2)
+    HCV_FATALOUT("sql_register_helpcovid_instance failed to readlink(2) /proc/self/exe");
+  char cwdpath[128];
+  memset (cwdpath, 0, sizeof(cwdpath));
+  if (!getcwd(cwdpath, sizeof(cwdpath)-1))
+    HCV_FATALOUT("sql_register_helpcovid_instance failed to getcwd");
+  time_t nowt = 0;
+  time(&nowt);
+  uid_t myuid = getuid();
+  uid_t myefuid= geteuid();
+  gid_t mygid= getgid();
+  gid_t myefgid= getegid();  
+  HCV_DEBUGOUT("sql_register_helpcovid_instance before insertion nowt=" << (long)nowt
+	       << ", myuid=" << (int)myuid
+	       << ", myefuid=" << (int)myefuid
+	       << ", mygid=" << (int)mygid
+	       << ", myefgid=" << (int)myefgid
+	       << ", curexepath=" << curexepath
+	       << ", cwdpath=" << cwdpath);
+  std::string uidstr;
+  std::string efuidstr;
+#warning sql_register_helpcovid_instance code below does not compile yet!
+#if 0 && badcode_sqlinsthelpcovid
+  transact.exec(R"sqlinsthelpcovid(
+INSERT INTO tb_helpcovidinstance
+    VALUES (hcvinst_host, hcvinst_pid, hcvinst_execelf, 
+            hcvinst_startime, hcvinst_buildtime,
+            hcvinst_cwd, hcvinst_topdir,
+	    hcvinst_gitid, hcvinst_lastgitcommit,
+	    hcvinst_md5sum,
+            hcvinst_linuxuid, hcvinst_linuxeuid,
+            hcvinst_linuxuser, hcvinst_linuxeffuser,
+            hcvinst_linuxgid, hcvinst_linuxegid,
+	    hcvinst_compiler_version);
+)sqlinsthelpcovid",
+		hcv_get_hostname(), //= hcvinst_host
+		(int)getpid(), //= hcvinst_pid
+		curexepath, //= hcvinst_execelf
+		nowt, //=hcvinst_startime
+		hcv_timelong, //=hcvinst_buildtime
+		cwdpath, //=hcvinst_cwd
+		hcv_topdirectory, //=hcvinst_topdir
+		hcv_gitid, //=hcvinst_gitid
+		hcv_md5sum, //=hcvinst_md5sum
+		(int)myuid, //=hcvinst_linuxuid,
+		(int)myefuid, //=hcvinst_linuxeuid
+		uidstr, efuidstr, //= hcvinst_linuxuser, hcvinst_linuxeffuser
+		(int)mygid, (int)myefgid, //=hcvinst_linuxgid, hcvinst_linuxegid
+		hcv_cxx_compiler //=hcvinst_compiler_version
+    );
+  pqxx::row r2serial = transact.exec0("SELECT LASTVAL();");
+  helpcovidinstserial = r2serial[0].as<long>();
+#endif /*0 && badcode_sqlinsthelpcovid*/
   HCV_SYSLOGOUT(LOG_WARNING,
 		"incomplete sql_register_helpcovid_instance should INSERT into TABLE tb_helpcovidinstance");
   ///
