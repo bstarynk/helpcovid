@@ -497,6 +497,21 @@ INSERT INTO tb_helpcovidinstance
 } // end sql_register_helpcovid_instance
 
 
+static void
+sql_unregister_helpcovid_instance(pqxx::work& transact)
+{
+  auto serial = hcv_database_serial.load();
+  HCV_DEBUGOUT("sql_unregister_helpcovid_instance starting serial#" << serial);
+  if (serial > 0) {
+    std::ostringstream osql;
+    osql << "DELETE FROM tb_helpcovidinstance WHERE hcvinst_id = " << serial << std::endl;
+    std::string sqlstr = osql.str();
+    HCV_DEBUGOUT("sql_unregister_helpcovid_instance sqlstr:" << std::endl << sqlstr  << std::endl);
+    hcv_database_serial.store(0);
+    transact.exec(sqlstr);
+    HCV_DEBUGOUT("sql_unregister_helpcovid_instance deleted serial#" << serial);
+  }
+} // end sql_unregister_helpcovid_instance
 
 
 ////////////////////////////////////////////////////////////////
@@ -730,6 +745,13 @@ hcv_close_database(void)
   std::lock_guard<std::recursive_mutex> gu(hcv_dbmtx);
   HCV_ASSERT(hcv_dbconn);
   std::string dbnamestr(hcv_dbconn->dbname());
+  HCV_DEBUGOUT("hcv_close_database dbnamestr=" << dbnamestr);
+  {
+    pqxx::work finaltransact(*hcv_dbconn);
+    sql_unregister_helpcovid_instance(finaltransact);
+    finaltransact.commit();
+  }
+  HCV_DEBUGOUT("hcv_close_database before resetting database connection");
   hcv_dbconn.reset(nullptr);
   HCV_SYSLOGOUT(LOG_NOTICE, "closed database " << dbnamestr);
 } // end hcv_close_database
