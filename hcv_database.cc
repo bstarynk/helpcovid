@@ -441,6 +441,7 @@ CREATE INDEX IF NOT EXISTS ix_helpcovinst_md5
   gid_t mygid= getgid();
   gid_t myefgid= getegid();  
   HCV_DEBUGOUT("sql_register_helpcovid_instance before insertion nowt=" << (long)nowt
+	       << ", timelong=" << (long)hcv_timelong
 	       << ", myuid=" << (int)myuid
 	       << ", myefuid=" << (int)myefuid
 	       << ", mygid=" << (int)mygid
@@ -466,14 +467,15 @@ INSERT INTO tb_helpcovidinstance
   osql << std::endl << " VALUES ("
        << transact.quote(hcv_get_hostname()) << ", "  //= hcvinst_host
        << (int)getpid() << ", " //= hcvinst_pid
-       << transact.quote(curexepath) << "," //= hcvinst_execelf
+       << transact.quote(std::string{curexepath}) << "," //= hcvinst_execelf
        << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
-       << (long)nowt <<", " //=hcvinst_startime
-       << (long)hcv_timelong << ", "
+       << " to_timestamp(" << (long)nowt <<"), " //=hcvinst_startime
+       << " to_timestamp(" << (long)hcv_timelong << "), "
        << transact.quote(std::string{cwdpath}) << ", "
        << transact.quote(std::string{hcv_topdirectory}) << ", -- @! " << __FILE__ << ":" << __LINE__ << std::endl
-       << transact.quote(std::string{hcv_gitid}) << ", " 
-       << transact.quote(std::string{hcv_md5sum}) << ","
+       << " " << transact.quote(std::string{hcv_gitid}) << "," << std::endl
+       << " " << transact.quote(std::string{hcv_lastgitcommit}) << "," << std::endl
+       << " " << transact.quote(std::string{hcv_md5sum}) << ","
        << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
        << (int)myuid << ", " //=hcvinst_linuxuid,
        << (int)myefuid << ", "  //=hcvinst_linuxeuid
