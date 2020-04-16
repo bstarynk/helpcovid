@@ -44,6 +44,8 @@ std::string hcv_our_postgresql_server_version;
 /// the recursive mutex to serialize access to that database
 std::recursive_mutex hcv_dbmtx;
 
+extern "C" std::atomic<long> hcv_database_serial;
+std::atomic<long> hcv_database_serial;
 extern "C" void hcv_prepare_statements_in_database(void);
 
 
@@ -184,11 +186,11 @@ sql_tb_user(pqxx::work& transact)
                 and get_status_id('_MAX_'))
         );
         CREATE INDEX IF NOT EXISTS ix_user_familyname 
-            on tb_user(user_familyname);
+            ON tb_user(user_familyname);
         CREATE INDEX IF NOT EXISTS ix_user_email 
-            on tb_user(user_email);
+            ON tb_user(user_email);
         CREATE INDEX IF NOT EXISTS ix_user_crtime 
-            on tb_user(user_crtime);
+            ON tb_user(user_crtime);
     )crusertab");
 } // end sql_tb_user
 
@@ -366,6 +368,73 @@ sql_get_email_verification_token(pqxx::work& transact)
 } // end sql_get_email_verification_token
 
 
+/// We create and fill a tiny SQL table tb_helpcovidinstance to
+/// register this particular instance of helpcovid process in the
+/// database.  This might be useful in large scale HelpCovid
+/// deployments, where a single database is shared between several
+/// helpcovid processes running on different web servers declared with
+/// the same hostname at the DNS.
+static void
+sql_register_helpcovid_instance(pqxx::work& transact)
+{
+  HCV_DEBUGOUT("sql_register_helpcovid_instance starting");
+  hcv_database_serial.store(-1);
+  /// first, create the table of running helpcovid instances in the database
+  /// and a few indexes inside it
+  transact.exec0(R"sqlcrhelpcovid(
+CREATE TABLE IF NOT EXISTS tb_helpcovidinstance (
+hcvinst_id SERIAL PRIMARY KEY          -- unique serial
+           NOT NULL,
+hcvinst_host VARCHAR(80) NOT NULL,     -- the hostname running helpcovid
+hcvinst_pid  INTEGER NOT NULL,         -- the Linux process id
+hcvinst_execelf VARCHAR(80) NOT NULL,  -- the path of the Linux ELF executable
+hcvinst_startime TIMESTAMP             -- the start time of the process
+    DEFAULT current_timestamp,
+hcvinst_buildtime TIMESTAMP NOT NULL,  -- the executable build time from hcv_timelong
+hcvinst_cwd  VARCHAR(255) NOT NULL,    -- the current working directory from getcwd(3)
+hcvinst_topdir VARCHAR(255) NOT NULL,  -- the top directory from hcv_topdirectory
+hcvinst_gitid VARCHAR(63) NOT NULL,    -- the git id from hcv_gitid
+hcvinst_lastgitcommit VARCHAR(383)     -- from hcv_lastgitcommit
+    NOT NULL,
+hcvinst_md5sum VARCHAR(47) NOT NULL,   -- the md5sum from hcv_md5sum
+hcvinst_linuxuid INTEGER NOT NULL,     -- from getuid(2)
+hcvinst_linuxeuid INTEGER NOT NULL,    -- from geteuid(2)
+hcvinst_linuxuser VARCHAR(15)          -- from getuid(2) then getpwuid(3)
+    NOT NULL,
+hcvinst_linuxeffuser VARCHAR(15)       -- from geteuid(2) then getpwuid(3)
+    NOT NULL,
+hcvinst_linuxgid INTEGER NOT NULL,     -- from getgid(2)
+hcvinst_linuxegid INTEGER NOT NULL     -- from getegid(2)
+    NOT NULL,
+hcvinst_compiler_version VARCHAR(80)   -- from hcv_cxx_compiler
+    NOT NULL 
+); --------- end of table tb_helpcovidinstance
+
+CREATE INDEX IF NOT EXISTS ix_helpcovinst_hostpid 
+    ON tb_helpcovidinstance(hcvinst_host, hcvinst_pid);
+CREATE INDEX IF NOT EXISTS ix_helpcovinst_linuxuser 
+    ON tb_helpcovidinstance(hcvinst_linuxuid, hcvinst_linuxuser);
+CREATE INDEX IF NOT EXISTS ix_helpcovinst_build
+    ON tb_helpcovidinstance(hcvinst_buildtime, hcvinst_gitid);
+CREATE INDEX IF NOT EXISTS ix_helpcovinst_meta
+    ON tb_helpcovidinstance(hcvinst_gitid, hcvinst_lastgitcommit);
+CREATE INDEX IF NOT EXISTS ix_helpcovinst_md5
+    ON tb_helpcovidinstance(hcvinst_md5sum);
+------------------------ end of indexes related to tb_helpcovidinstance
+)sqlcrhelpcovid");
+  long helpcovidinstserial = -1;
+#warning sql_register_helpcovid_instance should INSERT into TABLE tb_helpcovidinstance
+  HCV_SYSLOGOUT(LOG_WARNING,
+		"incomplete sql_register_helpcovid_instance should INSERT into TABLE tb_helpcovidinstance");
+  ///
+  HCV_SYSLOGOUT(LOG_INFO, "sql_register_helpcovid_instance completed, serial#" << helpcovidinstserial);
+  hcv_database_serial.store(helpcovidinstserial);
+} // end sql_register_helpcovid_instance
+
+
+
+
+////////////////////////////////////////////////////////////////
 void
 hcv_initialize_database(const std::string&uri, bool cleardata)
 {
@@ -455,6 +524,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_create_new_user(transact);
     sql_verify_email_token(transact);
     sql_get_email_verification_token(transact);
+    sql_register_helpcovid_instance(transact);
 
     transact.commit();
   }
