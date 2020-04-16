@@ -139,6 +139,19 @@ etc...
 | ix_cookie_random | user_familyname | 
 | ix_cookie_exptime | user_email |
 
+
+### Table `tb_helpcovidinstance`
+
+It should contain one row per active instance and running process of
+`helpcovid`. It could be useful when several `helpcovid` processes are
+running on different machines and connected to the same PostGreSQL
+database and server. Related concept: [Round-robin DNS](https://en.wikipedia.org/wiki/Round-robin_DNS).
+
+That table could also be useful for debugging or monitoring purposes.
+
+C++ implementation in functions `sql_register_helpcovid_instance` and
+`sql_unregister_helpcovid_instance` of file `hcv_database.cc`
+
 ## Testing the database
 
 Testing is achieved through the [`pgtap`](https://pgtap.org/) utility. This 
