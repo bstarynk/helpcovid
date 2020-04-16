@@ -113,24 +113,24 @@ hcv_postgresql_version(void)
 static void
 sql_get_status_id(pqxx::work& transact)
 {
-    transact.exec0(R"sqluserstatus(
-        create or replace function get_status_id(_tag varchar) 
-                returns integer as
+  transact.exec0(R"sqluserstatus(
+        CREATE OR REPLACE FUNCTION get_status_id(_tag varchar) 
+                RETURNS integer AS
         $func$ 
-        declare
+        DECLARE
             status_code integer;
-        begin
-            case
+        BEGIN
+            CASE
                 when _tag = 'STATUS_REJECTED' then status_code = -2;
                 when _tag = 'STATUS_EXPIRED' then status_code = -1;
                 when _tag = 'STATUS_PENDING' then status_code = 0;
                 when _tag = 'STATUS_VERIFIED' then status_code = 1;
                 when _tag = '_MIN_' then status_code = 0;
                 when _tag = '_MAX_' then status_code = 1;
-            end case;
+            END CASE;
 
-            return status_code;
-        end;
+            RETURN status_code;
+        END;
         $func$ language plpgsql immutable;
     )sqluserstatus");
 }
@@ -142,85 +142,85 @@ sql_get_status_id(pqxx::work& transact)
 static void
 sql_get_gender_id(pqxx::work& transact)
 {
-    transact.exec0(R"sqlusergender(
-        create or replace function get_gender_id(_tag varchar) 
-                returns integer as
+  transact.exec0(R"sqlusergender(
+        CREATE OR REPLACE FUNCTION get_gender_id(_tag varchar) 
+                RETURNS integer AS
         $func$ 
-        declare
+        DECLARE
             gender_code integer;
-        begin
-            case
-                when _tag = 'GENDER_MALE' then gender_code = 0;
-                when _tag = 'GENDER_FEMALE' then gender_code = 1;
-                when _tag = 'GENDER_OTHER' then gender_code = 2;
-                when _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
-                when _tag = '_MIN_' then gender_code = 0;
-                when _tag = '_MAX_' then gender_code = 3;
-            end case;
+        BEGIN
+            CASE
+                WHEN _tag = 'GENDER_MALE' THEN gender_code = 0;
+                WHEN _tag = 'GENDER_FEMALE' THEN gender_code = 1;
+                WHEN _tag = 'GENDER_OTHER' THEN gender_code = 2;
+                WHEN _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
+                WHEN _tag = '_MIN_' then gender_code = 0;
+                WHEN _tag = '_MAX_' then gender_code = 3;
+            END CASE;
 
-            return gender_code;
-        end;
+            RETURN gender_code;
+        END;
         $func$ language plpgsql immutable;
     )sqlusergender");
-}
+} // end sql_get_gender_id
 
 static void
 sql_tb_user(pqxx::work& transact)
 {
-    transact.exec0(R"crusertab(
-        create table if not exists tb_user (
-            user_id serial primary key not null,
-            user_firstname varchar(31) not null,
-            user_familyname varchar(62) not null,
-            user_email varchar(71) not null,
-            user_telephone varchar(23) not null,
-            user_gender integer not null,
-            user_status integer 
-                not null default get_status_id('STATUS_PENDING'), 
-            user_crtime timestamp default current_timestamp,
-            check(user_gender between get_gender_id('_MIN_') 
+  transact.exec0(R"crusertab(
+        CREATE TABLE IF NOT EXISTS tb_user (
+            user_id SERIAL PRIMARY KEY NOT NULL,
+            user_firstname VARCHAR(31) NOT NULL,
+            user_familyname VARCHAR(62) NOT NULL,
+            user_email VARCHAR(71) NOT NULL,
+            user_telephone VARCHAR(23) NOT NULL,
+            user_gender INTEGER NOT NULL,
+            user_status INTEGER 
+                NOT NULL DEFAULT get_status_id('STATUS_PENDING'), 
+            user_crtime TIMESTAMP DEFAULT current_timestamp,
+            CHECK(user_gender between get_gender_id('_MIN_') 
                 and get_gender_id('_MAX_')),
-            check(user_status between get_status_id('_MIN_') 
+            CHECK(user_status between get_status_id('_MIN_') 
                 and get_status_id('_MAX_'))
         );
-        create index if not exists ix_user_familyname 
+        CREATE INDEX IF NOT EXISTS ix_user_familyname 
             on tb_user(user_familyname);
-        create index if not exists ix_user_email 
+        CREATE INDEX IF NOT EXISTS ix_user_email 
             on tb_user(user_email);
-        create index if not exists ix_user_crtime 
+        CREATE INDEX IF NOT EXISTS ix_user_crtime 
             on tb_user(user_crtime);
     )crusertab");
-}
+} // end sql_tb_user
 
 
 static void
 sql_tb_email_confirmation(pqxx::work& transact)
 {
-    transact.exec0(R"sql(
-        create table if not exists define_tb_email_confirmation(
-            id serial primary key not null,
-            user_id integer not null references tb_user(user_id) 
-                on delete cascade,
-            token uuid not null,
-            expiry timestamp not null default current_timestamp 
+  transact.exec0(R"confsql(
+        CREATE TABLE IF NOT EXISTS tb_email_confirmation(
+            confirm_id serial PRIMARY KEY NOT NULL,
+            confirm_userid INTEGER NOT NULL REFERENCES tb_user(user_id) 
+                ON DELETE CASCADE,
+            confirm_token UUID NOT NULL,
+            confirm_expiry TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
                 + interval '1 hour'
         );
-    )sql");
-}
+    )confsql");
+} // end sql_tb_email_confirmation
 
 
 static void
 sql_tb_password(pqxx::work& transact)
 {
-    transact.exec0(R"sql(
-        create table if not exists tb_password(
-            passw_id serial primary key not null,
-            passw_userid int not null,
-            passw_encr text not null,
-            passw_mtime timestamp default current_timestamp 
+  transact.exec0(R"sqlpass(
+        CREATE TABLE IF NOT EXISTS tb_password(
+            passw_id SERIAL PRIMARY KEY NOT NULL,
+            passw_userid INT NOT NULL,
+            passw_encr TEXT NOT NULL,
+            passw_mtime TIMESTAMP DEFAULT current_timestamp 
         );
-    )sql");
-}
+    )sqlpass");
+} // end sql_tb_password
 
 
 ////================ web cookie table, related to web cookies
@@ -234,19 +234,19 @@ sql_tb_password(pqxx::work& transact)
 static void
 sql_tb_web_cookie(pqxx::work& transact)
 {
-    transact.exec0(R"sql(
-        create table if not exists tb_web_cookie(
-            wcookie_id serial primary  key not null,
-            wcookie_random char(24) not null,
-            wcookie_exptime timestamp not null,
-            wcookie_webagenthash int not null
+  transact.exec0(R"sqlweb(
+        CREATE TABLE IF NOT EXISTS tb_web_cookie(
+            wcookie_id SERIAL PRIMARY  KEY NOT NULL,
+            wcookie_random CHAR(24) NOT NULL,
+            wcookie_exptime TIMESTAMP NOT NULL,
+            wcookie_webagenthash INT NOT NULL
         );
-        create index if not exists ix_cookie_random
-            on tb_web_cookie(wcookie_random);
-        create index if not exists ix_cookie_exptime
+        CREATE INDEX IF NOT EXISTS ix_cookie_random
+            ON tb_web_cookie(wcookie_random);
+        CREATE INDEX IF NOT EXISTS ix_cookie_exptime
             on tb_web_cookie(wcookie_exptime);
-    )sql");
-}
+    )sqlweb");
+} // end sql_tb_web_cookie
 
 
 // the create_new_user() SQL function creates a new user, taking care to
@@ -254,39 +254,39 @@ sql_tb_web_cookie(pqxx::work& transact)
 static void
 sql_create_new_user(pqxx::work& transact)
 {
-    transact.exec0(R"sql(
-        create or replace function create_new_user(
+  transact.exec0(R"sqlcruser(
+        CREATE OR REPLACE FUNCTION create_new_user(
                 _email varchar, 
                 _password text, 
                 _firstname varchar, 
                 _familyname varchar, 
                 _telephone varchar, 
-                _gender varchar) returns integer 
+                _gender varchar) RETURNS integer 
         as $func$
-        begin
-            insert into tb_user(
+        BEGIN
+            INSERT INTO tb_user(
                     user_firstname, 
                     user_familyname, 
                     user_email,
                     user_telephone, 
-                    user_gender) values(
+                    user_gender) VALUES(
                     _firstname, 
                     _familyname,
                     _email,
                     _telephone, 
                     get_gender_id(_gender));
 
-            insert into tb_password(
+            INSERT INTO tb_password(
                     passw_userid, 
                     passw_encr) values(
-                    (select user_id from tb_user where user_email = _email),
+                    (SELECT user_id from tb_user where user_email = _email),
                     crypt(_password, gen_salt('md5')));
 
-            return (select user_id from tb_user where user_email = _email);
-        end;
+            RETURN (SELECT user_id FROM tb_user WHERE user_email = _email);
+        end; 
         $func$ language plpgsql;
-    )sql");
-}
+    )sqlcruser");
+} // end sql_create_new_user
 
 
 // the verify_email_token() stored function determines if a UUID e-mail token
@@ -295,75 +295,75 @@ sql_create_new_user(pqxx::work& transact)
 static void
 sql_verify_email_token(pqxx::work& transact)
 {
-    transact.exec0(R"sql(
-        create or replace function verify_email_token(
+  transact.exec0(R"sqlverifemail(
+        CREATE OR REPLACE FUNCTION verify_email_token(
             _user_id integer,
-            _token uuid) returns integer
+            _token uuid) RETURNS integer
         as $func$
-        declare
+        DECLARE
             expires timestamp;
             check_id integer;
-        begin
-            select expiry from tb_email_confirmation where user_id = _user_id
+        BEGIN
+            SELECT expiry FROM tb_email_confirmation where user_id = _user_id
                 into expires;
 
-            if not found then
-                raise exception 'e-mail token not generated';
-            end if;
+            IF NOT FOUND THEN
+                RAISE EXCEPTION 'e-mail token not generated';
+            END IF;
 
-            if expires >= current_timestamp then
-                update tb_user 
+            IF expires >= current_timestamp THEN
+                UPDATE tb_user 
                     set user_status = get_status_id('STATUS_EXPIRED');
-                return get_status_id('STATUS_EXPIRED');
-            end if;
+                RETURN get_status_id('STATUS_EXPIRED');
+            END IF;
 
-            select user_id from tb_email_confirmation where token = _token
-                into check_id;
+            SELECT user_id FROM tb_email_confirmation WHERE token = _token
+                INTO check_id;
 
-            if check_id = _userid then
-                update tb_user 
-                    set user_status = get_status_id('STATUS_VERIFIED');
-                delete from tb_email_confirmation where user_id - _user_id;
-                return get_status_id('STATUS_VERIFIED');
-            else
-                update tb_user 
-                    set user_status = get_status_id('STATUS_REJECTED');
-                return get_status_id('STATUS_REJECTED');
-            end if;
-        end;
+            IF check_id = _userid THEN
+                UPDATE tb_user 
+                    SET user_status = get_status_id('STATUS_VERIFIED');
+                DELETE FROM tb_email_confirmation WHERE user_id = _user_id;
+                RETURN get_status_id('STATUS_VERIFIED');
+            ELSE
+                UPDATE tb_user 
+                    SET user_status = get_status_id('STATUS_REJECTED');
+                RETURN get_status_id('STATUS_REJECTED');
+            END IF;
+        END;		    
         $func$ language plpgsql;
-    )sql");
-}
+    )sqlverifemail");
+} // end sql_verify_email_token
 
 
 static void
 sql_get_email_verification_token(pqxx::work& transact)
 {
-    transact.exec0(R"sql(
-        create or replace function get_email_verification_token(
-            _user_id integer) returns uuid
+  transact.exec0(R"sqlgetemtok(
+        CREATE OR REPLACE FUNCTION get_email_verification_token(
+            _user_id integer) RETURNS uuid
         as $func$
-        declare
+        DECLARE
             check_id integer;
-        begin
-            select user_id from tb_user where user_id = _user_id into check_id;
-            if not check_id = _user_id then
-                raise exception 'user ID does not exist: %', _user_id;
-            end if;
+        BEGIN
+            SELECT user_id FROM tb_user where user_id = _user_id INTO check_id;
+            IF NOT check_id = _user_id THEN
+                RAISE EXCEPTION 'user ID does not exist: %', _user_id;
+            END IF;
 
-            return(select token from tb_email_confirmation 
+            RETURN(SELECT token FROM tb_email_confirmation 
                 where user_id = _user_id);
 
-            if not found then
-                insert into tb_email_confirmation(user_id, token) values(
+            IF NOT FOUND THEN
+                INSERT INTO tb_email_confirmation(user_id, token) VALUES(
                     _user_id, gen_random_uuid());
-                return(select token from tb_email_confirmation
-                    where user_id = _user_id);
-            end if;
-        end;
+                RETURN(SELECT token FROM tb_email_confirmation
+                    WHERE user_id = _user_id);
+            END IF;
+        END;
         $func$ language plpgsql;
-    )sql");
-}
+    )sqlgetemtok");
+} // end sql_get_email_verification_token
 
 
 void
@@ -470,9 +470,9 @@ prepare_user_model_statements(void)
 {
   // user_crtime is updated by default
   hcv_database_register_prepared_statement
-    ("user_create_pstm",
-     "INSERT INTO tb_user (user_firstname, user_familyname, user_email, user_gender "
-     " VALUES ($1, $2, $3, $4);");
+  ("user_create_pstm",
+   "INSERT INTO tb_user (user_firstname, user_familyname, user_email, user_gender "
+   " VALUES ($1, $2, $3, $4);");
 
   hcv_database_register_prepared_statement("user_get_password_by_email_pstm",
       "SELECT passwd_encr FROM tb_password WHERE passw_userid = "
@@ -490,8 +490,8 @@ hcv_prepare_statements_in_database(void)
   ////// find a user by his/her email
   HCV_DEBUGOUT("preparing find_user_by_email_pstm");
   hcv_dbconn->prepare
-    ("find_user_by_email_pstm",
-     R"finduseremail(
+  ("find_user_by_email_pstm",
+   R"finduseremail(
 SELECT user_id FROM tb_user WHERE user_email=$1
 )finduseremail");
   ///// insert a fresh web cookie; see also for LASTVAL
