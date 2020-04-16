@@ -449,11 +449,11 @@ CREATE INDEX IF NOT EXISTS ix_helpcovinst_md5
 	       << ", cwdpath=" << cwdpath);
   std::string uidstr;
   std::string efuidstr;
-#warning sql_register_helpcovid_instance code below does not compile yet!
-#if 0 && badcode_sqlinsthelpcovid
-  transact.exec(R"sqlinsthelpcovid(
+  {
+  std::ostringstream osql;
+  osql << R"sqlinsthelpcovid(
 INSERT INTO tb_helpcovidinstance
-    VALUES (hcvinst_host, hcvinst_pid, hcvinst_execelf, 
+    (hcvinst_host, hcvinst_pid, hcvinst_execelf, 
             hcvinst_startime, hcvinst_buildtime,
             hcvinst_cwd, hcvinst_topdir,
 	    hcvinst_gitid, hcvinst_lastgitcommit,
@@ -461,28 +461,36 @@ INSERT INTO tb_helpcovidinstance
             hcvinst_linuxuid, hcvinst_linuxeuid,
             hcvinst_linuxuser, hcvinst_linuxeffuser,
             hcvinst_linuxgid, hcvinst_linuxegid,
-	    hcvinst_compiler_version);
-)sqlinsthelpcovid",
-		hcv_get_hostname(), //= hcvinst_host
-		(int)getpid(), //= hcvinst_pid
-		curexepath, //= hcvinst_execelf
-		nowt, //=hcvinst_startime
-		hcv_timelong, //=hcvinst_buildtime
-		cwdpath, //=hcvinst_cwd
-		hcv_topdirectory, //=hcvinst_topdir
-		hcv_gitid, //=hcvinst_gitid
-		hcv_md5sum, //=hcvinst_md5sum
-		(int)myuid, //=hcvinst_linuxuid,
-		(int)myefuid, //=hcvinst_linuxeuid
-		uidstr, efuidstr, //= hcvinst_linuxuser, hcvinst_linuxeffuser
-		(int)mygid, (int)myefgid, //=hcvinst_linuxgid, hcvinst_linuxegid
-		hcv_cxx_compiler //=hcvinst_compiler_version
-    );
-  pqxx::row r2serial = transact.exec0("SELECT LASTVAL();");
+	    hcvinst_compiler_version)
+)sqlinsthelpcovid";
+  osql << std::endl << " VALUES ("
+       << transact.quote(hcv_get_hostname()) << ", "  //= hcvinst_host
+       << (int)getpid() << ", " //= hcvinst_pid
+       << transact.quote(curexepath) << "," //= hcvinst_execelf
+       << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
+       << (long)nowt <<", " //=hcvinst_startime
+       << hcv_timelong << ", "
+       << transact.quote(std::string{cwdpath}) << ", "
+       << transact.quote(std::string{hcv_topdirectory}) << ", "
+       << transact.quote(std::string{hcv_gitid}) << ", " 
+       << transact.quote(std::string{hcv_md5sum}) << ","
+       << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
+       << (int)myuid << ", " //=hcvinst_linuxuid,
+       << (int)myefuid << ", "  //=hcvinst_linuxeuid
+       << transact.quote(uidstr) << ", " //= hcvinst_linuxuser, hcvinst_linuxeffuser
+       << transact.quote(efuidstr) << ","
+       << std::endl << " ---  @" << __FILE__ << ":" << __LINE__ << std::endl
+       << (int)mygid << ", "  //=hcvinst_linuxgid, hcvinst_linuxegid
+       << (int)myefgid << ", "
+       << transact.quote(std::string{hcv_cxx_compiler}) //=hcvinst_compiler_version
+       << std::endl;
+  std::string osqlstr = osql.str();
+  HCV_DEBUGOUT("sql_register_helpcovid_instance osqlstr::" << std::endl
+	       << osqlstr << std::endl << "!!!end osqlstr" << std::endl);
+  transact.exec0(osqlstr);
+  }
+  pqxx::row r2serial = transact.exec1("SELECT LASTVAL();");
   helpcovidinstserial = r2serial[0].as<long>();
-#endif /*0 && badcode_sqlinsthelpcovid*/
-  HCV_SYSLOGOUT(LOG_WARNING,
-		"incomplete sql_register_helpcovid_instance should INSERT into TABLE tb_helpcovidinstance");
   ///
   HCV_SYSLOGOUT(LOG_INFO, "sql_register_helpcovid_instance completed, serial#" << helpcovidinstserial);
   hcv_database_serial.store(helpcovidinstserial);
