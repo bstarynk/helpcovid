@@ -74,11 +74,14 @@ void hcv_background_thread_body(void)
       polltab[1].events = POLL_IN;
       polltab[1].fd = hcv_bg_timer_fd;
       polltab[1].events = POLL_IN;
-      int nbfd = poll(polltab, 3, HCV_BACKGROUND_TICK_TIMEOUT);
+      HCV_DEBUGOUT("hcv_background_thread_body before poll");
+      int nbfd = poll(polltab, 3,
+                      hcv_debugging.load()?(2*HCV_BACKGROUND_TICK_TIMEOUT):HCV_BACKGROUND_TICK_TIMEOUT);
       if (nbfd==0)   /* timedout */
         {
           static long cnt;
           cnt++;
+          HCV_DEBUGOUT("hcv_background_thread_body timedout cnt#" << cnt);
           time_t nowt=0;
           time(&nowt);
           struct tm nowtm= {};
@@ -103,7 +106,7 @@ void hcv_background_thread_body(void)
               if (byrd==sizeof(evrk))
                 {
                   HCV_DEBUGOUT("hcv_background_thread_body: got " << evrk
-                               << " from hcv_bg_event_fd");
+                               << " from hcv_bg_event_fd=" << hcv_bg_event_fd);
                   hcv_bg_do_event(evrk);
                 }
               else
@@ -122,6 +125,8 @@ void hcv_background_thread_body(void)
                 // should never happen... see signalfd(2)
                 HCV_FATALOUT("hcv_background_thread_body: corrupted read of hcv_bg_signal_fd="
                              << hcv_bg_signal_fd << ", byrd=" << byrd);
+              HCV_DEBUGOUT("hcv_background_thread_body: got signalinfo #" << signalinfo.ssi_signo
+                           << " from hcv_bg_signal_fd=" << hcv_bg_signal_fd);
               if (signalinfo.ssi_signo == SIGTERM)
                 {
                   HCV_SYSLOGOUT(LOG_NOTICE, "hcv_background_thread_body got SIGTERM at "
@@ -157,6 +162,19 @@ void hcv_background_thread_body(void)
             };
           if ((polltab[2].revents & POLL_IN) && polltab[2].fd == hcv_bg_timer_fd)
             {
+              std::uint64_t nbexpir= 0;
+              int byrd= read(hcv_bg_timer_fd, &nbexpir, sizeof(nbexpir));
+              if (byrd < 0)
+                HCV_FATALOUT("hcv_background_thread_body: failed read of hcv_bg_timer_fd="
+                             << hcv_bg_timer_fd);
+              else if (byrd != sizeof(nbexpir))
+                // should never happen... see timerfd_create(2)
+                HCV_FATALOUT("hcv_background_thread_body: corrupted read of hcv_bg_timer_fd="
+                             << hcv_bg_timer_fd << ", byrd=" << byrd);
+              HCV_DEBUGOUT("hcv_background_thread_body got nbexpir=" << nbexpir);
+#warning hcv_background_thread_body does not handle hcv_bg_timer_fd properly
+              HCV_SYSLOGOUT(LOG_INFO, "hcv_background_thread_body unimplemented timer, nbexpir=" << nbexpir
+                            << " hcv_bg_timer_fd=" << hcv_bg_timer_fd);
             }
         }
       else
@@ -187,11 +205,13 @@ hcv_start_background_thread(void)
     hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK|SFD_CLOEXEC);
     if (hcv_bg_signal_fd < 0)
       HCV_FATALOUT("hcv_start_background_thread: signalfd failure");
+    HCV_DEBUGOUT("hcv_start_background_thread hcv_bg_signal_fd=" << hcv_bg_signal_fd);
   }
   //// see http://man7.org/linux/man-pages/man2/timerfd_create.2.html
   hcv_bg_timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK|TFD_CLOEXEC);
   if (hcv_bg_timer_fd < 0)
-    HCV_FATALOUT("hcv_start_background_thread:timerfd_create  failure");
+    HCV_FATALOUT("hcv_start_background_thread:timerfd_create failure");
+  HCV_DEBUGOUT("hcv_start_background_thread hcv_bg_timer_fd=" << hcv_bg_timer_fd);
   //////
   hcv_bgthread = std::thread([]()
   {
@@ -224,7 +244,7 @@ hcv_process_SIGTERM_signal(void)
   HCV_DEBUGOUT("start of hcv_process_SIGTERM_signal");
   hcv_stop_web();
   hcv_close_database();
-  HCV_SYSLOGOUT(LOG_NOTICE, "HelpCovid terminating on " << hcv_get_hostname
+  HCV_SYSLOGOUT(LOG_NOTICE, "HelpCovid terminating on " << hcv_get_hostname()
                 << " process " << (int)getpid()
                 << " built " << hcv_timestamp << std::endl
                 << "... md5sum " << hcv_md5sum
