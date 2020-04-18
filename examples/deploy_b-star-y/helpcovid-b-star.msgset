@@ -6,7 +6,7 @@
 
 !LOGIN_WELCOME!logwelcom(
 <h3>Welcome to the experimental HelpCovid<br/>
-<small>Bienveue sur le site experimental de HelpCovid</small>
+<small>Bienvenue sur le site experimental de HelpCovid</small>
 </h3>
 )logwelcome!
 
