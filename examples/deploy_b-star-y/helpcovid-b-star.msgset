@@ -1,0 +1,13 @@
+# 
+# project https://github.com/bstarynk/helpcovid
+# in directory examples/deploy_b-star-y/
+# file examples/deploy_b-star-y/helpcovid-b-star.msgset
+# to be symlinked from $HOME/helpcovid-b-star.msgset
+
+!LOGIN_WELCOME!logwelcom(
+<h3>Welcome to the experimental HelpCovid<br/>
+<small>Bienveue sur le site experimental de HelpCovid</small>
+</h3>
+)logwelcome!
+
+### end of  file examples/deploy_b-star-y/helpcovid-b-star.msgset

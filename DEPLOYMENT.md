@@ -110,13 +110,21 @@ the Terms of Service, and can optionally share your e-mail address with the
 Electronic Frontier Foundation (EFF).
 
 Once done, the certificate file will be saved to 
-`/etc/letsencrypt/live/example.com/fullchain.pem and the private key to
+`/etc/letsencrypt/live/example.com/fullchain.pem`  and the private key to
 `/etc/letsencrypt/live/example.com/privkey.pem`. Although other `*.pem` files
 are to be found in the directory, it is strongly recommended **not** to use any
 of the other certificates.
 
-In order to optionally renew certificates automatically, a crontab rule needs to
-be set up.
+The `helpcovid` executable and C++ code requires the public
+certificate and private key file to not be world-readable. Use Linux
+[command](http://man7.org/linux/man-pages/man1/chmod.1.html) `chmod
+o-rwx` on these files when needed. See calls to
+[stat(2)](http://man7.org/linux/man-pages/man2/stat.2.html) system
+call in our C++ files `hcv_main.cc`, `hcv_main.cc`, `hcv_template.cc`.
+
+In order to optionally renew certificates automatically, a
+[crontab(5)](http://man7.org/linux/man-pages/man5/crontab.5.html) rule
+needs to be set up.
 
 ```
 cd /opt/letsencrypt

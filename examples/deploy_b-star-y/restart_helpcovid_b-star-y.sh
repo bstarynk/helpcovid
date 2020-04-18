@@ -14,7 +14,8 @@ HELPCOVIDRUN_SRCDIR=$HOME/helpcovid/
 HELPCOVIDRUN_PWD=$(pwd)
 HELPCOVIDRUN_HOST=$(/usr/bin/hostname --fqdn)
 HELPCOVIDRUN_THREADS=2
-HELPCOVIDRUN_FLAGS="-D"
+HELPCOVIDRUN_FLAGS="--debug"
+HELPCOVIDRUN_CONFIG="$HOME/helpcovid-b-star.conf"
 
 # left empty on purpose:
 HELPCOVIDRUN_OLDPID=
@@ -100,7 +101,9 @@ if [ ! -x "$HELPCOVIDRUN_SRCDIR/helpcovid" ]; then
     exit 1
 fi
 
-nohup $HELPCOVIDRUN_SRCDIR/helpcovid $HELPCOVIDRUN_FLAGS --threads=$HELPCOVIDRUN_THREADS --write-pid=$HELPCOVIDRUN_PIDFILE < /dev/null &
+nohup $HELPCOVIDRUN_SRCDIR/helpcovid $HELPCOVIDRUN_FLAGS "--threads=$HELPCOVIDRUN_THREADS" \
+      "--config=$HELPCOVIDRUN_CONFIG" \
+      "--write-pid=$HELPCOVIDRUN_PIDFILE" < /dev/null &
 
 helpcovidrun_log_info done  $0 in $(time)
 
