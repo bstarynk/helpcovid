@@ -64,7 +64,43 @@ Hcv_http_template_data::request_language(void) const
   if (langstr.empty())
     return "";
   std::string reqlanstr;
-#warning Hcv_http_template_data::request_language
+#warning Hcv_http_template_data::request_language incomplete
+  if (false) {}
+#define HCV_WHENLANG(Str) else if (langstr.find(Str) != std::string::npos) reqlanstr= Str
+  // see https://www.metamodpro.com/browser-language-codes
+  // only two letter codes here
+  HCV_WHENLANG("af"); // Afrikaans
+  HCV_WHENLANG("hr"); // Croatian
+  HCV_WHENLANG("el"); // Gree
+  HCV_WHENLANG("pl"); // Polish
+  HCV_WHENLANG("sx"); // Sutu
+  HCV_WHENLANG("sq"); // Albanian
+  HCV_WHENLANG("cs"); // Czech
+  HCV_WHENLANG("gu"); // Gujurati
+  HCV_WHENLANG("pt"); // Portugese
+  HCV_WHENLANG("sw"); // Swahili
+  HCV_WHENLANG("ar"); // Arabic (standard)
+  HCV_WHENLANG("da"); // Danish
+  HCV_WHENLANG("ht"); // Haitian
+  HCV_WHENLANG("sv"); // Swedish
+  HCV_WHENLANG("nl"); // Dutch
+  HCV_WHENLANG("he"); // Hebrew
+  HCV_WHENLANG("pa"); // Punjabi
+  HCV_WHENLANG("hi"); // Hindi
+  HCV_WHENLANG("en"); // English
+  HCV_WHENLANG("hu"); // Hungarian
+  HCV_WHENLANG("ta"); // Tamil
+  HCV_WHENLANG("is"); // Icelandic
+  HCV_WHENLANG("qe"); // Quechua
+  HCV_WHENLANG("tt"); // Tatar
+  HCV_WHENLANG("id"); // Indonesian
+  HCV_WHENLANG("rm"); // Rhaeto-Romanic
+  HCV_WHENLANG("te"); // Teluga
+  HCV_WHENLANG("iu"); // Inuktitut
+  HCV_WHENLANG("ro"); // Romanian
+  HCV_WHENLANG("th"); // Thai
+#warning many languages code are missing in Hcv_http_template_data::request_language
+#undef HCV_WHENLANG
   if (!reqlanstr.empty())
     _hcvhttp_language = reqlanstr;
   return reqlanstr;
