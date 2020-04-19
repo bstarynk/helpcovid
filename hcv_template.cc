@@ -50,6 +50,28 @@ Hcv_http_template_data::~Hcv_http_template_data()
 } // end Hcv_http_template_data::~Hcv_http_template_data
 
 
+
+std::string
+Hcv_http_template_data::request_language(void) const
+{
+  if (!_hcvhttp_language.empty())
+    return _hcvhttp_language;
+  auto req = request();
+  if (!req)
+    return "";
+  std::string langstr= req->get_header_value("Accept-Language");
+  HCV_DEBUGOUT("Hcv_http_template_data::request_language langstr='" << langstr << "'");
+  if (langstr.empty())
+    return "";
+  std::string reqlanstr;
+#warning Hcv_http_template_data::request_language
+  if (!reqlanstr.empty())
+    _hcvhttp_language = reqlanstr;
+  return reqlanstr;
+} // end Hcv_http_template_data::request_language
+
+////////////////
+
 Hcv_https_template_data::~Hcv_https_template_data()
 {
 } // end Hcv_https_template_data::~Hcv_https_template_data

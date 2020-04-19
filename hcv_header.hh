@@ -408,13 +408,19 @@ protected:
   long _hcvhttp_reqnum;
   mutable std::ostringstream _hcvhttp_outs;
   std::string _hcvhttp_cookie_header;
+  /// from cached Accept-Language: HTTP header request
+  /// see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
+  /// see https://tools.ietf.org/html/bcp47
+  mutable std::string _hcvhttp_language; // eg "fr" or "en", assume UTF-8 encoding
 public:
   Hcv_http_template_data(const httplib::Request& req, httplib::Response&resp, long reqnum)
     : Hcv_template_data(TmplKind_en::hcvtk_http),
       _hcvhttp_request(&req),
       _hcvhttp_response(&resp),
       _hcvhttp_reqnum(reqnum),
-      _hcvhttp_outs()
+      _hcvhttp_outs(),
+      _hcvhttp_cookie_header(),
+      _hcvhttp_language()
   {
   };
 protected:
@@ -423,7 +429,9 @@ protected:
       _hcvhttp_request(&req),
       _hcvhttp_response(&resp),
       _hcvhttp_reqnum(reqnum),
-      _hcvhttp_outs()
+      _hcvhttp_outs(),
+      _hcvhttp_cookie_header(),
+      _hcvhttp_language()
   {
   };
 public:
@@ -440,6 +448,7 @@ public:
     else
       return "";
   };
+  virtual std::string request_language(void) const;
   //
   std::string cookie_header() const
   {
@@ -461,6 +470,7 @@ public:
   {
     return _hcvhttp_reqnum;
   };
+  //
   const httplib::Request*request() const
   {
     return _hcvhttp_request;

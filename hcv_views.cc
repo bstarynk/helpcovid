@@ -64,6 +64,7 @@ hcv_login_view_post(const httplib::Request& req,  httplib::Response& resp, long 
                << " passwd=" << passwd
                << " status=" << status);
 
+#warning hcv_login_view_post should not wire-in French or English
   std::string msg_en = status ? "OK" : "Your e-mail address and password do not"
                        " match. Please try again.";
   std::string msg_fr = status ? "OK" : "Votre adresse e-mail et votre mot de"
@@ -103,6 +104,8 @@ hcv_home_view_get(const httplib::Request& req, httplib::Response& resp, long req
   //
   // return login .html for now
   Hcv_http_template_data webdata(req, resp, reqcnt);
+  std::string reqlang = webdata.request_language();
+  HCV_DEBUGOUT("hcv_home_view_get req#" << reqcnt << " reqlang='" << reqlang << "'");
   std::string thtml = hcv_get_web_root() + "html/login.html";
   auto res =  hcv_expand_template_file(thtml, &webdata);
   HCV_ASSERT(res.size() < HCV_HTML_RESPONSE_MAX_LEN);
