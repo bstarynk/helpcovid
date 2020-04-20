@@ -40,7 +40,8 @@ See C++ file `hcv_chunkmap.cc` and its C++ function
 `hcv_get_chunkmap_entry` and also our [README](README.md).
 
 We want to have chunkmap files to customize local multi-line messages,
-or short single line ones. This is for site-specific messages.
+or short single line ones. This is for site-specific messages, and
+used for expansion of `<?hcv msg ...?>` processing instructions.
 
 Blank lines or those starting with `#` are skipped.
 

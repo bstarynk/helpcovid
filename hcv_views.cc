@@ -274,11 +274,22 @@ hcv_view_expand_msg(Hcv_http_template_data*tdata, const std::string &procinstr,
       /// see http://man7.org/linux/man-pages/man5/locale.5.html
       /// see http://man7.org/linux/man-pages/man3/dgettext.3.html
       char* localizedmsg = dgettext(HCV_DGETTEXT_DOMAIN, msgidbuf);
+      std::string reqlang = tdata->request_language();
+      std::string chunknam{msgidbuf};
+      std::string langchunknam = (reqlang.empty()?chunknam:(chunknam+"_"+reqlang));
+      std::string entry;
+      HCV_DEBUGOUT("hcv_view_expand_msg chunked langchunknam='" << langchunknam << "'");
       if (localizedmsg && strcmp(localizedmsg, msgidbuf))
         {
           HCV_DEBUGOUT("hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
                        << " => " << localizedmsg);
           return std::string(localizedmsg);
+        }
+      else if (!(entry=hcv_get_chunkmap_entry(langchunknam)).empty())
+        {
+          HCV_DEBUGOUT("hcv_view_expand_msg msgidbuf=" << msgidbuf << " at "  << filename << ":" << lineno
+                       << " => chunkentry " << entry);
+          return entry;
         }
       else
         {

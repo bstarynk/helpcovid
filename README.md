@@ -208,12 +208,15 @@ ending with `?>` on the same line. In particular,
 [internationalization and
 localization](https://en.wikipedia.org/wiki/Internationalization_and_localization)
 of messages in our HTML files (under `webroot/html/`) is done by
-processing instructions on a *single* line such as, for example something as
-`<?hcv msg MAINPAGE_HEADING Page Heading?>` handled by C++ code in
-`hcv_template.cc` function `hcv_initialize_templates` which should use
+processing instructions on a *single* line such as, for example
+something as `<?hcv msg MAINPAGE_HEADING Page Heading?>` handled by
+C++ code in `hcv_template.cc` function `hcv_initialize_templates`
+which should use
 [locale(7)](http://man7.org/linux/man-pages/man7/locale.7.html)
 facilities such as
-[gettext(3)](http://man7.org/linux/man-pages/man3/gettext.3.html).
+[gettext(3)](http://man7.org/linux/man-pages/man3/gettext.3.html), and
+[chunk customization](CUSTOMIZATION.md) facilities.
+
 
 ### template conventions
 
