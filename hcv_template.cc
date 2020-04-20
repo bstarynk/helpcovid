@@ -155,7 +155,39 @@ Hcv_http_template_data::request_language(void) const
   HCV_WHENLANG("lt"); // Lithuanian
   HCV_WHENLANG("es"); // Spanish
   HCV_WHENLANG("zu"); // Zulu
-#warning many languages code are missing in Hcv_http_template_data::request_language
+  HCV_WHENLANG("bg"); // Bulgarian
+  HCV_WHENLANG("lb"); // Luxembourgish
+  HCV_WHENLANG("be"); // Belarusian
+  HCV_WHENLANG("mk"); // Macedonian
+  HCV_WHENLANG("bn"); // Bengali
+  HCV_WHENLANG("ms"); // Malay
+  HCV_WHENLANG("bs"); // Bosnian
+  HCV_WHENLANG("ml"); // Malayalam
+  HCV_WHENLANG("br"); // Breton
+  HCV_WHENLANG("mt"); // Maltese
+  HCV_WHENLANG("my"); // Burmese
+  HCV_WHENLANG("fy"); // Frisian
+  HCV_WHENLANG("mr"); // Marathi
+  HCV_WHENLANG("ca"); // Catalan
+  HCV_WHENLANG("fur"); // Friulian
+  HCV_WHENLANG("mo"); // Moldavian
+  HCV_WHENLANG("ch"); // Chamarro
+  HCV_WHENLANG("gd"); // Gaelic
+  HCV_WHENLANG("nv"); // Navajo
+  HCV_WHENLANG("ce"); // Chechen
+  HCV_WHENLANG("ng"); // Ndonga
+  HCV_WHENLANG("zh"); // Chinese
+  HCV_WHENLANG("gl"); // Galacian
+  HCV_WHENLANG("ne"); // Nepali
+  HCV_WHENLANG("ka"); // Georgian
+  HCV_WHENLANG("no"); // Norwegian
+  HCV_WHENLANG("de"); // German
+  HCV_WHENLANG("co"); // Corsican
+  HCV_WHENLANG("cr"); // Cree
+  HCV_WHENLANG("oc"); // Occitan
+  HCV_WHENLANG("or"); // Oriya
+  HCV_WHENLANG("fa"); // Persian
+#warning a few human language codes are missing in Hcv_http_template_data::request_language
 #undef HCV_WHENLANG
   if (!reqlanstr.empty())
     _hcvhttp_language = reqlanstr;
