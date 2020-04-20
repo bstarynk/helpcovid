@@ -140,6 +140,21 @@ Hcv_http_template_data::request_language(void) const
   HCV_WHENLANG("fa"); // Farsi
   HCV_WHENLANG("sl"); // Slovenian
   HCV_WHENLANG("cy"); // Welsh
+  HCV_WHENLANG("ast"); // Asturian
+  HCV_WHENLANG("fj"); // Fijian
+  HCV_WHENLANG("la"); // Latin
+  HCV_WHENLANG("so"); // Somani
+  HCV_WHENLANG("xh"); // Xhosa
+  HCV_WHENLANG("az"); // Azerbaijani
+  HCV_WHENLANG("fi"); // Finnish
+  HCV_WHENLANG("lv"); // Latvian
+  HCV_WHENLANG("sb"); // Sorbian
+  HCV_WHENLANG("ji"); // Yiddish
+  HCV_WHENLANG("eu"); // Basque
+  HCV_WHENLANG("fr"); // French
+  HCV_WHENLANG("lt"); // Lithuanian
+  HCV_WHENLANG("es"); // Spanish
+  HCV_WHENLANG("zu"); // Zulu
 #warning many languages code are missing in Hcv_http_template_data::request_language
 #undef HCV_WHENLANG
   if (!reqlanstr.empty())
