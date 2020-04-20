@@ -27,6 +27,11 @@ file [PLUGINS.md](PLUGINS.md). So site-specific extensions are
 possible. In particular because different countries have different
 regulations.
 
+### Related projects
+
+[covid19md-voluntari-server](https://github.com/code4moldova/covid19md-voluntari-server)
+in Python, from Moldavia. Also work in progress.
+
 ## development help is wanted
 
 Please contact one of the authors by email. See email addresses
