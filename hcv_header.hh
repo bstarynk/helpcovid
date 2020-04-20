@@ -767,6 +767,13 @@ extern "C" void hcv_start_background_thread(void);
 #define HCV_POSTPONE_MAXIMAL_DELAY 1000.0
 extern "C" void hcv_do_postpone_background(double delay, const std::string&name, void*data,
     const std::function<void(void*)>& todofun);
+
+
+/*****
+ * a cleanup function to be run in the background thread every five
+ * minutes, or with the --cleanup program argument
+ *****/
+extern "C" void hcv_background_periodic_cleanup(void);
 ///////////////////////////////////////////////////////////////////////////////
 
 

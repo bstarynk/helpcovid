@@ -327,4 +327,17 @@ hcv_do_postpone_background(double delay,  const std::string&name, void*data,
 } // end hcv_do_postpone_background
 
 
+
+
+/*****
+ * a cleanup function to be run in the background thread every five minutes
+ *****/
+void hcv_background_periodic_cleanup(void)
+{
+  HCV_SYSLOGOUT(LOG_WARNING,
+                "hcv_background_periodic_cleanup unimplemented");
+#warning  hcv_background_periodic_cleanup unimplemented
+} // end of hcv_background_periodic_cleanup
+
+
 /************************ end of file hcv_background.cc in github.com/bstarynk/helpcovid ***/

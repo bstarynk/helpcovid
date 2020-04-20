@@ -38,7 +38,8 @@ std::atomic<bool> hcv_debugging;
 double hcv_monotonic_start_time;
 unsigned hcv_http_max_threads = 8;
 unsigned hcv_http_payload_max = 16*1024*1024;
-bool hcv_should_clear_database;
+bool hcv_should_clear_database = false;
+bool hcv_should_cleanup = false;
 
 extern "C" void hcv_release_locale_resources(void);
 
@@ -88,6 +89,7 @@ enum hcv_progoption_en
   HCVPROGOPT_WEBSSLKEY=1001,
   HCVPROGOPT_PLUGIN=1002,
   HCVPROGOPT_CLEARDATABASE=1003,
+  HCVPROGOPT_CLEANUP=1004,
 };
 
 struct argp_option hcv_progoptions[] =
@@ -196,6 +198,14 @@ struct argp_option hcv_progoptions[] =
     /*arg:*/ nullptr, ///
     /*flags:*/0, ///
     /*doc:*/ "write debug messages to syslog(LOG_DEBUG, ...)", ///
+    /*group:*/0 ///
+  },
+  /* ======= cleanup the database ======= */
+  {/*name:*/ "cleanup", ///
+    /*key:*/ HCVPROGOPT_CLEANUP, ///
+    /*arg:*/ nullptr, ///
+    /*flags:*/0, ///
+    /*doc:*/ "cleanup the database, e.g. removing old data, then exit", ///
     /*group:*/0 ///
   },
   /* ======= enable clearing of every database table  ======= */
@@ -319,6 +329,11 @@ hcv_parse1opt (int key, char *arg, struct argp_state *state)
     {
     case HCVPROGOPT_DEBUG:
       hcv_debugging.store(true);
+      return 0;
+
+    case HCVPROGOPT_CLEANUP:
+      hcv_should_cleanup=true;
+      HCV_SYSLOGOUT(LOG_NOTICE, "helpcovid will cleanup database");
       return 0;
 
     case HCVPROGOPT_WEBURL:
@@ -1191,7 +1206,10 @@ main(int argc, char**argv)
   errno = 0;
   hcv_start_background_thread();
   errno = 0;
-  hcv_webserver_run();
+  if (hcv_should_cleanup)
+    hcv_background_periodic_cleanup();
+  else
+    hcv_webserver_run();
   errno = 0;
   hcv_release_locale_resources();
   errno = 0;
