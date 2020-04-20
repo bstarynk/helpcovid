@@ -99,6 +99,47 @@ Hcv_http_template_data::request_language(void) const
   HCV_WHENLANG("iu"); // Inuktitut
   HCV_WHENLANG("ro"); // Romanian
   HCV_WHENLANG("th"); // Thai
+  HCV_WHENLANG("ga"); // Irish
+  HCV_WHENLANG("tig"); // Tigre
+  HCV_WHENLANG("it"); // Italian
+  HCV_WHENLANG("ru"); // Russian
+  HCV_WHENLANG("ts"); // Tsonga
+  HCV_WHENLANG("tn"); // Tswana
+  HCV_WHENLANG("ja"); // Japanese
+  HCV_WHENLANG("sz"); // Sami
+  HCV_WHENLANG("tr"); // Turkish
+  HCV_WHENLANG("kn"); // Kannada
+  HCV_WHENLANG("sg"); // Sango
+  HCV_WHENLANG("tk"); // Turkmen
+  HCV_WHENLANG("ks"); // Kashmiri
+  HCV_WHENLANG("sa"); // Sanskrit
+  HCV_WHENLANG("uk"); // Ukrainian
+  HCV_WHENLANG("kk"); // Kazakh
+  HCV_WHENLANG("sc"); // Sardinian
+  HCV_WHENLANG("hsb"); // Upper Sorbian
+  HCV_WHENLANG("km"); // Khmer
+  HCV_WHENLANG("gd"); // Scots Gaelic
+  HCV_WHENLANG("ur"); // Urdu
+  HCV_WHENLANG("ky"); // Kirghiz
+  HCV_WHENLANG("sd"); // Sindhi
+  HCV_WHENLANG("ve"); // Venda
+  HCV_WHENLANG("eo"); // Esperanto
+  HCV_WHENLANG("tlh"); // Klingon
+  HCV_WHENLANG("si"); // Singhalese
+  HCV_WHENLANG("vi"); // Vietnamese
+  HCV_WHENLANG("ar"); // Aragonese
+  HCV_WHENLANG("et"); // Estonian
+  HCV_WHENLANG("ko"); // Korean
+  HCV_WHENLANG("sr"); // Serbian
+  HCV_WHENLANG("vo"); // Volapuk
+  HCV_WHENLANG("hy"); // Armenian
+  HCV_WHENLANG("fo"); // Faeroese
+  HCV_WHENLANG("sk"); // Slovak
+  HCV_WHENLANG("wa"); // Walloon
+  HCV_WHENLANG("as"); // Assamese
+  HCV_WHENLANG("fa"); // Farsi
+  HCV_WHENLANG("sl"); // Slovenian
+  HCV_WHENLANG("cy"); // Welsh
 #warning many languages code are missing in Hcv_http_template_data::request_language
 #undef HCV_WHENLANG
   if (!reqlanstr.empty())
