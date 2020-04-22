@@ -64,6 +64,25 @@ void hcv_background_thread_body(void)
     pthread_setname_np(pthread_self(), thnambuf);
     HCV_SYSLOGOUT(LOG_INFO, "hcv_background_thread_body starting thread " << thnambuf);
   }
+  /// show the signal masks for debugging
+  if (hcv_debugging.load())
+    {
+      sigset_t mysigset;
+      if (sigemptyset(&mysigset))
+        HCV_FATALOUT("hcv_background_thread_body: failed sigemptyset");
+      // get current signal mask
+      if (sigprocmask(SIG_SETMASK, nullptr, &mysigset))
+        HCV_FATALOUT("hcv_background_thread_body: failed to get signal mask");
+      std::ostringstream outs;
+      for (int cursignum = 1; cursignum <= SIGRTMAX; cursignum++)
+        {
+          if (sigismember(&mysigset, cursignum))
+            outs << ' ' << '#' << cursignum << '=' << strsignal(cursignum) << ';';
+        }
+      outs.flush();
+      HCV_DEBUGOUT("hcv_background_thread_body signal mask set: " << outs.str());
+    }
+  /// loop
   while (!hcv_should_stop_bg_thread.load())
     {
       struct pollfd polltab[4];
@@ -201,6 +220,8 @@ hcv_start_background_thread(void)
   if (hcv_bg_event_fd < 0)
     HCV_FATALOUT("hcv_start_background_thread: eventfd failed for hcg_bg_event_fd");
   //// see http://man7.org/linux/man-pages/man2/signalfd.2.html
+  //// and http://man7.org/linux/man-pages/man7/signal.7.html
+  //// and http://man7.org/linux/man-pages/man7/signal-safety.7.html
   {
     sigset_t  sigmaskbits;
     memset (&sigmaskbits, 0, sizeof(sigmaskbits));
@@ -209,7 +230,11 @@ hcv_start_background_thread(void)
     sigaddset(&sigmaskbits, SIGHUP);
     sigaddset(&sigmaskbits, SIGXCPU);
     sigaddset(&sigmaskbits, SIGPIPE);
-    hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK|SFD_CLOEXEC);
+    /// http://man7.org/linux/man-pages/man2/sigprocmask.2.html
+    if (sigprocmask(SIG_UNBLOCK, &sigmaskbits, nullptr))
+      HCV_FATALOUT("hcv_start_background_thread: sigprocmask failure");
+    HCV_DEBUGOUT("hcv_start_background_thread sigprocmask done");
+    hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK | SFD_CLOEXEC);
     if (hcv_bg_signal_fd < 0)
       HCV_FATALOUT("hcv_start_background_thread: signalfd failure");
     HCV_DEBUGOUT("hcv_start_background_thread hcv_bg_signal_fd=" << hcv_bg_signal_fd);
