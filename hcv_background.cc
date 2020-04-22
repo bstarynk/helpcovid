@@ -102,6 +102,9 @@ void hcv_background_thread_body(void)
           if ((polltab[0].revents & POLL_IN) && polltab[0].fd == hcv_bg_event_fd)
             {
               int64_t evrk=0;
+
+              HCV_DEBUGOUT("hcv_background_thread_body pollable hcv_bg_event_fd="
+                           << hcv_bg_event_fd);
               int byrd = read (hcv_bg_event_fd, &evrk, sizeof(evrk));
               if (byrd==sizeof(evrk))
                 {
@@ -115,6 +118,8 @@ void hcv_background_thread_body(void)
             };
           if ((polltab[1].revents & POLL_IN) && polltab[1].fd == hcv_bg_signal_fd)
             {
+              HCV_DEBUGOUT("hcv_background_thread_body pollable hcv_bg_signal_fd="
+                           << hcv_bg_signal_fd);
               struct signalfd_siginfo signalinfo;
               memset (&signalinfo, 0, sizeof(signalinfo));
               int byrd = read(hcv_bg_signal_fd, &signalinfo, sizeof(signalinfo));
@@ -163,6 +168,8 @@ void hcv_background_thread_body(void)
           if ((polltab[2].revents & POLL_IN) && polltab[2].fd == hcv_bg_timer_fd)
             {
               std::uint64_t nbexpir= 0;
+              HCV_DEBUGOUT("hcv_background_thread_body pollable hcv_bg_timer_fd="
+                           << hcv_bg_timer_fd);
               int byrd= read(hcv_bg_timer_fd, &nbexpir, sizeof(nbexpir));
               if (byrd < 0)
                 HCV_FATALOUT("hcv_background_thread_body: failed read of hcv_bg_timer_fd="
