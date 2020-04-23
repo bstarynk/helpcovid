@@ -91,8 +91,8 @@ void hcv_background_thread_body(void)
       polltab[0].events = POLL_IN;
       polltab[1].fd = hcv_bg_signal_fd;
       polltab[1].events = POLL_IN;
-      polltab[1].fd = hcv_bg_timer_fd;
-      polltab[1].events = POLL_IN;
+      polltab[2].fd = hcv_bg_timer_fd;
+      polltab[2].events = POLL_IN;
       HCV_DEBUGOUT("hcv_background_thread_body before poll");
       int nbfd = poll(polltab, 3,
                       hcv_debugging.load()?(2*HCV_BACKGROUND_TICK_TIMEOUT):HCV_BACKGROUND_TICK_TIMEOUT);
