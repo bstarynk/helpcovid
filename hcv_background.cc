@@ -231,7 +231,8 @@ hcv_start_background_thread(void)
     sigaddset(&sigmaskbits, SIGXCPU);
     sigaddset(&sigmaskbits, SIGPIPE);
     /// http://man7.org/linux/man-pages/man2/sigprocmask.2.html
-    if (sigprocmask(SIG_UNBLOCK, &sigmaskbits, nullptr))
+    ///  https://stackoverflow.com/a/61374592/841108
+    if (sigprocmask(SIG_BLOCK, &sigmaskbits, nullptr))
       HCV_FATALOUT("hcv_start_background_thread: sigprocmask failure");
     HCV_DEBUGOUT("hcv_start_background_thread sigprocmask done");
     hcv_bg_signal_fd = signalfd(-1, &sigmaskbits, SFD_NONBLOCK | SFD_CLOEXEC);
