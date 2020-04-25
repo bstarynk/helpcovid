@@ -5,8 +5,8 @@ auto_continue_multiline=true
 
 [file_prefs]
 final_new_line=true
-ensure_convert_new_lines=false
-strip_trailing_spaces=false
+ensure_convert_new_lines=true
+strip_trailing_spaces=true
 replace_tabs=false
 
 [indentation]
@@ -28,10 +28,23 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
+current_page=12
+FILE_NAME_0=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_header.hh;0;4
+FILE_NAME_1=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_background.cc;0;4
+FILE_NAME_2=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_chunkmap.cc;0;4
+FILE_NAME_3=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_database.cc;0;4
+FILE_NAME_4=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_main.cc;0;4
+FILE_NAME_5=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_models.cc;0;4
+FILE_NAME_6=0;C++;0;EUTF-8;1;1;0;.%2Fhcvplugin_echo.cc;0;4
+FILE_NAME_7=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_plugins.cc;0;4
+FILE_NAME_8=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_template.cc;0;4
+FILE_NAME_9=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_views.cc;0;4
+FILE_NAME_10=0;C++;0;EUTF-8;1;1;0;.%2Fhcv_web.cc;0;4
+FILE_NAME_11=0;C++;0;EUTF-8;1;1;0;.%2Fhttplib.h;0;4
+FILE_NAME_12=0;Python;0;EUTF-8;1;1;0;.%2Fbackup-database.py;0;4
 
 [VTE]
-last_dir=/home/basile
+last_dir=.
 
 [build-menu]
 NF_00_LB=Make
