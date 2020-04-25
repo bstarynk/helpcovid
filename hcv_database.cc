@@ -449,6 +449,29 @@ sql_ping_session(pqxx::work& transact)
 }
 
 
+// stored function to check whether a session is valid.
+static void
+sql_is_session_valid(pqxx::work& transact)
+{
+    transact.exec0(R"sqlvalidssn(
+        CREATE OR REPLACE FUNCTION is_session_valid(p_session UUID, 
+                p_http_ua TEXT, p_ip INET) RETURNS BOOLEAN
+        AS $func$
+        BEGIN
+            SELECT id FROM tb_session WHERE id = p_session 
+                    AND http_ua = p_http_ua AND ip = p_ip AND expiry < now();
+
+            IF NOT FOUND THEn
+                RETURN false;
+            END IF;
+
+            RETURN true;
+        END;
+        $func$ LANGUAGE plpgsql;
+    )sqlvalidssn");
+}
+
+
 /// We create and fill a tiny SQL table tb_helpcovidinstance to
 /// register this particular instance of helpcovid process in the
 /// database.  This might be useful in large scale HelpCovid
@@ -694,6 +717,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_open_session(transact);
     sql_close_session(transact);
     sql_ping_session(transact);
+    sql_is_session_valid(transact);
     sql_register_helpcovid_instance(transact);
 
     transact.commit();
