@@ -376,6 +376,30 @@ sql_delete_dormant_users(pqxx::work& transact)
 }
 
 
+static void
+sql_open_session(pqxx::work& transact)
+{
+    transact.exec0(R"sqlopenssn(
+        CREATE OR REPLACE FUNCTION open_session(p_user INT, p_http_ua TEXT, 
+                p_ip INET) RETURNS UUID
+        AS $func$
+        DECLARE
+            v_id UUID;
+        BEGIN
+            INSERT INTO tb_session(user_id, http_ua, ip) VALUES (p_user, 
+                    p_http_ua, p_ip) RETURNING id INTO v_id;
+
+            RETURN v_id;
+
+        EXCEPTION
+            WHEN foreign_key_violation THEN
+                RAISE EXCEPTION 'user not found with ID: %', p_user;
+        END;
+        $func$ LANGUAGE plpgsql;
+    )sqlopenssn");
+}
+
+
 /// We create and fill a tiny SQL table tb_helpcovidinstance to
 /// register this particular instance of helpcovid process in the
 /// database.  This might be useful in large scale HelpCovid
@@ -618,6 +642,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_verify_email_token(transact);
     sql_get_email_verification_token(transact);
     sql_delete_dormant_users(transact);
+    sql_open_session(transact);
     sql_register_helpcovid_instance(transact);
 
     transact.commit();
