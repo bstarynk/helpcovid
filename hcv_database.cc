@@ -376,6 +376,7 @@ sql_delete_dormant_users(pqxx::work& transact)
 }
 
 
+// stored function to open a new session
 static void
 sql_open_session(pqxx::work& transact)
 {
@@ -397,6 +398,25 @@ sql_open_session(pqxx::work& transact)
         END;
         $func$ LANGUAGE plpgsql;
     )sqlopenssn");
+}
+
+
+// stored function to close an open session
+static void
+sql_close_session(pqxx::work& transact)
+{
+    transact.exec0(R"sqlclosessn(
+        CREATE OR REPLACE PROCEDURE close_session(p_session UUID)
+        AS $$
+        BEGIN
+            UPDATE tb_session SET expiry = now() WHERE id = p_session;
+
+            IF NOT FOUND THEN
+                RAISE EXCEPTION 'session not found with ID: %', p_session ;
+            END IF;
+        END;
+        $$ LANGUAGE plpgsql;
+    )sqlclosessn");
 }
 
 
@@ -643,6 +663,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_get_email_verification_token(transact);
     sql_delete_dormant_users(transact);
     sql_open_session(transact);
+    sql_close_session(transact);
     sql_register_helpcovid_instance(transact);
 
     transact.commit();
