@@ -863,11 +863,12 @@ hcv_initialize_templates(void)
     memset (tagbuf, 0, sizeof(tagbuf));
     memset (classbuf, 0, sizeof(classbuf));
     int endpos = -1;
+    int nbs = -1;
     bool comm = !strcmp(procinstr.c_str(), "<?hcv basefilepos comment?>");
     if (!comm)
       nbs = sscanf(procinstr.c_str()+5, " basefilepos %20[A-Za-z0-9_] %38[A-Za-z0-9_] ?>%n",
                    tagbuf, classbuf, &endpos);
-    if (auto pouts = templdata->output_stream())
+    if (auto pouts = (nbs>0)?templdata->output_stream():nullptr)
       {
         const char*lastslash = strrchr(filename?:"??", '/');
         const char*basefilname = (lastslash&&lastslash[0])?(lastslash+1):filename;
