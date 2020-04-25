@@ -357,6 +357,25 @@ sql_get_email_verification_token(pqxx::work& transact)
 } // end sql_get_email_verification_token
 
 
+// procedure to identify and delete dormant users who have not signed in
+// for more than 3 months
+static void
+sql_delete_dormant_users(pqxx::work& transact)
+{
+    transact.exec0(R"sqldeldormusers(
+        CREATE OR REPLACE PROCEDURE delete_dormant_users()
+        AS $$
+        BEGIN
+            DELETE FROM tb_user WHERE user_id IN (SELECT user_id FROM (
+                    SELECT DISTINCT ON (user_id) user_id, expiry FROM tb_session
+                    ORDER BY user_id, expiry DESC) AS latest_session
+                    WHERE expiry < now() - interval '3 months');
+        END;
+        $$ LANGUAGE plpgsql;
+    )sqldeldormusers");
+}
+
+
 /// We create and fill a tiny SQL table tb_helpcovidinstance to
 /// register this particular instance of helpcovid process in the
 /// database.  This might be useful in large scale HelpCovid
@@ -598,6 +617,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_create_new_user(transact);
     sql_verify_email_token(transact);
     sql_get_email_verification_token(transact);
+    sql_delete_dormant_users(transact);
     sql_register_helpcovid_instance(transact);
 
     transact.commit();
