@@ -604,6 +604,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_tb_user(transact);
     sql_tb_email_confirmation(transact);
     sql_tb_password(transact);
+    sql_tb_web_cookie(transact);
     sql_create_new_user(transact);
     sql_verify_email_token(transact);
     sql_get_email_verification_token(transact);
