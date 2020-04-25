@@ -224,6 +224,22 @@ sql_tb_web_cookie(pqxx::work& transact)
 } // end sql_tb_web_cookie
 
 
+// Session table
+static void
+sql_tb_session(pqxx::work& transact)
+{
+    transact.exec0(R"sqltbsession(
+        CREATE TABLE IF NOT EXISTS tb_session(
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                user_id INT NOT NULL REFERENCES tb_user(user_id) ON DELETE CASCADE,
+                http_ua TEXT NOT NULL,
+                ip INET NOT NULL,
+                start TIMESTAMP NOT NULL DEFAULT now(),
+                expiry TIMESTAMP NOT NULL DEFAULT now() + interval '1 hour');
+    )sqltbsession");
+}
+
+
 // the create_new_user() SQL function creates a new user, taking care to
 // ensure that the password is encrypted with an MD5 hashed salt.
 static void
@@ -578,6 +594,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_tb_email_confirmation(transact);
     sql_tb_password(transact);
     sql_tb_web_cookie(transact);
+    sql_tb_session(transact);
     sql_create_new_user(transact);
     sql_verify_email_token(transact);
     sql_get_email_verification_token(transact);
