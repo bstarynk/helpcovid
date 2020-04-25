@@ -102,39 +102,23 @@ hcv_postgresql_version(void)
 } // end  hcv_postgresql_version
 
 
-// We need a means to enumerate in the database the status of a user.
-// On registering, a user is initially inactive, and becomes active after
-// confirming her e-mail address. After a certain period of time has elapsed
-// without the user not having logged in (e.g. 3 months) the user would then
-// be set as inactive, and would then again need to confirm by e-mail their
-// registration and willingess to use the application.
-// Since SQL doesn't support enumerations as such, we simulate it through
-// an SQL function that accepts a string and returns the corresponding
-// integer. The __MIN__ and __MAX__ enumerators are used for enforcing check
-// constraints.
+// Enumerator for user status types
 static void
-sql_get_status_id(pqxx::work& transact)
+sql_en_status(pqxx::work& transact)
 {
-  transact.exec0(R"sqluserstatus(
-        CREATE OR REPLACE FUNCTION get_status_id(_tag varchar) 
-                RETURNS integer AS
-        $func$ 
-        DECLARE
-            status_code integer;
+    transact.exec0(R"sqlenstatus(
+        DO $$
         BEGIN
-            CASE
-                when _tag = 'STATUS_REJECTED' then status_code = -2;
-                when _tag = 'STATUS_EXPIRED' then status_code = -1;
-                when _tag = 'STATUS_PENDING' then status_code = 0;
-                when _tag = 'STATUS_VERIFIED' then status_code = 1;
-                when _tag = '_MIN_' then status_code = 0;
-                when _tag = '_MAX_' then status_code = 1;
-            END CASE;
-
-            RETURN status_code;
-        END;
-        $func$ language plpgsql immutable;
-    )sqluserstatus");
+            CREATE TYPE en_status as enum(
+                    'STATUS_REJECTED',
+                    'STATUS_EXPIRED',
+                    'STATUS_PENDING',
+                    'STATUS_VERIFIED');
+        EXCEPTION
+            WHEN duplicate_object THEN NULL;
+        END
+        $$ language plpgsql;
+    )sqlenstatus");
 }
 
 
@@ -144,7 +128,7 @@ sql_get_status_id(pqxx::work& transact)
 static void
 sql_en_gender(pqxx::work& transact)
 {
-    transact.exec0(R"sqlenstatus(
+    transact.exec0(R"sqlengender(
         DO $$
         BEGIN
             CREATE TYPE en_gender as enum(
@@ -156,8 +140,8 @@ sql_en_gender(pqxx::work& transact)
             WHEN duplicate_object THEN NULL;
         END
         $$ language plpgsql;
-    )sqlenstatus");
-} // end sql_en_status
+    )sqlengender");
+} // end sql_en_gender
 
 
 static void
@@ -171,8 +155,7 @@ sql_tb_user(pqxx::work& transact)
             user_email VARCHAR(71) NOT NULL,
             user_telephone VARCHAR(23) NOT NULL,
             user_gender en_gender NOT NULL,
-            user_status INTEGER 
-                NOT NULL DEFAULT get_status_id('STATUS_PENDING'), 
+            user_status en_status NOT NULL DEFAULT 'STATUS_PENDING',
             user_crtime TIMESTAMP DEFAULT current_timestamp
         );
         CREATE INDEX IF NOT EXISTS ix_user_familyname 
@@ -589,7 +572,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     ////================ create tables if they are missing
     pqxx::work transact(*hcv_dbconn);
 
-    sql_get_status_id(transact);
+    sql_en_status(transact);
     sql_en_gender(transact);
     sql_tb_user(transact);
     sql_tb_email_confirmation(transact);
