@@ -420,6 +420,35 @@ sql_close_session(pqxx::work& transact)
 }
 
 
+// stored procedure to ping an open session
+// this is done to update the automatic session expiry time
+static void
+sql_ping_session(pqxx::work& transact)
+{
+    transact.exec0(R"sqlpingssn(
+        CREATE OR REPLACE PROCEDURE ping_session(p_session UUID)
+        AS $$
+        DECLARE
+            v_expiry TIMESTAMP;
+        BEGIN
+            v_expiry := (SELECT expiry FROM tb_session WHERE id = p_session);
+
+            IF NOT FOUND THEN
+                RAISE EXCEPTION 'session not found with ID: %', p_session;
+            END IF;
+
+            IF v_expiry < now() THEN
+                raise exception 'session already closed for ID: %', p_session;
+            END IF;
+
+            UPDATE tb_session SET expiry = now() + INTERVAL '1 hour' 
+                    WHERE id = p_session;
+        END;
+        $$ LANGUAGE plpgsql;
+    )sqlpingssn");
+}
+
+
 /// We create and fill a tiny SQL table tb_helpcovidinstance to
 /// register this particular instance of helpcovid process in the
 /// database.  This might be useful in large scale HelpCovid
@@ -664,6 +693,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     sql_delete_dormant_users(transact);
     sql_open_session(transact);
     sql_close_session(transact);
+    sql_ping_session(transact);
     sql_register_helpcovid_instance(transact);
 
     transact.commit();
