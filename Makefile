@@ -37,7 +37,7 @@ HELPCOVID_BUILD_DIALECTFLAGS = -std=gnu++17
 HELPCOVID_BUILD_WARNFLAGS = -Wall -Wextra
 HELPCOVID_BUILD_OPTIMFLAGS = -O0 -g3
 HELPCOVID_PKG_CONFIG = pkg-config
-HELPCOVID_PKG_NAMES = glibmm-2.4 giomm-2.4 jsoncpp libpqxx openssl curlpp
+HELPCOVID_PKG_NAMES = glibmm-2.4 giomm-2.4 jsoncpp libpqxx openssl curlpp onion
 HELPCOVID_PKG_CFLAGS:= $(shell $(HELPCOVID_PKG_CONFIG) --cflags $(HELPCOVID_PKG_NAMES))
 HELPCOVID_PKG_LIBS:= $(shell $(HELPCOVID_PKG_CONFIG) --libs $(HELPCOVID_PKG_NAMES))
 

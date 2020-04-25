@@ -86,8 +86,14 @@
 
 // PostGresQL C++ http://pqxx.org/development/libpqxx
 #include <pqxx/pqxx>
-#include <pqxx/prepared_statement.hxx>
+//#include <pqxx/prepared_statement.hxx>
 
+// libonion, see https://github.com/davidmoreno/onion
+// and https://www.coralbits.com/libonion/
+#include "onion/onion.hpp"
+#include "onion/version.h"
+
+// it will soon replace cpp-httplib below
 //  cpp-httplib https://github.com/yhirose/cpp-httplib
 #define CPPHTTPLIB_OPENSSL_SUPPORT 1
 extern "C" unsigned hcv_http_max_threads;

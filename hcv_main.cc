@@ -267,7 +267,7 @@ static struct hcv_progarguments hcv_progargs =
 };
 
 static char hcv_hostname[64];
-static char hcv_versionmsg[384];
+static char hcv_versionmsg[512];
 
 static void* hcv_proghandle;
 void hcv_fatal_stop_at (const char *fil, int lin, int err)
@@ -466,10 +466,11 @@ hcv_early_initialize(const char*progname)
   if (hcv_http_max_threads < 2)
     hcv_http_max_threads = 2;
   snprintf(hcv_versionmsg, sizeof(hcv_versionmsg),
-           "github.com/bstarynk/helpcovid built %s\n... gitcommit %s\n... md5sum %s on %s",
+           "github.com/bstarynk/helpcovid built %s\n... gitcommit %s\n... md5sum %s on %s\n... onion %s",
            hcv_timestamp, hcv_lastgitcommit,
            hcv_md5sum,
-           hcv_hostname);
+           hcv_hostname,
+	   onion_version());
   hcv_versionmsg[sizeof(hcv_versionmsg)-1] = (char)0;
   argp_program_version = hcv_versionmsg;
   argp_program_bug_address = "https://github.com/bstarynk/helpcovid/";
@@ -1206,11 +1207,13 @@ main(int argc, char**argv)
   errno = 0;
   hcv_start_background_thread();
   errno = 0;
+  HCV_DEBUGOUT("helpcovid here before cleanup or webrun");
   if (hcv_should_cleanup)
     hcv_background_periodic_cleanup();
   else
     hcv_webserver_run();
   errno = 0;
+  HCV_DEBUGOUT("helpcovid here before hcv_release_locale_resources");
   hcv_release_locale_resources();
   errno = 0;
   HCV_SYSLOGOUT(LOG_INFO, "normal end of " << argv[0]);
