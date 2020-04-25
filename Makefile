@@ -104,7 +104,7 @@ sanitized-helpcovid: $(HELPCOVID_SANITIZED_OBJECTS) __timestamp.o
 	$(LINK.cc) -fPIC -shared $(HELPCOVID_SANITIZE_CXXFLAGS) $^ -o $<
 
 clean:
-	$(RM) *~ *% *.orig *.o *.ii helpcovid *tmp core*
+	$(RM) *~ *% *.orig *.o i*.so *.ii helpcovid *tmp core*
 
 indent:
 	./indent-cxx-files.sh $(HELPCOVID_SOURCES) $(HELPCOVID_HEADERS) $(HELPCOVID_PLUGINSOURCES)
