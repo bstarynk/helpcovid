@@ -142,29 +142,23 @@ sql_get_status_id(pqxx::work& transact)
 // different legal jurisdictions may recognise genders other than the
 // standard ones
 static void
-sql_get_gender_id(pqxx::work& transact)
+sql_en_gender(pqxx::work& transact)
 {
-  transact.exec0(R"sqlusergender(
-        CREATE OR REPLACE FUNCTION get_gender_id(_tag varchar) 
-                RETURNS integer AS
-        $func$ 
-        DECLARE
-            gender_code integer;
+    transact.exec0(R"sqlenstatus(
+        DO $$
         BEGIN
-            CASE
-                WHEN _tag = 'GENDER_MALE' THEN gender_code = 0;
-                WHEN _tag = 'GENDER_FEMALE' THEN gender_code = 1;
-                WHEN _tag = 'GENDER_OTHER' THEN gender_code = 2;
-                WHEN _tag = 'GENDER_UNDISCLOSED' then gender_code = 3;
-                WHEN _tag = '_MIN_' then gender_code = 0;
-                WHEN _tag = '_MAX_' then gender_code = 3;
-            END CASE;
+            CREATE TYPE en_gender as enum(
+                    'GENDER_MALE',
+                    'GENDER_FEMALE',
+                    'GENDER_OTHER',
+                    'GENDER_UNDISCLOSED');
+        EXCEPTION
+            WHEN duplicate_object THEN NULL;
+        END
+        $$ language plpgsql;
+    )sqlenstatus");
+} // end sql_en_status
 
-            RETURN gender_code;
-        END;
-        $func$ language plpgsql immutable;
-    )sqlusergender");
-} // end sql_get_gender_id
 
 static void
 sql_tb_user(pqxx::work& transact)
@@ -176,14 +170,10 @@ sql_tb_user(pqxx::work& transact)
             user_familyname VARCHAR(62) NOT NULL,
             user_email VARCHAR(71) NOT NULL,
             user_telephone VARCHAR(23) NOT NULL,
-            user_gender INTEGER NOT NULL,
+            user_gender en_gender NOT NULL,
             user_status INTEGER 
                 NOT NULL DEFAULT get_status_id('STATUS_PENDING'), 
-            user_crtime TIMESTAMP DEFAULT current_timestamp,
-            CHECK(user_gender between get_gender_id('_MIN_') 
-                and get_gender_id('_MAX_')),
-            CHECK(user_status between get_status_id('_MIN_') 
-                and get_status_id('_MAX_'))
+            user_crtime TIMESTAMP DEFAULT current_timestamp
         );
         CREATE INDEX IF NOT EXISTS ix_user_familyname 
             ON tb_user(user_familyname);
@@ -258,12 +248,12 @@ sql_create_new_user(pqxx::work& transact)
 {
   transact.exec0(R"sqlcruser(
         CREATE OR REPLACE FUNCTION create_new_user(
-                _email varchar, 
-                _password text, 
-                _firstname varchar, 
-                _familyname varchar, 
-                _telephone varchar, 
-                _gender varchar) RETURNS integer 
+                p_email varchar, 
+                p_password text, 
+                p_firstname varchar, 
+                p_familyname varchar, 
+                p_telephone varchar, 
+                p_gender en_gender) RETURNS integer 
         as $func$
         BEGIN
             INSERT INTO tb_user(
@@ -271,18 +261,18 @@ sql_create_new_user(pqxx::work& transact)
                     user_familyname, 
                     user_email,
                     user_telephone, 
-                    user_gender) VALUES(
-                    _firstname, 
-                    _familyname,
-                    _email,
-                    _telephone, 
-                    get_gender_id(_gender));
+                    user_gender) VALUES (
+                    p_firstname, 
+                    p_familyname,
+                    p_email,
+                    p_telephone, 
+                    p_gender);
 
             INSERT INTO tb_password(
                     passw_userid, 
                     passw_encr) values(
-                    (SELECT user_id from tb_user where user_email = _email),
-                    crypt(_password, gen_salt('md5')));
+                    (SELECT user_id from tb_user where user_email = p_email),
+                    crypt(p_password, gen_salt('md5')));
 
             RETURN (SELECT user_id FROM tb_user WHERE user_email = _email);
         end; 
@@ -600,7 +590,7 @@ hcv_initialize_database(const std::string&uri, bool cleardata)
     pqxx::work transact(*hcv_dbconn);
 
     sql_get_status_id(transact);
-    sql_get_gender_id(transact);
+    sql_en_gender(transact);
     sql_tb_user(transact);
     sql_tb_email_confirmation(transact);
     sql_tb_password(transact);
