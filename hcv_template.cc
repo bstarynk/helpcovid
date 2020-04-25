@@ -863,7 +863,6 @@ hcv_initialize_templates(void)
     memset (tagbuf, 0, sizeof(tagbuf));
     memset (classbuf, 0, sizeof(classbuf));
     int endpos = -1;
-    int nbs = 0;
     bool comm = !strcmp(procinstr.c_str(), "<?hcv basefilepos comment?>");
     if (!comm)
       nbs = sscanf(procinstr.c_str()+5, " basefilepos %20[A-Za-z0-9_] %38[A-Za-z0-9_] ?>%n",
