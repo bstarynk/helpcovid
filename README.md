@@ -12,7 +12,7 @@ improving the necessary
 assuming users are well behaved and wantinng to help or needing
 help).
 
-**For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled. On [https://github.com/bstarynk/helpcovid/](helpcovid)
+**For Linux/x86-64 only**. [GCC](http://gcc.gnu.org/) compiled.
 
 The web server application runs on Linux (like most web servers). The
 users are using *recent* web browsers (Firefox, Chrome, mobile phones)
